@@ -1,0 +1,8 @@
+<root>
+<arguments value=""/>
+<command value="../../driver $PATH/default.conf"/>
+<return value="1"/>
+<expected_output value="$PATH/output/ORIGINAL"/>
+<obtained_output value="$PATH/output/ORIGINAL"/>
+<change_path value="$PATH"/>
+</root>
