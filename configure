@@ -1,0 +1,23 @@
+#!/bin/sh
+
+echo "Checking if R is installed"
+if which Rscript > /dev/null ; then
+    ./setup.R
+    RPACKAGES=$?
+else
+    echo "Please install R"
+fi
+
+echo "Checking if python is installed"
+if which python > /dev/null ; then
+    ./setup.py
+    PYPACKAGES=$?
+else
+    echo "Please install python >= 2.6"
+fi
+
+if [ $PYPACKAGES = 0 ] && [ $RPACKAGES = 0 ] ; then
+    echo "All the dependencies are satisfied."
+else
+    echo "Please install missing dependencies."
+fi
