@@ -1,0 +1,3 @@
+#!/bin/sh
+CONTENT=`cat $2`
+grep "$CONTENT" $1

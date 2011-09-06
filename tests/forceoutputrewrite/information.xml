@@ -1,0 +1,9 @@
+<root>
+<arguments value=""/>
+<command value="../../driver --force_overwrite $PATH/default.conf"/>
+<return value="1"/>
+<expected_output value="$PATH/default.log"/>
+<obtained_output value="$PATH/output.log"/>
+<change_path value="$PATH"/>
+<diff_operator value="../contains" />
+</root>
