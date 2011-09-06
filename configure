@@ -21,3 +21,7 @@ if [ $PYPACKAGES = 0 ] && [ $RPACKAGES = 0 ] ; then
 else
     echo "Please install missing dependencies."
 fi
+
+# Build uniform_sampling so
+echo "Building uniform sampling dynamic library (only needed for amart oracle module)"
+gcc -O3 -fPIC -shared common/uniform_sampling.c -o common/libuniformsampling.so 
