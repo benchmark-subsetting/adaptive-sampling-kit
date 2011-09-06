@@ -1,0 +1,20 @@
+#!/usr/bin/env python
+from common.util import fatal
+from common.configuration import Configuration
+
+def should_stop(points, input_file):
+    l = len(open(input_file).readlines())
+    if l >= points: 
+        fatal("Number of sampled points reached: stopping", 1)
+
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="Stops the driver after a given number of points")
+    parser.add_argument('configuration')
+    parser.add_argument('iteration')
+    parser.add_argument('labelled_file')
+    parser.add_argument('model_file')
+    args = parser.parse_args()
+    conf = Configuration(args.configuration)
+    should_stop(conf["modules.control.params.points"], args.labelled_file)

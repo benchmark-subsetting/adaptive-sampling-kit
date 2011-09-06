@@ -1,0 +1,170 @@
+#!/usr/bin/env python
+"""
+This module call the hierarchical sampling module to find interesting points to label
+"""
+
+CP=0.001
+import math
+import numpy as np
+import itertools
+import pprint
+from random import shuffle,randint
+from common.configuration import Configuration
+from common.util import fatal
+from common.tree import *
+from common.fit import *
+from common.constraints import get_tagged_models
+import common.cart
+
+def leaferror(N, mean_error):
+    freq_error = 0
+    m = N.model[0]
+    card = 0
+    for d in N.data:
+        card += 1
+        if abs(d[-1] - m) > mean_error:
+            freq_error +=1
+            
+    error_probability = (float(freq_error)/float(card))
+    assert(0 <= error_probability <= 1)
+    R = 1
+    confidence = math.log(1.0/0.01)
+    hoeff = math.sqrt(R*R*confidence/(2*card))    
+    return error_probability+hoeff
+
+def compute_error_pernode(data, T):
+    # compute mean error
+    mean_error = compute_mean_error(data, T)
+    
+    # fill the tree nodes
+    for d in data:
+        T.fill(d)
+
+    # compute the error on each node
+    for N in node_iterator(T):
+        N.error = leaferror(N, mean_error)
+
+def compute_size(constraint):
+    size = 1
+
+    for v in constraint.itervalues():
+        if not isinstance(v, dict):
+            size*=len(v)
+        else:
+            size*=(v["max"]-v["min"])
+    assert(size >= 0)
+    #return size
+    return 1
+
+
+def posargmin(x):
+    pos = [k for k in x if k > 0]
+    return x.index(min(pos))
+
+def find_sampling_distribution(factors, T, samplesize):
+    cons_raw = get_tagged_models(factors,
+                                 T)
+    cons = []
+    prob = [c["error"]*math.sqrt(compute_size(c["constraint"]))
+            for c in cons_raw]
+    totalp = sum(prob)
+    proportions = [p*samplesize/totalp for p in prob]
+    rounded = map(int,map(math.ceil, proportions))
+
+    # remove rounding error
+    while (sum(rounded)-samplesize):
+        p = posargmin(proportions)
+        rounded[p] -= 1
+        proportions[p] -= 1
+        
+    proportions = rounded
+    
+    for k,p in zip(cons_raw, proportions):
+        k["sampling_proportion"] = p
+
+    pprint.pprint(cons_raw)
+
+    # ensure we satisfy exactly the samplesize
+    assert(sum(proportions) == samplesize)
+    # ensure there are no negative proportions
+    assert(not [p for p in proportions if p < 0]) 
+    return zip(proportions, [c["constraint"] for c in cons_raw])
+
+def continous_enumerator(fro, to):
+        yield 
+
+def draw_point(factors, constraints):
+    p = []
+    for f in factors:
+        c = constraints[f["name"]]
+        if f["type"] == "integer":
+            g = randint(int(c["min"]),
+                        int(c["max"]))
+            p.append(g)
+        elif f["type"] == "continous":
+            g = random.random()*(c["max"]-c["min"])+c["min"]
+            p.append(g)
+        elif f["type"] == "categorical":
+            g = random.choice(c)
+            p.append(g)
+        else:
+            fatal("Wrong factor type: <{0}>"
+                  .format(f["type"]))
+    return tuple(p)
+
+def generate_possible_points(factors, constraints, labelled, n):
+    # Prepare a list of generators that generate all possible
+    # factors satisfying constraints
+    count = 0
+    while(count < n):
+        p = draw_point(factors, constraints)
+        if p in labelled: continue
+        else:
+            yield p
+            count += 1
+            
+def predict(configuration, input_file, output_file, n):
+    # build partition tree
+    T = common.cart.build_tree(configuration, CP, input_file)
+
+    # read the labelled points
+    labelled = np.genfromtxt(input_file)
+
+    # compute the leaf error
+    compute_error_pernode(labelled, T)
+    
+    # compute sampling distribution
+    distribution  = find_sampling_distribution(configuration["factors"],
+                                               T, n)
+    
+    # open a file to write suggested points
+    of = open(output_file, "w")
+
+    # take all the factors and create a set
+    already_labelled = set()
+    for v in labelled[:,:-1]:
+        already_labelled.add(tuple(v))
+        
+    for size, cons in distribution:
+        for p in generate_possible_points(configuration["factors"],
+                                          cons,
+                                          already_labelled,
+                                          size):
+            already_labelled.add(p)
+            of.write(" ".join(map(str,p))+"\n")
+    of.close()
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="Using the currently labelled points, detects the more imprecise zones and draws points from them")
+    parser.add_argument('configuration')
+    parser.add_argument('input_file')
+    parser.add_argument('output_file')
+    args = parser.parse_args()
+    conf = Configuration(args.configuration)
+    predict(
+        conf,
+        args.input_file,
+        args.output_file,
+        conf["modules.oracle.params.n"]
+        )

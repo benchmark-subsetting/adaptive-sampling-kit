@@ -1,0 +1,112 @@
+#!/usr/bin/env Rscript
+
+suppressPackageStartupMessages(require(gbm, quietly=T))
+
+#### Define some utility functions
+# Import the uniform sampling scheme that is writing in C
+dyn.load("common/libuniformsampling.so")
+uniform_sampling <- function(variance, nsamples) {
+  samples = rep(-1, nsamples)
+  out = .C("uniform_sampling", vsize=as.integer(length(variance)), ssize=as.integer(nsamples), variance=as.double(variance), samples=as.integer(samples))
+  return(out$samples+1)
+}
+
+# Adaptative mart method from YU,LI,FANG,PENG 09
+Amart <- function(sampled, available, formula, ssample, ntree, NRS) { 
+  pred = vector("list", NRS)
+  print("Building the trees ...")
+  for (see in c(1:NRS)) {
+    print(paste("Tree ", see, "/", NRS))
+    # select a new random seed
+    set.seed(floor(runif(1,1,2**16)))
+      
+    # build a tree
+    gbm1 <- gbm(formula, data=sampled, distribution="gaussian",
+                n.trees=ntree,
+                interaction.depth=3, shrinkage=0.01, verbose=F)           
+    best.iter <- gbm.perf(gbm1,method="OOB",plot.it=FALSE)
+    # generate predictions with the tree on the non sampled points
+    pred[[see]] <- predict(gbm1, available, n.trees=best.iter)
+  }
+  # Compute for all the different predictions the CoV (coefficient of Variance)
+  print("Compute prediction CoV")
+  m <- do.call(rbind,pred)
+  variance_list <- apply(m,2,var)
+  mean_list <- apply(m,2,mean)
+  cov_list <- variance_list/mean_list
+  covf <- data.frame(cl=cov_list, ind=c(1:nrow(available)))    
+   
+  #draw new samples using the adaptative sampling method
+  print("Adaptative sampling")
+  covf.sorted = covf[order(covf$cl, decreasing=TRUE),]
+  smp_indexes = uniform_sampling(covf.sorted[,1], ssample)
+  print(paste("Last sampled=",smp_indexes[[length(smp_indexes)]]))
+  new_samples = covf.sorted[smp_indexes,2]
+  return (available[new_samples,])
+}
+
+# Parse the arguments
+require(rjson, quietly=T)
+
+args <- commandArgs(trailingOnly = T)
+
+if (length(args) != 3) {
+    stop("Usage: file <configuration.conf> <input_file> <output_file>")
+}
+
+configuration = fromJSON(paste(readLines(args[1]), collapse=""))
+
+# Read the data
+data = read.table(args[2])
+
+# Generate all available points and set up categorial variables
+# as factors
+lf = list()
+i = 1
+for (f in configuration$factors) {
+  if (f$type == "categorial") {
+    data[,i] = as.factor(data[,i])
+    r = f$values
+  } else {
+    r = f$range$min:f$range$max
+  }
+  lf = cbind(lf,list(r))
+  i = i+1
+}
+available = do.call(expand.grid, lf)
+available = eval(parse(text=paste("cbind(available, V",
+                 ncol(data),"=rep(0, nrow(available)))", sep="")))
+# Rename avaible columns from Vari -> Vi so they are consistent
+# with the input
+i = 1
+for (f in configuration$factors) {
+  names(available)[names(available)==paste("Var",i,sep="")] <- paste("V",i,sep="")
+  i = i + 1
+}
+
+# the regression formula
+formula = formula(paste("V",ncol(data),"~.", sep=""))
+
+ordefault <- function(v,d) {
+  if(is.null(v)) return(d) else return(v)
+}
+
+newsamples <- Amart(data, available, formula,
+                    ssample=ordefault(
+                      configuration$modules$oracle$params$n,
+                      10
+                      ),
+                    ntree=ordefault(
+                      configuration$modules$oracle$params$trees,
+                      1000
+                      ),
+                    NRS=ordefault(
+                      configuration$modules$oracle$params$seeds,
+                      20
+                      )
+                    )
+
+write.table(newsamples[,1:ncol(newsamples)-1],
+            file=args[3],
+            row.names=F,
+            col.names=F)

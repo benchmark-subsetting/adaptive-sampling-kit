@@ -1,0 +1,16 @@
+#!/usr/bin/env Rscript
+
+require(rjson, quietly=T)
+
+args <- commandArgs(trailingOnly = T)
+
+if (length(args) != 3) {
+    stop("Usage: file <configuration.conf> <requested_file> <output_file>")
+}
+
+configuration = fromJSON(paste(readLines(args[1]), collapse=""))
+
+data_file = read.table(configuration$modules$source$params$data_file)
+requested_file = read.table(args[2])
+merged = merge(requested_file, data_file)
+write.table(merged, args[3], sep=" ", quote=F, col.names=F, row.names=F)

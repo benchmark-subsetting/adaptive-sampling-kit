@@ -1,0 +1,37 @@
+#!/usr/bin/env Rscript
+
+
+suppressPackageStartupMessages(require(gbm, quietly=T))
+require(rjson, quietly=T)
+
+args <- commandArgs(trailingOnly = T)
+
+if (length(args) != 3) {
+    stop("Usage: gbm <configuration.conf> <labelled_file> <output_file>")
+}
+
+configuration = fromJSON(paste(readLines(args[1]), collapse=""))
+input = read.table(args[2])
+
+
+# Set up categorial variables as factors
+i = 1
+for (f in configuration$factors) {
+  if (f$type == "categorial") {
+    input[,i] = as.factor(input[,i])
+  } 
+  i = i+1
+}
+
+expr = eval(parse(text=paste("input$V",ncol(input),"~ .",sep="")))
+gbm1 = gbm(expr , 
+           data=input, 
+           n.trees=1000, 
+           interaction.depth=3, 
+           shrinkage=0.01, 
+           distribution="gaussian",
+           verbose=F)
+best.iter = gbm.perf(gbm1,method="OOB",plot.it=FALSE)
+
+save.image(args[3])
+

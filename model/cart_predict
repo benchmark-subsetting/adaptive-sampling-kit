@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+
+import numpy as np
+import common.cart
+from common.configuration import Configuration
+from common.tree import load_tree
+
+
+def predict(configuration, T, requested_file, output_file):
+    data = np.genfromtxt(requested_file)
+
+    nf = len(configuration["factors"])
+    
+    of = open(output_file, "w")
+
+    for d in data[:,:nf]:
+        p = T.compute(d)
+        of.write(" ".join(map(str, list(d) + [p])) + "\n")
+    of.close()
+        
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="Builds a cart tree model")
+    parser.add_argument('configuration')
+    parser.add_argument('model')
+    parser.add_argument('requested_file')
+    parser.add_argument('output_file')
+    args = parser.parse_args()
+
+    conf = Configuration(args.configuration)
+    T = load_tree(args.model)
+    predict(conf, T, args.requested_file, args.output_file)
