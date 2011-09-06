@@ -6,7 +6,6 @@ This module call the hierarchical sampling module to find interesting points to 
 CP=0.001
 import math
 import numpy as np
-import itertools
 import pprint
 from random import shuffle,randint
 from common.configuration import Configuration
