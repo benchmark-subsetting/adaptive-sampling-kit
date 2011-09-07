@@ -1,0 +1,8 @@
+<root>
+<arguments value=""/>
+<command value="../../source/file $PATH/default.conf requested output"/>
+<return value="0"/>
+<expected_output value="$PATH/expected_output"/>
+<obtained_output value="$PATH/output"/>
+<change_path value="$PATH"/>
+</root>
