@@ -6,6 +6,9 @@
 */
 #define PRECISION 10 
 
+
+#define RESOLUTION 0.000000001
+
 int try_delta(double delta, int vs, int ss, double * variance, int * samples) {
     int i;
     /* Always select the first sample (largest variance) */
@@ -36,7 +39,7 @@ int try_delta(double delta, int vs, int ss, double * variance, int * samples) {
         }
     }
 
-    /* We did not reached enough points, we need to decrease delta */
+    /* We did not reach enough points, we need to decrease delta */
     return -1;
 }
 
@@ -50,9 +53,9 @@ void uniform_sampling(int * vsize, int * ssize, double * variance, int * samples
     while(1) {
 
         double delta = (max_delta + min_delta) / 2.0 ;
-        if ( (max_delta - min_delta)  < 0.000000001) {
-            int decision = try_delta(min_delta, vs, ss, variance, samples);
-            assert(decision == 1); 
+        if ( (max_delta - min_delta)  < RESOLUTION) {
+            int decision = try_delta(min_delta-RESOLUTION, vs, ss, variance, samples);
+            assert(decision >= 0); 
             return;
         }
         printf("Trying delta %lE\n", delta);
