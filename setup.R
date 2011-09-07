@@ -1,22 +1,13 @@
 #!/usr/bin/env Rscript
 
-if(!("gbm" %in% .packages(all.available=TRUE))) {
-  new.repos <- getOption("repos")
-  new.repos["CRAN"] <- "http://cran.stat.ucla.edu"
-  options(repos = new.repos)
-  install.packages("gbm")
-}
+packages = c("gbm", "rpart", "lattice", "rjson")
 
-if(!("rpart" %in% .packages(all.available=TRUE))) {
-  new.repos <- getOption("repos")
-  new.repos["CRAN"] <- "http://cran.stat.ucla.edu"
-  options(repos = new.repos)
-  install.packages("rpart")
-}
+new.repos <- getOption("repos")
+new.repos["CRAN"] <- "http://cran.stat.ucla.edu"
+options(repos = new.repos)
 
-if(!("lattice" %in% .packages(all.available=TRUE))) {
-  new.repos <- getOption("repos")
-  new.repos["CRAN"] <- "http://cran.stat.ucla.edu"
-  options(repos = new.repos)
-  install.packages("lattice")
+for (p in packages) {
+  if(!(p %in% .packages(all.available=TRUE))) {
+    install.packages(p)
+  }
 }
