@@ -1,0 +1,8 @@
+<root>
+<arguments value=""/>
+<command value="../../bootstrap/random $PATH/default.conf output ; wc -l output > count"/>
+<return value="0"/>
+<expected_output value="$PATH/expected_count"/>
+<obtained_output value="$PATH/count"/>
+<change_path value="$PATH"/>
+</root>
