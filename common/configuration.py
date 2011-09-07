@@ -1,5 +1,13 @@
 import json
+import os
+import os.path
 from util import fatal
+
+ # Modules that need to be defined for the driver to work
+expected_modules = ["oracle", "reporter", "control",
+                 "model", "bootstrap", "source"]
+
+
 
 class Configuration():
     def __init__(self,
@@ -15,6 +23,9 @@ class Configuration():
         # Overwrite default configuration with user's one
         Configuration.overwrite(self._conf, user_conf)
 
+        # Change and check modules paths
+        self.check_modules()
+
         # Write live configuration to disk
         filename = "live_configuration.conf"
         self._conf["configuration_file"] = filename
@@ -22,6 +33,18 @@ class Configuration():
         json.dump(self._conf, f, indent=2)
         f.write("\n")
         f.close()
+
+    def check_modules(self):
+        for module in expected_modules:
+            modulepath = self["modules.{0}.executable"
+                           .format(module)]
+            modulepath = os.path.join(os.environ["DRIVERPATH"], modulepath)
+            self._conf["modules"][module]["executable"] = modulepath
+
+            if not os.path.isfile(modulepath):
+                fatal("Module {0} could not be found".format(modulepath))
+            if not os.access(modulepath, os.X_OK):
+                fatal("Module {0} is not executable".format(modulepath))
 
     @staticmethod
     def load(filename):

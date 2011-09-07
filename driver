@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import logging
 import os
+import os.path
 import select
 import shutil
 import subprocess
@@ -19,21 +20,7 @@ from common.util import fatal
 # Will contain the configuration and logger singletons
 C, L = None, None
 
-# Modules that need to be defined for the driver to work
-expected_modules = ["oracle", "reporter", "control",
-                    "model", "bootstrap", "source"]
-
-def check_modules():
-    L.debug("Checking modules")
-    for module in expected_modules:
-        modulepath = C["modules.{0}.executable"
-                       .format(module)]
-        L.debug("Checking module {0}".format(modulepath))
-        if not os.path.isfile(modulepath):
-            fatal("Module {0} could not be found".format(modulepath))
-        if not os.access(modulepath, os.X_OK):
-            fatal("Module {0} is not executable".format(modulepath))
-        
+       
 def call_module(module, params = []):    
     L.debug("Calling {0} module".format(module))
     # Prepare the command line
@@ -75,13 +62,10 @@ def call_module(module, params = []):
     p.wait()
     if p.returncode !=0:
         fatal("Module {0} stopped with code {1}"
-              .format(module, p.returncode))
+              .format(module, p.returncode), p.returncode)
         
 def driver_loop():
     L.debug("Starting driver loop")
-    
-    # Check the modules
-    check_modules()
     
     out_dir = C["output_directory"]
     iteration = 0
@@ -142,14 +126,18 @@ def main():
     parser.add_argument('configuration', help="the experiment configuration file")
     args = parser.parse_args()
     
-    # Read Configuration
-    C = Configuration(user_configuration=args.configuration)
-
     # Setup PYTHONPATH
     if "PYTHONPATH" in os.environ:
         os.environ["PYTHONPATH"] += ":"+os.getcwd() 
     else:
         os.environ["PYTHONPATH"] = os.getcwd() 
+
+
+    # Setup the DRIVERPATH
+    os.environ["DRIVERPATH"] = os.path.dirname(os.path.realpath(__file__))
+
+    # Read Configuration
+    C = Configuration(user_configuration=args.configuration)
 
     # Start Logger
     print "Logging to {0}".format(C["log.logfile"])

@@ -14,7 +14,7 @@ def report(configuration, iteration, labels, new_labels, model, test_set):
         iteration)
 
     # use model to predict test_set
-    cmd = [configuration["modules.model.predictor"],
+    cmd = [configuration["modules.model.predictor"]),
            configuration["configuration_file"],
            model,
            test_set,
@@ -26,7 +26,7 @@ def report(configuration, iteration, labels, new_labels, model, test_set):
 
     
     # plot 2D graph
-    cmd = ["reporter/2D/2D.R",
+    cmd = [os.path.join(os.environ["DRIVERPATH"], "reporter/2D/2D.R"),
            test_set,
            prediction,
            labels,
