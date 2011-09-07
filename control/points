@@ -5,7 +5,7 @@ from common.configuration import Configuration
 def should_stop(points, input_file):
     l = len(open(input_file).readlines())
     if l >= points: 
-        fatal("Number of sampled points reached: stopping", 1)
+        fatal("Number of sampled points reached: stopping", 254)
 
 
 if __name__ == "__main__":
