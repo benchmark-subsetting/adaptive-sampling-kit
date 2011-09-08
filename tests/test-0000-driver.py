@@ -20,10 +20,10 @@ class DriverTests(CommandLineT):
                }})
 
     self.run("mkdir outdir")
+    self.run("touch outdir/MARKER")
     r = self.run("measureIt test.conf", expect_error=True)
-    print r.files_updated, r.files_created
     assert r.returncode != 0, "Return code should be != 0"
-    assert "outdir" not in r.files_updated, "outdir should not be overwritten" 
+    assert "outdir/MARKER" in r.files_after, "outdir should not be overwritten" 
     
   def test_output_rewrite(self):
     """ The output directory should be overwriten when 
@@ -37,10 +37,11 @@ class DriverTests(CommandLineT):
                   "control" : {"executable":"/bin/false"},
                }})
 
-    r = self.run("mkdir outdir")
+    self.run("mkdir outdir")
+    self.run("touch outdir/MARKER")
     r = self.run("measureIt test.conf --force_overwrite", expect_error=True)
     assert r.returncode != 0, "Return code should be != 0"
-    assert "outdir" in r.files_updated, "outdir should be overwritten" 
+    assert "outdir/MARKER" not in r.files_after, "outdir should be overwritten" 
     
 
 
