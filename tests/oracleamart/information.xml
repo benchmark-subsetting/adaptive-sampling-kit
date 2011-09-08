@@ -1,9 +1,0 @@
-<root>
-<arguments value=""/>
-<command value="../../driver --force_overwrite $PATH/default.conf"/>
-<return value="254"/>
-<change_path value="$PATH"/>
-<expected_output value="$PATH/default.conf"/>
-<obtained_output value="$PATH/my.log"/>
-<diff_operator value="$PATH/check_results.sh"/>
-</root>

@@ -1,8 +1,0 @@
-<root>
-<arguments value=""/>
-<command value="./driver 2> tests/std.out"/>
-<return value="2"/>
-<expected_output value="$PATH/output"/>
-<obtained_output value="tests/std.out"/>
-<change_path value=".."/>
-</root>
