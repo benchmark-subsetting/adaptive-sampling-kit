@@ -14,7 +14,7 @@ class BootstrapFileSource(CommandLineT):
     """ Source request should be fullfilled """
     card = 3
     self.conf({"modules" : {
-                  "source" : {"params": {"data_file":"../test1.data"}
+                  "source" : {"params": {"data_file":self.tfile("test1.data")}
                }}})
     self.writefile("request", "\n".join(["5 3000", "3 2777", "8 2777"]))
     r = self.run_module("source/file", "test.conf request sample", expect_stderr=True)
@@ -31,7 +31,7 @@ class BootstrapFileSource(CommandLineT):
     """ Missing points should not be returned """
     card = 2
     self.conf({"modules" : {
-                  "source" : {"params": {"data_file":"../test1.data"}
+                  "source" : {"params": {"data_file":self.tfile("test1.data")}
                }}})
     self.writefile("request", "\n".join(["5 3000", "3 2777", "100000000 2777"]))
     r = self.run_module("source/file", "test.conf request sample", expect_stderr=True)

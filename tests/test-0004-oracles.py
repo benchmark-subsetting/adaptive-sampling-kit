@@ -27,11 +27,11 @@ class AmartTests(CommandLineT):
             },
             "bootstrap": {
             "executable": "bootstrap/random",
-            "params": {"data_file" : "../test1.data", "n":50}
+            "params": {"data_file" : self.tfile("test1.data"), "n":50}
             },
             "source" : {
             "executable": "source/file",
-            "params": {"data_file" : "../test1.data"}    
+            "params": {"data_file" : self.tfile("test1.data")}    
             }}})
 
         r = self.run("measureIt test.conf")
@@ -65,11 +65,11 @@ class HierarchicalTests(CommandLineT):
             },
             "bootstrap": {
             "executable": "bootstrap/random",
-            "params": {"data_file" : "../test1.data", "n":50}
+            "params": {"data_file" : self.tfile("test1.data"), "n":50}    
             },
             "source" : {
             "executable": "source/file",
-            "params": {"data_file" : "../test1.data"}    
+            "params": {"data_file" : self.tfile("test1.data")}    
             }}})
 
         r = self.run("measureIt test.conf")

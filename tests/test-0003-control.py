@@ -12,7 +12,8 @@ class ControlTests(CommandLineT):
             "params": {"points" : 150}
             }}})
 
-        r = self.run_module("control/points", "test.conf 1 ../test1.data fakemodel", expect_error=True)
+        data = self.tfile("test1.data")
+        r = self.run_module("control/points", "test.conf 1 {0} fakemodel".format(data), expect_error=True)
         assert r.returncode == 254, "control should stop with 254 returncode"
 
 
@@ -26,7 +27,8 @@ class ControlTests(CommandLineT):
             "params": {"points" : 2**32}
             }}})
 
-        r = self.run_module("control/points", "test.conf 1 ../test1.data fakemodel")
+        data = self.tfile("test1.data")
+        r = self.run_module("control/points", "test.conf 1 {0} fakemodel".format(data), expect_error=True)
         assert r.returncode == 0, "control should stop with 254 returncode"
        
 
