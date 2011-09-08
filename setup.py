@@ -4,7 +4,7 @@ import sys
 # Check that all the python dependencies are satisfied
 
 missing = []
-unbuntu = []
+ubuntu = []
 
 try:
     import numpy
