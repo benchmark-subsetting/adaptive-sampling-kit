@@ -130,16 +130,15 @@ def main():
                         help="If a previous output directory is found its contents will be overwritten")
     parser.add_argument('configuration', help="the experiment configuration file")
     args = parser.parse_args()
-    
-    # Setup PYTHONPATH
-    if "PYTHONPATH" in os.environ:
-        os.environ["PYTHONPATH"] += ":"+os.getcwd() 
-    else:
-        os.environ["PYTHONPATH"] = os.getcwd() 
-
-
+ 
     # Setup the MEASUREITHOME
     os.environ["MEASUREITHOME"] = os.path.dirname(os.path.realpath(__file__))
+   
+    # Setup PYTHONPATH
+    if "PYTHONPATH" in os.environ:
+        os.environ["PYTHONPATH"] += ":" + os.environ["MEASUREITHOME"] 
+    else:
+        os.environ["PYTHONPATH"] = os.environ["MEASUREITHOME"]
 
     # Read Configuration
     C = Configuration(user_configuration=args.configuration,
