@@ -17,4 +17,4 @@ if __name__ == "__main__":
     parser.add_argument('model_file')
     args = parser.parse_args()
     conf = Configuration(args.configuration)
-    should_stop(conf["modules.control.params.points"], args.labelled_file)
+    should_stop(conf("modules.control.params.points", int), args.labelled_file)

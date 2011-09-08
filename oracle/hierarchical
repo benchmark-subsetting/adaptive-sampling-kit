@@ -3,7 +3,6 @@
 This module call the hierarchical sampling module to find interesting points to label
 """
 
-CP=0.001
 import math
 import numpy as np
 import pprint
@@ -122,9 +121,9 @@ def generate_possible_points(factors, constraints, labelled, n):
             yield p
             count += 1
             
-def predict(configuration, input_file, output_file, n):
+def predict(configuration, input_file, output_file, n, cp):
     # build partition tree
-    T = common.cart.build_tree(configuration, CP, input_file)
+    T = common.cart.build_tree(configuration, cp, input_file)
 
     # read the labelled points
     labelled = np.genfromtxt(input_file)
@@ -165,5 +164,6 @@ if __name__ == "__main__":
         conf,
         args.input_file,
         args.output_file,
-        conf["modules.oracle.params.n"]
+        conf("modules.oracle.params.n", int),
+        conf("modules.oracle.params.cp", float, 0.01)
         )

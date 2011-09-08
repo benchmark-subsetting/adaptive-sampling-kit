@@ -25,10 +25,10 @@ def call_module(module, params = []):
     L.debug("Calling {0} module".format(module))
     # Prepare the command line
     # Add the executable
-    cmd = [C["modules"][module]["executable"]]
+    cmd = [C("modules")[module]["executable"]]
     
     # Append configuration file
-    cmd.append(C["configuration_file"])
+    cmd.append(C("configuration_file"))
                
     # Append the input/output params
     cmd += params
@@ -61,13 +61,18 @@ def call_module(module, params = []):
         
     p.wait()
     if p.returncode !=0:
-        fatal("Module {0} stopped with code {1}"
-              .format(module, p.returncode), p.returncode)
+        if module == "control" and p.returncode == 254: 
+            L.info("Control module decided to stop experiments")
+            print "Experiments finished normally"
+            sys.exit(0)
+        else:
+            fatal("Module {0} stopped with code {1}"
+                  .format(module, p.returncode), p.returncode)
         
 def driver_loop():
     L.debug("Starting driver loop")
     
-    out_dir = C["output_directory"]
+    out_dir = C("output_directory")
     iteration = 0
     labelled = "{0}/labelled.data".format(out_dir)
     while(1):
@@ -137,31 +142,32 @@ def main():
     os.environ["DRIVERPATH"] = os.path.dirname(os.path.realpath(__file__))
 
     # Read Configuration
-    C = Configuration(user_configuration=args.configuration)
+    C = Configuration(user_configuration=args.configuration,
+                      reload_live_configuration = False)
 
     # Start Logger
-    print "Logging to {0}".format(C["log.logfile"])
+    print "Logging to {0}".format(C("log.logfile"))
     L = logging.getLogger(__name__)
-    fh = logging.FileHandler(C["log.logfile"])
+    fh = logging.FileHandler(C("log.logfile"))
     formatter = logging.Formatter('[%(asctime)s %(levelname)-8s] %(message)s',
                                   datefmt='%H:%M')
     fh.setFormatter(formatter)
-    L.setLevel(eval("logging."+C["log.level"]))
-    fh.setLevel(eval("logging."+C["log.level"]))
+    L.setLevel(eval("logging."+C("log.level")))
+    fh.setLevel(eval("logging."+C("log.level")))
     L.addHandler(fh)
-    L.debug("Logger started at level {0}".format(C["log.level"]))
+    L.debug("Logger started at level {0}".format(C("log.level")))
 
     # Check that the output directory does not exist
-    if os.path.exists(C["output_directory"]):
+    if os.path.exists(C("output_directory")):
         if args.force_overwrite:
             L.warning("Removing existing output directory {0} since --force_overwrite was passed."
-                      .format(C["output_directory"]))
-            shutil.rmtree(C["output_directory"])
+                      .format(C("output_directory")))
+            shutil.rmtree(C("output_directory"))
         else:
             fatal("Output directory \"{0}\" already exists. Use --force_overwrite option to discard it."
-                  .format(C["output_directory"]))
+                  .format(C("output_directory")))
     
-    os.makedirs(C["output_directory"])
+    os.makedirs(C("output_directory"))
 
     # Enter driver loop
     driver_loop()

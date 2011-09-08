@@ -4,6 +4,7 @@ This module select n random samples from a set of points in filename
 """
 import random
 from common.configuration import Configuration
+from common.util import fatal
 
 def select_n_random(input_file, output_file, n):
     """
@@ -13,14 +14,18 @@ def select_n_random(input_file, output_file, n):
     """
     
     inpf = open(input_file, "r")
-    outf = open(output_file, "w")
     lines = inpf.readlines() 
+    inpf.close()
+    if (n > len(lines)):
+        fatal("Not enough points in {0} to satisfy your sampling size of {1}"
+              .format(input_file, n))
+
     samples = random.sample(lines, n)
+    outf = open(output_file, "w")
     for s in samples:
         outf.write(s)
 
     outf.close()
-    inpf.close()
 
 
 if __name__ == "__main__":
@@ -32,4 +37,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     conf = Configuration(args.configuration)
-    select_n_random(conf["modules.bootstrap.params.data_file"], args.output_file, conf["modules.bootstrap.params.n"])
+    select_n_random(conf("modules.bootstrap.params.data_file"), args.output_file, conf("modules.bootstrap.params.n", int))

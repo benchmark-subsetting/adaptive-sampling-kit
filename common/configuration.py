@@ -7,37 +7,43 @@ from util import fatal
 expected_modules = ["oracle", "reporter", "control",
                  "model", "bootstrap", "source"]
 
-
-
 class Configuration():
     def __init__(self,
                  user_configuration,
-                 default_configuration = "default.conf"):
+                 reload_live_configuration = True):
 
-        # First load the default configuration
-        self._conf = Configuration.load(default_configuration)
+        # If reloading a live configuration, there is
+        # no need to check it for errors nor load the
+        # default one.
+        if reload_live_configuration:
+            self._conf = Configuration.load(user_configuration)
+        else:
+            # First load the default configuration
+            default_configuration = os.path.join(os.environ["DRIVERPATH"],
+                                                 "default.conf")
+            self._conf = Configuration.load(default_configuration)
 
-        # Now load the user configuration
-        user_conf = Configuration.load(user_configuration)
+            # Now load the user configuration
+            user_conf = Configuration.load(user_configuration)
 
-        # Overwrite default configuration with user's one
-        Configuration.overwrite(self._conf, user_conf)
+            # Overwrite default configuration with user's one
+            Configuration.overwrite(self._conf, user_conf)
 
-        # Change and check modules paths
-        self.check_modules()
+            # Change and check modules paths
+            self.check_modules()
 
-        # Write live configuration to disk
-        filename = "live_configuration.conf"
-        self._conf["configuration_file"] = filename
-        f = open(filename, "w")
-        json.dump(self._conf, f, indent=2)
-        f.write("\n")
-        f.close()
+            # Write live configuration to disk
+            filename = "live_configuration.conf"
+            self._conf["configuration_file"] = filename
+            f = open(filename, "w")
+            json.dump(self._conf, f, indent=2)
+            f.write("\n")
+            f.close()
 
     def check_modules(self):
         for module in expected_modules:
-            modulepath = self["modules.{0}.executable"
-                           .format(module)]
+            modulepath = self("modules.{0}.executable"
+                           .format(module))
             modulepath = os.path.join(os.environ["DRIVERPATH"], modulepath)
             self._conf["modules"][module]["executable"] = modulepath
 
@@ -77,13 +83,27 @@ class Configuration():
             else:
                 old_conf[key] = value
 
-    def __getitem__(self, key):
+    def __call__(self, key, expected_type=None, default_value=None):
         subkeys = key.split(".")
+        # Check that the key exists and handle default_value
         try:
             V = self._conf
             for sk in subkeys:
                 V = V[sk]
-            return V
         except KeyError:       
-            fatal("Missing configuration parameter {0}"
-                  .format(key))
+            if default_value == None:
+                fatal("Missing configuration parameter {0}"
+                      .format(key))
+            else:
+                V = default_value
+
+        # Check the type
+        if expected_type and not isinstance(V, expected_type):
+            fatal("Wrong parameter {0} : expected {1} got '{2}'"
+                    .format(key, expected_type.__name__, V))
+        else:
+            return V
+
+    def __getitem__(self, key):
+        return self._conf[key]
+        
