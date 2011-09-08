@@ -3,7 +3,7 @@ import os
 import os.path
 from util import fatal
 
- # Modules that need to be defined for the driver to work
+ # Modules that need to be defined for the measureit to work
 expected_modules = ["oracle", "reporter", "control",
                  "model", "bootstrap", "source"]
 
@@ -19,7 +19,7 @@ class Configuration():
             self._conf = Configuration.load(user_configuration)
         else:
             # First load the default configuration
-            default_configuration = os.path.join(os.environ["DRIVERPATH"],
+            default_configuration = os.path.join(os.environ["MEASUREITHOME"],
                                                  "default.conf")
             self._conf = Configuration.load(default_configuration)
 
@@ -44,7 +44,7 @@ class Configuration():
         for module in expected_modules:
             modulepath = self("modules.{0}.executable"
                            .format(module))
-            modulepath = os.path.join(os.environ["DRIVERPATH"], modulepath)
+            modulepath = os.path.join(os.environ["MEASUREITHOME"], modulepath)
             self._conf["modules"][module]["executable"] = modulepath
 
             if not os.path.isfile(modulepath):

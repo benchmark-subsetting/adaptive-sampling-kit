@@ -4,7 +4,7 @@ suppressPackageStartupMessages(require(gbm, quietly=T))
 
 #### Define some utility functions
 # Import the uniform sampling scheme that is writing in C
-dyn.load(file.path(Sys.getenv("DRIVERPATH"), "common/libuniformsampling.so"))
+dyn.load(file.path(Sys.getenv("MEASUREITHOME"), "common/libuniformsampling.so"))
 uniform_sampling <- function(variance, nsamples) {
   samples = rep(-1, nsamples)
   out = .C("uniform_sampling", vsize=as.integer(length(variance)), ssize=as.integer(nsamples), variance=as.double(variance), samples=as.integer(samples))

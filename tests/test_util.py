@@ -7,20 +7,20 @@ import json
 class CommandLineT(unittest.TestCase):
   def setUp(self):
     self.test_path = os.path.dirname(os.path.realpath(__file__))
-    self.driver_path = os.path.realpath(os.path.join(self.test_path,".."))
-    os.environ["DRIVERPATH"] = self.driver_path 
+    self.measureit_path = os.path.realpath(os.path.join(self.test_path,".."))
+    os.environ["MEASUREITHOME"] = self.measureit_path 
     if "PYTHONPATH" in os.environ:
-        os.environ["PYTHONPATH"] += ":" + self.driver_path 
+        os.environ["PYTHONPATH"] += ":" + self.measureit_path 
     else:
-        os.environ["PYTHONPATH"] = self.driver_path 
-    os.environ["PATH"] +=  ":" + self.driver_path 
+        os.environ["PYTHONPATH"] = self.measureit_path 
+    os.environ["PATH"] +=  ":" + self.measureit_path 
     self.E = TestFileEnvironment("test-sandbox")
     self.run = self.E.run
     self.writefile = self.E.writefile
     self.clear = self.E.clear
   
   def run_module(self, module, args, **kwargs):
-    m = os.path.join(self.driver_path, module)
+    m = os.path.join(self.measureit_path, module)
     print m
     return self.run(m + " " + args, **kwargs)
 

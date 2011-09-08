@@ -3,7 +3,7 @@ from test_util import CommandLineT
 
 class AmartTests(CommandLineT):
     def test_basic_amart(self):
-        """ Test amart through the driver """
+        """ Test amart with measureit """
         self.conf({
             "output_directory" : "outdir", 
             "factors": [
@@ -34,14 +34,14 @@ class AmartTests(CommandLineT):
             "params": {"data_file" : "../test1.data"}    
             }}})
 
-        r = self.run("driver test.conf")
+        r = self.run("measureIt test.conf")
         assert "outdir/labelled.data" in r.files_created, "labelled.data is created"
         card = len([l for l in r.files_created["outdir/labelled.data"].bytes.split("\n") if l])
         assert card == 150, "150 samples should have beed obtained"
 
 class HierarchicalTests(CommandLineT):
     def test_basic_hierarchical(self):
-        """ Test hierarchical through the driver """
+        """ Test hierarchical with measureit """
         self.conf({
             "output_directory" : "outdir", 
             "factors": [
@@ -72,7 +72,7 @@ class HierarchicalTests(CommandLineT):
             "params": {"data_file" : "../test1.data"}    
             }}})
 
-        r = self.run("driver test.conf")
+        r = self.run("measureIt test.conf")
         assert "outdir/labelled.data" in r.files_created, "labelled.data is created"
         card = len([l for l in r.files_created["outdir/labelled.data"].bytes.split("\n") if l])
         assert card == 150, "150 samples should have beed obtained"

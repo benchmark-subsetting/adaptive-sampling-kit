@@ -3,8 +3,8 @@ from test_util import CommandLineT
 
 class DriverTests(CommandLineT):
   def test_no_arguments(self):
-    """ The driver should complain if called without arguments """
-    r = self.run("driver", expect_error=True)
+    """ measureit should complain if called without arguments """
+    r = self.run("measureIt", expect_error=True)
 
     assert "usage" in r.stderr, "Usage message should be printed"
     assert r.returncode != 0, "Return code should be != 0" 
@@ -20,7 +20,7 @@ class DriverTests(CommandLineT):
                }})
 
     r = self.run("mkdir outdir")
-    r = self.run("driver test.conf", expect_error=True)
+    r = self.run("measureIt test.conf", expect_error=True)
     assert r.returncode != 0, "Return code should be != 0"
     assert "outdir" not in r.files_updated, "outdir should not be overwritten" 
     
@@ -37,7 +37,7 @@ class DriverTests(CommandLineT):
                }})
 
     r = self.run("mkdir outdir")
-    r = self.run("driver test.conf --force_overwrite", expect_error=True)
+    r = self.run("measureIt test.conf --force_overwrite", expect_error=True)
     assert r.returncode != 0, "Return code should be != 0"
     assert "outdir" in r.files_updated, "outdir should be overwritten" 
     

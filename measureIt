@@ -138,8 +138,8 @@ def main():
         os.environ["PYTHONPATH"] = os.getcwd() 
 
 
-    # Setup the DRIVERPATH
-    os.environ["DRIVERPATH"] = os.path.dirname(os.path.realpath(__file__))
+    # Setup the MEASUREITHOME
+    os.environ["MEASUREITHOME"] = os.path.dirname(os.path.realpath(__file__))
 
     # Read Configuration
     C = Configuration(user_configuration=args.configuration,

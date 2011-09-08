@@ -5,7 +5,7 @@ args <- commandArgs(trailingOnly = T)
 if (length(args) != 3) {
     stop("Usage: file <configuration.conf> <requested_file> <output_file>")
 }
-source(file.path(Sys.getenv("DRIVERPATH"), "common/configuration.R"))
+source(file.path(Sys.getenv("MEASUREITHOME"), "common/configuration.R"))
 
 data_file = read.table(conf("modules.source.params.data_file"))
 requested_file = read.table(args[2])
