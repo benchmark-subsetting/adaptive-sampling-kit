@@ -51,20 +51,26 @@ def compute_size(constraint):
         else:
             size*=(v["max"]-v["min"])
     assert(size >= 0)
-    #return size
-    return 1
+    return size
 
 
 def posargmin(x):
     pos = [k for k in x if k > 0]
     return x.index(min(pos))
 
-def find_sampling_distribution(factors, T, samplesize):
+def find_sampling_distribution(configuration, T, samplesize):
+    factors = configuration("factors")
+    ponderate = configuration("modules.oracle.params.ponderate_by_size", bool, True)
+
     cons_raw = get_tagged_models(factors,
                                  T)
     cons = []
-    prob = [c["error"]*math.sqrt(compute_size(c["constraint"]))
-            for c in cons_raw]
+    if ponderate:
+        prob = [c["error"]*compute_size(c["constraint"])
+                for c in cons_raw]
+    else:
+        prob = [c["error"] for c in cons_raw]
+
     totalp = sum(prob)
     proportions = [p*samplesize/totalp for p in prob]
     rounded = map(int,map(math.ceil, proportions))
@@ -132,7 +138,7 @@ def predict(configuration, input_file, output_file, n, cp):
     compute_error_pernode(labelled, T)
     
     # compute sampling distribution
-    distribution  = find_sampling_distribution(configuration["factors"],
+    distribution  = find_sampling_distribution(configuration,
                                                T, n)
     
     # open a file to write suggested points
