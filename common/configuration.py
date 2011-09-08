@@ -7,6 +7,15 @@ from util import fatal
 expected_modules = ["oracle", "reporter", "control",
                  "model", "bootstrap", "source"]
 
+
+def check_executable(modulepath):
+    modulepath = os.path.join(os.environ["MEASUREITHOME"], modulepath)
+    if not os.path.isfile(modulepath):
+        fatal("Module {0} could not be found".format(modulepath))
+    if not os.access(modulepath, os.X_OK):
+        fatal("Module {0} is not executable".format(modulepath))
+    return modulepath
+
 class Configuration():
     def __init__(self,
                  user_configuration,
@@ -42,15 +51,18 @@ class Configuration():
 
     def check_modules(self):
         for module in expected_modules:
+            # Check that the module executable can be found, and update it with its
+            # complete path
             modulepath = self("modules.{0}.executable"
                            .format(module))
-            modulepath = os.path.join(os.environ["MEASUREITHOME"], modulepath)
-            self._conf["modules"][module]["executable"] = modulepath
-
-            if not os.path.isfile(modulepath):
-                fatal("Module {0} could not be found".format(modulepath))
-            if not os.access(modulepath, os.X_OK):
-                fatal("Module {0} is not executable".format(modulepath))
+            self._conf["modules"][module]["executable"] = check_executable(modulepath)
+                
+            if module == "model":
+                # Model module as an optional executable, predictor
+                # which we may need to check
+                if "predictor" in self._conf["modules"][module]:
+                    predictorpath = self._conf["modules"][module]["predictor"]
+                    self._conf["modules"][module]["predictor"] = check_executable(predictorpath)
 
     @staticmethod
     def load(filename):

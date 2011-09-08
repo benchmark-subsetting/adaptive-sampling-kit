@@ -7,15 +7,15 @@ from common.util import fatal
 def report(configuration, iteration, labels, new_labels, model, test_set):
     # filenames
     prediction = "{0}/prediction{1:05d}.data".format(
-        configuration["output_directory"],
+        configuration("output_directory"),
         iteration)
     plot = "{0}/plot{1:05d}.png".format(
-        configuration["output_directory"],
+        configuration("output_directory"),
         iteration)
 
     # use model to predict test_set
-    cmd = [configuration["modules.model.predictor"]),
-           configuration["configuration_file"],
+    cmd = [configuration("modules.model.predictor"),
+           configuration("configuration_file"),
            model,
            test_set,
            prediction]       
@@ -53,5 +53,5 @@ if __name__ == "__main__":
             args.labelled_file,
             args.newly_labelled_file, 
             args.model_file, 
-            C["modules.reporter.params.test_set"]
+            C("modules.reporter.params.test_set")
           )
