@@ -37,7 +37,7 @@ class Constraints:
 
         for i,f in enumerate(factors):
             self.axes.append(f["name"])
-            if f["type"] != "categorial":
+            if f["type"] != "categorical":
                 self.constraints.append(
                 OrdinalAxis(minv=f["range"]["min"],
                             maxv=f["range"]["max"])

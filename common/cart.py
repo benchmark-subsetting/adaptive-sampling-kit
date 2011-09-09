@@ -100,8 +100,9 @@ def build_tree(conf, cp, input_file):
             format(input_file))
     
     for i,f in enumerate(conf["factors"]):
-        if f["type"] == "categorial":
-            f.write('data[,{0}] = as.factor(data[,{1}])\n'.format(i,i))
+        if f["type"] == "categorical":
+            rfile.write('data$V{0} = as.factor(data$V{1})\n'
+                        .format(i+1,i+1))
             categories.append(f["values"])
         else:
             categories.append(f["range"])

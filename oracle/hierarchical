@@ -6,7 +6,7 @@ This module call the hierarchical sampling module to find interesting points to 
 import math
 import numpy as np
 import pprint
-from random import shuffle,randint
+from random import shuffle,randint,choice
 from common.configuration import Configuration
 from common.util import fatal
 from common.tree import *
@@ -26,9 +26,9 @@ def leaferror(N, mean_error):
     error_probability = (float(freq_error)/float(card))
     assert(0 <= error_probability <= 1)
     R = 1
-    confidence = math.log(1.0/0.01)
-    hoeff = math.sqrt(R*R*confidence/(2*card))    
-    return error_probability+hoeff
+    confidence = math.log(1.0/0.001)
+    hoeff = math.sqrt(R*R*confidence/(2*card)) 
+    return min(error_probability+hoeff,1.0)
 
 def compute_error_pernode(data, T):
     # compute mean error
@@ -66,9 +66,11 @@ def find_sampling_distribution(configuration, T, samplesize):
                                  T)
     cons = []
     if ponderate:
+        print "Ponderating by size"
         prob = [c["error"]*compute_size(c["constraint"])
                 for c in cons_raw]
     else:
+        print "Not ponderating by size"
         prob = [c["error"] for c in cons_raw]
 
     totalp = sum(prob)
@@ -94,9 +96,6 @@ def find_sampling_distribution(configuration, T, samplesize):
     assert(not [p for p in proportions if p < 0]) 
     return zip(proportions, [c["constraint"] for c in cons_raw])
 
-def continous_enumerator(fro, to):
-        yield 
-
 def draw_point(factors, constraints):
     p = []
     for f in factors:
@@ -106,10 +105,10 @@ def draw_point(factors, constraints):
                         int(c["max"]))
             p.append(g)
         elif f["type"] == "continous":
-            g = random.random()*(c["max"]-c["min"])+c["min"]
+            g = random()*(c["max"]-c["min"])+c["min"]
             p.append(g)
         elif f["type"] == "categorical":
-            g = random.choice(c)
+            g = f["values"].index(choice(c))
             p.append(g)
         else:
             fatal("Wrong factor type: <{0}>"
@@ -120,19 +119,30 @@ def generate_possible_points(factors, constraints, labelled, n):
     # Prepare a list of generators that generate all possible
     # factors satisfying constraints
     count = 0
+    tries = 0
+    MAX_TRIES = 50
     while(count < n):
         p = draw_point(factors, constraints)
-        if p in labelled: continue
+        if p in labelled and tries < 50:
+            tries += 1
+            continue
         else:
-            yield p
+            tries = 0
             count += 1
+            yield p
             
 def predict(configuration, input_file, output_file, n, cp):
+    print "using cp = {0}".format(cp)
     # build partition tree
     T = common.cart.build_tree(configuration, cp, input_file)
 
     # read the labelled points
     labelled = np.genfromtxt(input_file)
+    
+    # when there is only one observation we have to
+    # reshape the data to say it is multidimensionnal
+    if len(labelled.shape) == 1:
+        labelled = labelled.reshape(1,labelled.shape[0])
 
     # compute the leaf error
     compute_error_pernode(labelled, T)

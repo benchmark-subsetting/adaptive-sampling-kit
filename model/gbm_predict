@@ -12,11 +12,11 @@ if (length(args) != 4) {
 # Load the previous model
 req = read.table(args[3])
 
-# Set up categorial variables as factors
+# Set up categorical variables as factors
 configuration = fromJSON(paste(readLines(args[1]), collapse=""))
 i = 1
 for (f in configuration$factors) {
-  if (f$type == "categorial") {
+  if (f$type == "categorical") {
     req[,i] = as.factor(req[,i])
   } 
   i = i+1

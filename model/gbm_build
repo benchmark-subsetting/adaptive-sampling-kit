@@ -10,14 +10,14 @@ if (length(args) != 3) {
     stop("Usage: gbm <configuration.conf> <labelled_file> <output_file>")
 }
 
-configuration = fromJSON(paste(readLines(args[1]), collapse=""))
+source(file.path(Sys.getenv("MEASUREITHOME"), "common/configuration.R"))
 input = read.table(args[2])
 
 
-# Set up categorial variables as factors
+# Set up categorical variables as factors
 i = 1
-for (f in configuration$factors) {
-  if (f$type == "categorial") {
+for (f in conf("factors")) {
+  if (f$type == "categorical") {
     input[,i] = as.factor(input[,i])
   } 
   i = i+1
@@ -26,11 +26,11 @@ for (f in configuration$factors) {
 expr = eval(parse(text=paste("input$V",ncol(input),"~ .",sep="")))
 gbm1 = gbm(expr , 
            data=input, 
-           n.trees=1000, 
-           interaction.depth=3, 
-           shrinkage=0.01, 
-           distribution="gaussian",
-           verbose=F)
+           n.trees=conf("modules.model.params.n.trees",100), 
+           interaction.depth=conf("modules.model.params.interactiondepth", 5), 
+           shrinkage=conf("modules.model.params.shrinkage", 0.01), 
+           distribution=conf("modules.model.params.distribution","gaussian"),
+           verbose=conf("modules.model.params.verbose", F))
 best.iter = gbm.perf(gbm1,method="OOB",plot.it=FALSE)
 
 save.image(args[3])
