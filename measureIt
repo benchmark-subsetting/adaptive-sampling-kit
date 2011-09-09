@@ -107,7 +107,6 @@ def driver_loop():
         shutil.copyfileobj(orig, dest)
         dest.close()
         orig.close()
-        iteration += 1
 
         # Call model module
         call_module("model", params=[labelled, model])
@@ -120,6 +119,7 @@ def driver_loop():
 
         # Call control module (which will decide when to exit this loop)
         call_module("control", params=[str(iteration), labelled, model])
+        iteration += 1
         
 def main():
     global C,L
