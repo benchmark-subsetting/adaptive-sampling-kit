@@ -2,17 +2,20 @@
 
 args <- commandArgs(trailingOnly = T)
 
-if (length(args) != 5) {
-    stop("Usage: 2D.R <test_set> <predicted> <labelled> <newly_labelled> <output.png>")
+if (length(args) != 6) {
+    stop("Usage: 2D.R <configuration> <test_set> <predicted> <labelled> <newly_labelled> <output.png>")
 }
 
-testset = read.table(args[1])
-predicted = read.table(args[2])
-labelled = read.table(args[3])
-newlylabelled = read.table(args[4])
-outputpng = args[5]
+source(file.path(Sys.getenv("MEASUREITHOME"), "common/configuration.R"))
+testset = read.table(args[2])
+predicted = read.table(args[3])
+labelled = read.table(args[4])
+newlylabelled = read.table(args[5])
+outputpng = args[6]
 
-D = data.frame(X=testset$V1,Y=testset$V2, E=abs(testset$V3-predicted$V3), P=predicted$V3)
+D = data.frame(X=testset$V1,Y=testset$V2,
+               E=abs(testset$V3-predicted$V3),
+               P=predicted$V3)
 
 suppressPackageStartupMessages(require(graphics, quietly=T))
 suppressPackageStartupMessages(require(lattice, quietly=T))
@@ -20,7 +23,11 @@ png(file=outputpng, width=1000, height=1200)
 
 ep = levelplot(D$E ~ D$X*D$Y, cuts=31, 
         colorkey=list(col=rev(heat.colors(32))),
-        col.regions=rev(heat.colors(32)), xlab="X",
+        col.regions=rev(heat.colors(32)),
+        at=seq(from=0,to=conf("modules.reporter.params.max_error_scale",
+                              max(D$E))
+          ,length=32),
+        xlab="X",
         ylab="Y     (Absolute Error)",
         panel=function(...){
             panel.levelplot(...)
