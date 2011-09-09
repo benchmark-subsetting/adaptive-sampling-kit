@@ -26,7 +26,7 @@ for (f in conf("factors")) {
 expr = eval(parse(text=paste("input$V",ncol(input),"~ .",sep="")))
 gbm1 = gbm(expr , 
            data=input, 
-           n.trees=conf("modules.model.params.n.trees",100), 
+           n.trees=conf("modules.model.params.ntrees",100), 
            interaction.depth=conf("modules.model.params.interactiondepth", 5), 
            shrinkage=conf("modules.model.params.shrinkage", 0.01), 
            distribution=conf("modules.model.params.distribution","gaussian"),
