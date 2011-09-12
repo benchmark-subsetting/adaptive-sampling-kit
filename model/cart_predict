@@ -10,14 +10,14 @@ def predict(configuration, T, requested_file, output_file):
     data = np.genfromtxt(requested_file)
 
     nf = len(configuration["factors"])
-    
+
     of = open(output_file, "w")
 
     for d in data[:,:nf]:
         p = T.compute(d)
         of.write(" ".join(map(str, list(d) + [p])) + "\n")
     of.close()
-        
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="Builds a cart tree model")

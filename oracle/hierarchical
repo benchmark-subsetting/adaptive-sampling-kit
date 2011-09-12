@@ -22,18 +22,18 @@ def leaferror(N, mean_error):
         card += 1
         if abs(d[-1] - m) > mean_error:
             freq_error +=1
-            
+
     error_probability = (float(freq_error)/float(card))
     assert(0 <= error_probability <= 1)
     R = 1
     confidence = math.log(1.0/0.001)
-    hoeff = math.sqrt(R*R*confidence/(2*card)) 
+    hoeff = math.sqrt(R*R*confidence/(2*card))
     return min(error_probability+hoeff,1.0)
 
 def compute_error_pernode(data, T):
     # compute mean error
     mean_error = compute_mean_error(data, T)
-    
+
     # fill the tree nodes
     for d in data:
         T.fill(d)
@@ -82,9 +82,9 @@ def find_sampling_distribution(configuration, T, samplesize):
         p = posargmin(proportions)
         rounded[p] -= 1
         proportions[p] -= 1
-        
+
     proportions = rounded
-    
+
     for k,p in zip(cons_raw, proportions):
         k["sampling_proportion"] = p
 
@@ -93,7 +93,7 @@ def find_sampling_distribution(configuration, T, samplesize):
     # ensure we satisfy exactly the samplesize
     assert(sum(proportions) == samplesize)
     # ensure there are no negative proportions
-    assert(not [p for p in proportions if p < 0]) 
+    assert(not [p for p in proportions if p < 0])
     return zip(proportions, [c["constraint"] for c in cons_raw])
 
 def draw_point(factors, constraints):
@@ -130,7 +130,7 @@ def generate_possible_points(factors, constraints, labelled, n):
             tries = 0
             count += 1
             yield p
-            
+
 def predict(configuration, input_file, output_file, n, cp):
     print "using cp = {0}".format(cp)
     # build partition tree
@@ -138,7 +138,7 @@ def predict(configuration, input_file, output_file, n, cp):
 
     # read the labelled points
     labelled = np.genfromtxt(input_file)
-    
+
     # when there is only one observation we have to
     # reshape the data to say it is multidimensionnal
     if len(labelled.shape) == 1:
@@ -146,11 +146,11 @@ def predict(configuration, input_file, output_file, n, cp):
 
     # compute the leaf error
     compute_error_pernode(labelled, T)
-    
+
     # compute sampling distribution
     distribution  = find_sampling_distribution(configuration,
                                                T, n)
-    
+
     # open a file to write suggested points
     of = open(output_file, "w")
 
@@ -158,7 +158,7 @@ def predict(configuration, input_file, output_file, n, cp):
     already_labelled = set()
     for v in labelled[:,:-1]:
         already_labelled.add(tuple(v))
-        
+
     for size, cons in distribution:
         for p in generate_possible_points(configuration["factors"],
                                           cons,

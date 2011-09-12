@@ -18,13 +18,13 @@ def report(configuration, iteration, labels, new_labels, model, test_set):
            configuration("configuration_file"),
            model,
            test_set,
-           prediction]       
+           prediction]
     p = os.system(" ".join(cmd))
     if (p != 0):
         fatal("Failure calling model predictor: \n"+
               " ".join(cmd))
 
-    
+
     # plot 2D graph
     cmd = [os.path.join(os.environ["ASKHOME"], "reporter/2D/2D.R"),
            configuration("configuration_file"),
@@ -52,7 +52,7 @@ if __name__ == "__main__":
             C,
             args.iteration,
             args.labelled_file,
-            args.newly_labelled_file, 
-            args.model_file, 
+            args.newly_labelled_file,
+            args.model_file,
             C("modules.reporter.params.test_set")
           )

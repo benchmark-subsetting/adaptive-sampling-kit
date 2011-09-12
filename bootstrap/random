@@ -12,9 +12,9 @@ def select_n_random(input_file, output_file, n):
     If it becomes a bottleneck we should try the approach outlined in http://www.bryceboe.com/2009/03/23/random-lines-from-a-file/
     (after proving it is sound).
     """
-    
+
     inpf = open(input_file, "r")
-    lines = inpf.readlines() 
+    lines = inpf.readlines()
     inpf.close()
     if (n > len(lines)):
         fatal("Not enough points in {0} to satisfy your sampling size of {1}"
@@ -30,11 +30,11 @@ def select_n_random(input_file, output_file, n):
 
 if __name__ == "__main__":
     import argparse
-    parser = argparse.ArgumentParser(description="Select random samples from a set of" 
+    parser = argparse.ArgumentParser(description="Select random samples from a set of"
                                                  " points in the filename")
     parser.add_argument('configuration')
     parser.add_argument('output_file')
     args = parser.parse_args()
-    
+
     conf = Configuration(args.configuration)
     select_n_random(conf("modules.bootstrap.params.data_file"), args.output_file, conf("modules.bootstrap.params.n", int))

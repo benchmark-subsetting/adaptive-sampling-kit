@@ -264,7 +264,7 @@ class Leaf(Node):
 
     def fill(self, point):
         self.data.append(point)
-        
+
     def whichmodel(self, point=None):
         return self.tag
 

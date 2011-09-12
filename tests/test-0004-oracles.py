@@ -1,11 +1,11 @@
-from nose.tools import * 
+from nose.tools import *
 from test_util import CommandLineT
 
 class AmartTests(CommandLineT):
     def test_basic_amart(self):
         """ Test amart with ask """
         self.conf({
-            "output_directory" : "outdir", 
+            "output_directory" : "outdir",
             "factors": [
             {"name": "k",
              "type": "integer",
@@ -31,7 +31,7 @@ class AmartTests(CommandLineT):
             },
             "source" : {
             "executable": "source/file",
-            "params": {"data_file" : self.tfile("test1.data")}    
+            "params": {"data_file" : self.tfile("test1.data")}
             }}})
 
         r = self.run("ask test.conf")
@@ -43,7 +43,7 @@ class HierarchicalTests(CommandLineT):
     def test_basic_hierarchical(self):
         """ Test hierarchical with ask """
         self.conf({
-            "output_directory" : "outdir", 
+            "output_directory" : "outdir",
             "factors": [
             {"name": "k",
              "type": "integer",
@@ -65,19 +65,14 @@ class HierarchicalTests(CommandLineT):
             },
             "bootstrap": {
             "executable": "bootstrap/random",
-            "params": {"data_file" : self.tfile("test1.data"), "n":50}    
+            "params": {"data_file" : self.tfile("test1.data"), "n":50}
             },
             "source" : {
             "executable": "source/file",
-            "params": {"data_file" : self.tfile("test1.data")}    
+            "params": {"data_file" : self.tfile("test1.data")}
             }}})
 
         r = self.run("ask test.conf")
         assert "outdir/labelled.data" in r.files_created, "labelled.data is created"
         card = len([l for l in r.files_created["outdir/labelled.data"].bytes.split("\n") if l])
         assert card == 150, "150 samples should have beed obtained"
-
-
-        
-
-        

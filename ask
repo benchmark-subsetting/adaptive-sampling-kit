@@ -20,16 +20,16 @@ from common.util import fatal
 # Will contain the configuration and logger singletons
 C, L = None, None
 
-       
-def call_module(module, params = []):    
+
+def call_module(module, params = []):
     L.debug("Calling {0} module".format(module))
     # Prepare the command line
     # Add the executable
     cmd = [C("modules")[module]["executable"]]
-    
+
     # Append configuration file
     cmd.append(C("configuration_file"))
-               
+
     # Append the input/output params
     cmd += params
 
@@ -44,7 +44,7 @@ def call_module(module, params = []):
     except OSError:
         fatal("Could not execute module {0}\n"
               "  {1}".format(module,cmd))
-        
+
     eof_stdout, eof_stderr = False, False
     while(not(eof_stdout and eof_stderr)):
         for fd in select.select([p.stdout, p.stderr], [], [])[0]:
@@ -58,20 +58,20 @@ def call_module(module, params = []):
                 if l.strip(): L.warning("\t({0}) {1}".format(module, l[:-1]))
             else:
                 if l.strip(): L.info("\t({0}) {1}".format(module, l[:-1]))
-        
+
     p.wait()
     if p.returncode !=0:
-        if module == "control" and p.returncode == 254: 
+        if module == "control" and p.returncode == 254:
             L.info("Control module decided to stop experiments")
             print "Experiments finished normally"
             sys.exit(0)
         else:
             fatal("Module {0} stopped with code {1}"
                   .format(module, p.returncode), p.returncode)
-        
+
 def driver_loop():
     L.debug("Starting driver loop")
-    
+
     out_dir = C("output_directory")
     iteration = 0
     labelled = "{0}/labelled.data".format(out_dir)
@@ -93,7 +93,7 @@ def driver_loop():
             if not os.path.exists(requested):
                 fatal("Oracle did not gave back requests "
                       "({0} does not exist)".format(requested))
-                
+
             # Call source to fulfill the requests
             call_module("source", params=[requested, newly_labelled])
             if not os.path.exists(newly_labelled):
@@ -120,7 +120,7 @@ def driver_loop():
         # Call control module (which will decide when to exit this loop)
         call_module("control", params=[str(iteration), labelled, model])
         iteration += 1
-        
+
 def main():
     global C,L
     import argparse
@@ -130,13 +130,13 @@ def main():
                         help="If a previous output directory is found its contents will be overwritten")
     parser.add_argument('configuration', help="the experiment configuration file")
     args = parser.parse_args()
- 
+
     # Setup the ASKHOME
     os.environ["ASKHOME"] = os.path.dirname(os.path.realpath(__file__))
-   
+
     # Setup PYTHONPATH
     if "PYTHONPATH" in os.environ:
-        os.environ["PYTHONPATH"] += ":" + os.environ["ASKHOME"] 
+        os.environ["PYTHONPATH"] += ":" + os.environ["ASKHOME"]
     else:
         os.environ["PYTHONPATH"] = os.environ["ASKHOME"]
 
@@ -165,12 +165,12 @@ def main():
         else:
             fatal("Output directory \"{0}\" already exists. Use --force_overwrite option to discard it."
                   .format(C("output_directory")))
-    
+
     os.makedirs(C("output_directory"))
 
     # Enter driver loop
     driver_loop()
-        
+
 
 
 if __name__ == "__main__":

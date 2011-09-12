@@ -33,18 +33,18 @@ def parse_cart_tree(lines, categories):
                     direction = 0
                     sp.pop(2)
 
-                node = {"axis": int(axis[0][1:])-1, 
+                node = {"axis": int(axis[0][1:])-1,
                         "cut": float(axis[1]),
                         "prediction": float(sp[4]),
                         "direction": direction}
             else:
                 axis = sp[1].split("=")
-                node = {"axis": int(axis[0][1:])-1, 
+                node = {"axis": int(axis[0][1:])-1,
                         "choices": map(int, axis[1].split(",")),
                         "prediction": float(sp[4])}
         nodes[number] = node
 
-    
+
     def get_tree(n):
         #is it a leaf
         if 2*n not in nodes: return Leaf(model=[nodes[n]["prediction"]])
@@ -52,22 +52,22 @@ def parse_cart_tree(lines, categories):
         #get left child
         left = get_tree(2*n)
         right = get_tree(2*n+1)
-        
+
         if "choices" in nodes[2*n]:
             lc = nodes[2*n]["choices"]
             rc = nodes[2*n+1]["choices"]
             axis = nodes[2*n]["axis"]
-        
+
             chosen = set(lc + rc)
             allp =  set(list(range(len(categories[axis]))))
             missing = allp-chosen
-            rc += list(missing) 
+            rc += list(missing)
 
-            return Node(left, right, 
+            return Node(left, right,
                         axis= axis,
                         cut=(lc,
                              rc),
-                        model=[nodes[n]["prediction"]], 
+                        model=[nodes[n]["prediction"]],
                         categorical=True
                         )
         else:
@@ -75,17 +75,17 @@ def parse_cart_tree(lines, categories):
                 return Node(left, right,
                             axis=nodes[2*n]["axis"],
                             cut=nodes[2*n]["cut"],
-                            model=[nodes[n]["prediction"]], 
+                            model=[nodes[n]["prediction"]],
                             categorical=False
                             )
             else:
                 return Node(right, left,
                             axis=nodes[2*n]["axis"],
                             cut=nodes[2*n]["cut"],
-                            model=[nodes[n]["prediction"]], 
+                            model=[nodes[n]["prediction"]],
                             categorical=False
                             )
-    return get_tree(1) 
+    return get_tree(1)
 
 
 def build_tree(conf, cp, input_file):
@@ -98,7 +98,7 @@ def build_tree(conf, cp, input_file):
     rfile.write('library(rpart)\n')
     rfile.write('data = read.table("{0}")\n'.
             format(input_file))
-    
+
     for i,f in enumerate(conf["factors"]):
         if f["type"] == "categorical":
             rfile.write('data$V{0} = as.factor(data$V{1})\n'
@@ -107,10 +107,10 @@ def build_tree(conf, cp, input_file):
         else:
             categories.append(f["range"])
 
-            
+
     rfile.write("rtree = rpart(data$V{0} ~ . , data=data, "
                 "control=rpart.control(cp={1}))\n".format(i+2,cp))
-    
+
     rfile.write("print(rtree)\n")
     rfile.close()
 

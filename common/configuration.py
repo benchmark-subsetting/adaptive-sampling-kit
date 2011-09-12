@@ -70,7 +70,7 @@ class Configuration():
                       .format(f["name"]))
             else:
                 names.add(f["name"])
-                
+
             if "type" not in f:
                 fatal("Factor {0} is missing a type"
                       .format(f["name"]))
@@ -91,7 +91,7 @@ class Configuration():
                 if mi >= ma:
                     fatal("Range of factor {0} is invalid : min >= max"
                           .format(f["name"]))
-                                                     
+
             elif f["type"] == "float":
                 if "range" not in f or "min" not in f["range"] \
                    or "max" not in f["range"]:
@@ -109,7 +109,7 @@ class Configuration():
             else:
                 fatal("Unknown type {0} for factor {1})"
                       .format(f["type"], f["name"]))
-        
+
     def check_modules(self):
         """ Check the modules configuration section
             and replace module relative paths with absolute ones
@@ -120,7 +120,7 @@ class Configuration():
             modulepath = self("modules.{0}.executable"
                            .format(module))
             self._conf["modules"][module]["executable"] = check_executable(modulepath)
-                
+
             if module == "model":
                 # Model module as an optional executable, predictor
                 # which we may need to check
@@ -166,7 +166,7 @@ class Configuration():
             V = self._conf
             for sk in subkeys:
                 V = V[sk]
-        except KeyError:       
+        except KeyError:
             if default_value == None:
                 fatal("Missing configuration parameter {0}"
                       .format(key))
@@ -182,4 +182,3 @@ class Configuration():
 
     def __getitem__(self, key):
         return self._conf[key]
-        

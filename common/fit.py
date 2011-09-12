@@ -20,7 +20,7 @@ def compute_max_error(d, T):
     for a,b in zip(d[:,-1],y):
         err=max(abs(a-b), err)
     return err
- 
+
 def compute_mean_error(d, T):
     x = d[:,:-1]
 
@@ -29,7 +29,7 @@ def compute_mean_error(d, T):
     for a,b in zip(d[:,-1],y):
         err+=abs(a-b)
     return err/float(len(x))
- 
+
 
 def compute_per_error(d, T):
     x = d[:,:-1]
@@ -38,7 +38,7 @@ def compute_per_error(d, T):
     err = 0
     for a,b in zip(d[:,-1],y):
         err+=abs(a-b)/a
-    return err/float(len(x))*100.0 
+    return err/float(len(x))*100.0
 
 def compute_nerr_error(d, T, threshold):
     x = d[:,:-1]
@@ -49,4 +49,4 @@ def compute_nerr_error(d, T, threshold):
         if abs(a-b)/a > threshold:
             nerr +=1
 
-    return nerr 
+    return nerr
