@@ -2,7 +2,8 @@ import json
 import math
 import os
 import os.path
-from util import fatal
+
+from common.util import fatal
 
  # Modules that need to be defined for the ask to work
 expected_modules = ["oracle", "reporter", "control",
@@ -17,10 +18,11 @@ def check_executable(modulepath):
         fatal("Module {0} is not executable".format(modulepath))
     return modulepath
 
+
 class Configuration():
     def __init__(self,
                  user_configuration,
-                 reload_live_configuration = True):
+                 reload_live_configuration=True):
 
         # If reloading a live configuration, there is
         # no need to check it for errors nor load the
@@ -115,18 +117,20 @@ class Configuration():
             and replace module relative paths with absolute ones
         """
         for module in expected_modules:
-            # Check that the module executable can be found, and update it with its
-            # complete path
+            # Check that the module executable can be found,
+            # and update it with its complete path
             modulepath = self("modules.{0}.executable"
                            .format(module))
-            self._conf["modules"][module]["executable"] = check_executable(modulepath)
+            self._conf["modules"][module]["executable"] =\
+              check_executable(modulepath)
 
             if module == "model":
                 # Model module as an optional executable, predictor
                 # which we may need to check
                 if "predictor" in self._conf["modules"][module]:
                     predictorpath = self._conf["modules"][module]["predictor"]
-                    self._conf["modules"][module]["predictor"] = check_executable(predictorpath)
+                    self._conf["modules"][module]["predictor"] =\
+                      check_executable(predictorpath)
 
     @staticmethod
     def load(filename):
@@ -137,7 +141,7 @@ class Configuration():
             f.close()
         except ValueError, e:
             fatal("Problem parsing configuration file {0}:\n"
-                  "  {1}".format(filename,e))
+                  "  {1}".format(filename, e))
         except IOError:
             fatal("Could not open configuration file {0}"
                   .format(filename))
@@ -152,7 +156,8 @@ class Configuration():
 
         The merged configuration is written to old_conf.
         """
-        for key,value in new_conf.iteritems():
+
+        for key, value in new_conf.iteritems():
             if isinstance(value, dict) and key in old_conf:
                 Configuration.overwrite(old_conf[key],
                                         value)

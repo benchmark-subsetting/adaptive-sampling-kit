@@ -1,18 +1,21 @@
 #!/usr/bin/env python
 """
-This module call the hierarchical sampling module to find interesting points to label
+This module call the hierarchical sampling module to find interesting
+points to label
 """
 
 import math
 import numpy as np
 import pprint
-from random import shuffle,randint,choice
+from random import shuffle, randint, choice
+
 from common.configuration import Configuration
 from common.util import fatal
 from common.tree import *
 from common.fit import *
 from common.constraints import get_tagged_models
 import common.cart
+
 
 def leaferror(N, mean_error):
     freq_error = 0
@@ -21,14 +24,15 @@ def leaferror(N, mean_error):
     for d in N.data:
         card += 1
         if abs(d[-1] - m) > mean_error:
-            freq_error +=1
+            freq_error += 1
 
-    error_probability = (float(freq_error)/float(card))
+    error_probability = (float(freq_error) / float(card))
     assert(0 <= error_probability <= 1)
     R = 1
-    confidence = math.log(1.0/0.001)
-    hoeff = math.sqrt(R*R*confidence/(2*card))
-    return min(error_probability+hoeff,1.0)
+    confidence = math.log(1.0 / 0.001)
+    hoeff = math.sqrt(R * R * confidence / (2 * card))
+    return min(error_probability + hoeff, 1.0)
+
 
 def compute_error_pernode(data, T):
     # compute mean error
@@ -42,14 +46,15 @@ def compute_error_pernode(data, T):
     for N in node_iterator(T):
         N.error = leaferror(N, mean_error)
 
+
 def compute_size(constraint):
     size = 1
 
     for v in constraint.itervalues():
         if not isinstance(v, dict):
-            size*=len(v)
+            size *= len(v)
         else:
-            size*=(v["max"]-v["min"])
+            size *= v["max"] - v["min"]
     assert(size >= 0)
     return size
 
@@ -58,34 +63,37 @@ def posargmin(x):
     pos = [k for k in x if k > 0]
     return x.index(min(pos))
 
+
 def find_sampling_distribution(configuration, T, samplesize):
     factors = configuration("factors")
-    ponderate = configuration("modules.oracle.params.ponderate_by_size", bool, True)
+    ponderate = configuration("modules.oracle.params.ponderate_by_size",
+                              bool,
+                              True)
 
     cons_raw = get_tagged_models(factors,
                                  T)
     cons = []
     if ponderate:
         print "Ponderating by size"
-        prob = [c["error"]*compute_size(c["constraint"])
+        prob = [c["error"] * compute_size(c["constraint"])
                 for c in cons_raw]
     else:
         print "Not ponderating by size"
         prob = [c["error"] for c in cons_raw]
 
     totalp = sum(prob)
-    proportions = [p*samplesize/totalp for p in prob]
-    rounded = map(int,map(math.ceil, proportions))
+    proportions = [p * samplesize / totalp for p in prob]
+    rounded = map(int, map(math.ceil, proportions))
 
     # remove rounding error
-    while (sum(rounded)-samplesize):
+    while (sum(rounded) - samplesize):
         p = posargmin(proportions)
         rounded[p] -= 1
         proportions[p] -= 1
 
     proportions = rounded
 
-    for k,p in zip(cons_raw, proportions):
+    for k, p in zip(cons_raw, proportions):
         k["sampling_proportion"] = p
 
     pprint.pprint(cons_raw)
@@ -96,6 +104,7 @@ def find_sampling_distribution(configuration, T, samplesize):
     assert(not [p for p in proportions if p < 0])
     return zip(proportions, [c["constraint"] for c in cons_raw])
 
+
 def draw_point(factors, constraints):
     p = []
     for f in factors:
@@ -105,7 +114,7 @@ def draw_point(factors, constraints):
                         int(c["max"]))
             p.append(g)
         elif f["type"] == "continous":
-            g = random()*(c["max"]-c["min"])+c["min"]
+            g = random() * (c["max"] - c["min"]) + c["min"]
             p.append(g)
         elif f["type"] == "categorical":
             g = f["values"].index(choice(c))
@@ -114,6 +123,7 @@ def draw_point(factors, constraints):
             fatal("Wrong factor type: <{0}>"
                   .format(f["type"]))
     return tuple(p)
+
 
 def generate_possible_points(factors, constraints, labelled, n):
     # Prepare a list of generators that generate all possible
@@ -131,6 +141,7 @@ def generate_possible_points(factors, constraints, labelled, n):
             count += 1
             yield p
 
+
 def predict(configuration, input_file, output_file, n, cp):
     print "using cp = {0}".format(cp)
     # build partition tree
@@ -142,14 +153,13 @@ def predict(configuration, input_file, output_file, n, cp):
     # when there is only one observation we have to
     # reshape the data to say it is multidimensionnal
     if len(labelled.shape) == 1:
-        labelled = labelled.reshape(1,labelled.shape[0])
+        labelled = labelled.reshape(1, labelled.shape[0])
 
     # compute the leaf error
     compute_error_pernode(labelled, T)
 
     # compute sampling distribution
-    distribution  = find_sampling_distribution(configuration,
-                                               T, n)
+    distribution = find_sampling_distribution(configuration, T, n)
 
     # open a file to write suggested points
     of = open(output_file, "w")
@@ -165,12 +175,14 @@ def predict(configuration, input_file, output_file, n, cp):
                                           already_labelled,
                                           size):
             already_labelled.add(p)
-            of.write(" ".join(map(str,p))+"\n")
+            of.write(" ".join(map(str, p)) + "\n")
     of.close()
 
 if __name__ == "__main__":
     import argparse
-    parser = argparse.ArgumentParser(description="Using the currently labelled points, detects the more imprecise zones and draws points from them")
+    parser = argparse.ArgumentParser(
+        description="Using the currently labelled points,"
+        " detects the more imprecise zones and draws points from them")
     parser.add_argument('configuration')
     parser.add_argument('input_file')
     parser.add_argument('output_file')
@@ -181,5 +193,4 @@ if __name__ == "__main__":
         args.input_file,
         args.output_file,
         conf("modules.oracle.params.n", int),
-        conf("modules.oracle.params.cp", float, 0.01)
-        )
+        conf("modules.oracle.params.cp", float, 0.01))

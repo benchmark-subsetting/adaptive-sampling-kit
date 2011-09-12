@@ -1,8 +1,10 @@
 import os
 import pickle
 import tempfile
-from colors import colors
-from regression import linear
+
+from common.colors import colors
+from common.regression import linear
+
 
 def tree2dot(outfilename, tree, axes, categories):
     """
@@ -18,8 +20,9 @@ def tree2dot(outfilename, tree, axes, categories):
                  then categories[3] = {1:"blue", 2:"red", 3:"green"}
     """
     f = open(outfilename, "w")
-    f.write("graph decisionT {\n"+tree.todot(axes, categories)+"\n}")
+    f.write("graph decisionT {\n" + tree.todot(axes, categories) + "\n}")
     f.close()
+
 
 def tree2png(outfilename, tree, axes, categories):
     """
@@ -50,11 +53,12 @@ def Lformat(L, pl=6):
     per line.
     """
     lines = []
-    for i,v in enumerate(L):
+    for i, v in enumerate(L):
         lines.append(v)
-        if i%pl==pl-1:
+        if i % pl == pl - 1:
             lines.append("\\n")
     return ",".join(lines)
+
 
 def tag_leaves(tree):
     """
@@ -78,9 +82,10 @@ def tag_leaves(tree):
     [0, 1, 2]
     """
     leaves = list(leaf_iterator(tree))
-    for i,leaf in enumerate(leaves):
+    for i, leaf in enumerate(leaves):
         leaf.tag = i
-    return len(leaves)-1
+    return len(leaves) - 1
+
 
 def leaf_iterator(tree):
     """
@@ -103,6 +108,7 @@ def leaf_iterator(tree):
             for n in leaf_iterator(subtree):
                 yield n
 
+
 def node_iterator(tree):
     """
     Returns a generator that iterates over all nodes of a tree
@@ -123,16 +129,19 @@ def save_tree(T, output_file):
     pickle.dump(T, f)
     f.close()
 
+
 def load_tree(input_file):
     f = open(input_file, "r")
-    return pickle.load(f)
+    l = pickle.load(f)
     f.close()
+    return l
+
 
 class Node():
     """
     Regression tree internal node.
     """
-    def __init__(self,left,right,axis,cut,model,categorical=False):
+    def __init__(self, left, right, axis, cut, model, categorical=False):
         """
         left, right (Node) : left and right subtrees
         axis (int) : axis over which this node splits the domain
@@ -150,7 +159,7 @@ class Node():
         self.axis = axis
         self.model = model
         self.cut = cut
-        self.categorical=categorical
+        self.categorical = categorical
         self.data = []
 
     def fill(self, point):
@@ -231,16 +240,21 @@ class Node():
             labelsl = Lformat([categories[self.axis][i] for i in self.cut[0]])
             labelsr = Lformat([categories[self.axis][i] for i in self.cut[1]])
             out.append("{0} [label=\"{1}\"];"
-                       .format(id(self),axes[self.axis]))
+                       .format(id(self), axes[self.axis]))
         else:
             labelsr = labelsl = ""
             out.append("{0} [label=\"{1} < {2}\"];"
-                       .format(id(self),axes[self.axis],"%.2f"%self.cut))
-        out.append(self.left.todot(axes,categories))
-        out.append(self.right.todot(axes,categories))
-        out.append("{0} -- {1} [label=\"{2}\"];".format(id(self), id(self.left), labelsl))
-        out.append("{0} -- {1} [label=\"{2}\"];".format(id(self), id(self.right), labelsr))
+                       .format(id(self), axes[self.axis], "%.2f" % self.cut))
+
+        out.append(self.left.todot(axes, categories))
+        out.append(self.right.todot(axes, categories))
+
+        out.append("{0} -- {1} [label=\"{2}\"];"
+                   .format(id(self), id(self.left), labelsl))
+        out.append("{0} -- {1} [label=\"{2}\"];"
+                   .format(id(self), id(self.right), labelsr))
         return "\n".join(out)
+
 
 class Leaf(Node):
     """
@@ -253,9 +267,10 @@ class Leaf(Node):
         self.model = model
         self.error = error
         self.data = []
+        self.tag = -1
 
     def compute(self, point):
-        regression_d = len(self.model)-1
+        regression_d = len(self.model) - 1
         if regression_d == 0:
             return self.model[0]
         else:
@@ -275,10 +290,10 @@ class Leaf(Node):
         return "L({0})".format(repr(self.model))
 
     def todot(self, axes=None, categories=None):
-        model = "*%s*|"%self.tag+"|".join(["%.4f"%v for v in self.model])
+        model = "*%s*|" % self.tag + "|".join(["%.4f" % v for v in self.model])
         return (
             "{0} [label=\"{{{1}}}\", shape=\"record\",color=\"{2}\"];"
-                .format(id(self),model,colors[self.tag%len(colors)]))
+                .format(id(self), model, colors[self.tag % len(colors)]))
 
 if __name__ == "__main__":
     import doctest

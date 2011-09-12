@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
 import os
+
 from common.configuration import Configuration
 from common.util import fatal
+
 
 def report(configuration, iteration, labels, new_labels, model, test_set):
     # filenames
@@ -21,9 +23,8 @@ def report(configuration, iteration, labels, new_labels, model, test_set):
            prediction]
     p = os.system(" ".join(cmd))
     if (p != 0):
-        fatal("Failure calling model predictor: \n"+
+        fatal("Failure calling model predictor: \n" +
               " ".join(cmd))
-
 
     # plot 2D graph
     cmd = [os.path.join(os.environ["ASKHOME"], "reporter/2D/2D.R"),
@@ -35,7 +36,7 @@ def report(configuration, iteration, labels, new_labels, model, test_set):
            plot]
     p = os.system(" ".join(cmd))
     if (p != 0):
-        fatal("Failure calling plotter script: \n"+
+        fatal("Failure calling plotter script: \n" +
               " ".join(cmd))
 
 if __name__ == "__main__":
@@ -48,11 +49,9 @@ if __name__ == "__main__":
     parser.add_argument('model_file')
     args = parser.parse_args()
     C = Configuration(args.configuration)
-    report(
-            C,
-            args.iteration,
-            args.labelled_file,
-            args.newly_labelled_file,
-            args.model_file,
-            C("modules.reporter.params.test_set")
-          )
+    report(C,
+           args.iteration,
+           args.labelled_file,
+           args.newly_labelled_file,
+           args.model_file,
+           C("modules.reporter.params.test_set"))

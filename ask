@@ -6,11 +6,8 @@ import select
 import shutil
 import subprocess
 import sys
-import time
 
-import common.configuration
 from common.configuration import Configuration
-import common.util
 from common.util import fatal
 
 ###
@@ -21,7 +18,10 @@ from common.util import fatal
 C, L = None, None
 
 
-def call_module(module, params = []):
+def call_module(module, params=None):
+    if params is None:
+        params = []
+
     L.debug("Calling {0} module".format(module))
     # Prepare the command line
     # Add the executable
@@ -43,7 +43,7 @@ def call_module(module, params = []):
                              shell=True)
     except OSError:
         fatal("Could not execute module {0}\n"
-              "  {1}".format(module,cmd))
+              "  {1}".format(module, cmd))
 
     eof_stdout, eof_stderr = False, False
     while(not(eof_stdout and eof_stderr)):
@@ -54,13 +54,13 @@ def call_module(module, params = []):
                     eof_stdout = True
                 else:
                     eof_stderr = True
-            if fd == p.stderr:
-                if l.strip(): L.warning("\t({0}) {1}".format(module, l[:-1]))
-            else:
-                if l.strip(): L.info("\t({0}) {1}".format(module, l[:-1]))
+            if fd == p.stderr and l.strip():
+                L.warning("\t({0}) {1}".format(module, l[:-1]))
+            elif l.strip():
+                L.info("\t({0}) {1}".format(module, l[:-1]))
 
     p.wait()
-    if p.returncode !=0:
+    if p.returncode != 0:
         if module == "control" and p.returncode == 254:
             L.info("Control module decided to stop experiments")
             print "Experiments finished normally"
@@ -69,7 +69,10 @@ def call_module(module, params = []):
             fatal("Module {0} stopped with code {1}"
                   .format(module, p.returncode), p.returncode)
 
+
 def driver_loop():
+    """ Main loop of the driver """
+
     L.debug("Starting driver loop")
 
     out_dir = C("output_directory")
@@ -121,14 +124,19 @@ def driver_loop():
         call_module("control", params=[str(iteration), labelled, model])
         iteration += 1
 
+
 def main():
-    global C,L
+    global C, L
     import argparse
-    import shutil
-    parser = argparse.ArgumentParser(description="Helps choosing sampling points during experiments.")
-    parser.add_argument('--force_overwrite', action='store_true',
-                        help="If a previous output directory is found its contents will be overwritten")
-    parser.add_argument('configuration', help="the experiment configuration file")
+    parser = argparse.ArgumentParser(
+        description="Helps choosing sampling points during experiments.")
+    parser.add_argument(
+        '--force_overwrite',
+        action='store_true',
+        help="If a previous output directory is found its contents"
+        " will be overwritten")
+    parser.add_argument('configuration',
+                        help="the experiment configuration file")
     args = parser.parse_args()
 
     # Setup the ASKHOME
@@ -142,7 +150,7 @@ def main():
 
     # Read Configuration
     C = Configuration(user_configuration=args.configuration,
-                      reload_live_configuration = False)
+                      reload_live_configuration=False)
 
     # Start Logger
     print "Logging to {0}".format(C("log.logfile"))
@@ -151,26 +159,27 @@ def main():
     formatter = logging.Formatter('[%(asctime)s %(levelname)-8s] %(message)s',
                                   datefmt='%H:%M')
     fh.setFormatter(formatter)
-    L.setLevel(eval("logging."+C("log.level")))
-    fh.setLevel(eval("logging."+C("log.level")))
+    L.setLevel(eval("logging." + C("log.level")))
+    fh.setLevel(eval("logging." + C("log.level")))
     L.addHandler(fh)
     L.debug("Logger started at level {0}".format(C("log.level")))
 
     # Check that the output directory does not exist
     if os.path.exists(C("output_directory")):
         if args.force_overwrite:
-            L.warning("Removing existing output directory {0} since --force_overwrite was passed."
+            L.warning("Removing existing output directory {0}"
+                      " since --force_overwrite was passed."
                       .format(C("output_directory")))
             shutil.rmtree(C("output_directory"))
         else:
-            fatal("Output directory \"{0}\" already exists. Use --force_overwrite option to discard it."
+            fatal("Output directory \"{0}\" already exists."
+                  " Use --force_overwrite option to discard it."
                   .format(C("output_directory")))
 
     os.makedirs(C("output_directory"))
 
     # Enter driver loop
     driver_loop()
-
 
 
 if __name__ == "__main__":

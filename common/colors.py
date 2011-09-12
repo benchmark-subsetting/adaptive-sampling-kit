@@ -8,5 +8,4 @@ colors = ["Red",
           "Navy",
           "Orange",
           "Pink",
-          "Black"
-          ]
+          "Black"]
