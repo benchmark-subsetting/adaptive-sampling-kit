@@ -3,13 +3,13 @@ import os
 import os.path
 from util import fatal
 
- # Modules that need to be defined for the measureit to work
+ # Modules that need to be defined for the ask to work
 expected_modules = ["oracle", "reporter", "control",
                  "model", "bootstrap", "source"]
 
 
 def check_executable(modulepath):
-    modulepath = os.path.join(os.environ["MEASUREITHOME"], modulepath)
+    modulepath = os.path.join(os.environ["ASKHOME"], modulepath)
     if not os.path.isfile(modulepath):
         fatal("Module {0} could not be found".format(modulepath))
     if not os.access(modulepath, os.X_OK):
@@ -28,7 +28,7 @@ class Configuration():
             self._conf = Configuration.load(user_configuration)
         else:
             # First load the default configuration
-            default_configuration = os.path.join(os.environ["MEASUREITHOME"],
+            default_configuration = os.path.join(os.environ["ASKHOME"],
                                                  "default.conf")
             self._conf = Configuration.load(default_configuration)
 

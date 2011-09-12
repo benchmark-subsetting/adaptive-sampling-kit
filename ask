@@ -131,14 +131,14 @@ def main():
     parser.add_argument('configuration', help="the experiment configuration file")
     args = parser.parse_args()
  
-    # Setup the MEASUREITHOME
-    os.environ["MEASUREITHOME"] = os.path.dirname(os.path.realpath(__file__))
+    # Setup the ASKHOME
+    os.environ["ASKHOME"] = os.path.dirname(os.path.realpath(__file__))
    
     # Setup PYTHONPATH
     if "PYTHONPATH" in os.environ:
-        os.environ["PYTHONPATH"] += ":" + os.environ["MEASUREITHOME"] 
+        os.environ["PYTHONPATH"] += ":" + os.environ["ASKHOME"] 
     else:
-        os.environ["PYTHONPATH"] = os.environ["MEASUREITHOME"]
+        os.environ["PYTHONPATH"] = os.environ["ASKHOME"]
 
     # Read Configuration
     C = Configuration(user_configuration=args.configuration,

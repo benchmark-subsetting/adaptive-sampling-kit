@@ -26,7 +26,7 @@ def report(configuration, iteration, labels, new_labels, model, test_set):
 
     
     # plot 2D graph
-    cmd = [os.path.join(os.environ["MEASUREITHOME"], "reporter/2D/2D.R"),
+    cmd = [os.path.join(os.environ["ASKHOME"], "reporter/2D/2D.R"),
            configuration("configuration_file"),
            test_set,
            prediction,

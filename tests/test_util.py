@@ -7,13 +7,13 @@ import json
 class CommandLineT(unittest.TestCase):
   def setUp(self):
     self.test_path = os.path.dirname(os.path.realpath(__file__))
-    self.measureit_path = os.path.realpath(os.path.join(self.test_path,".."))
-    os.environ["MEASUREITHOME"] = self.measureit_path 
+    self.ask_path = os.path.realpath(os.path.join(self.test_path,".."))
+    os.environ["ASKHOME"] = self.ask_path 
     if "PYTHONPATH" in os.environ:
-      os.environ["PYTHONPATH"] += ":" + self.measureit_path 
+      os.environ["PYTHONPATH"] += ":" + self.ask_path 
     else:
-      os.environ["PYTHONPATH"] = self.measureit_path 
-    os.environ["PATH"] +=  ":" + self.measureit_path
+      os.environ["PYTHONPATH"] = self.ask_path 
+    os.environ["PATH"] +=  ":" + self.ask_path
 
     # ensure test sandbox exists
     try:
@@ -29,7 +29,7 @@ class CommandLineT(unittest.TestCase):
     self.clear = self.E.clear
 
   def run_module(self, module, args, **kwargs):
-    m = os.path.join(self.measureit_path, module)
+    m = os.path.join(self.ask_path, module)
     print m
     return self.run(m + " " + args, **kwargs)
 

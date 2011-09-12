@@ -6,7 +6,7 @@ if (length(args) != 6) {
     stop("Usage: 2D.R <configuration> <test_set> <predicted> <labelled> <newly_labelled> <output.png>")
 }
 
-source(file.path(Sys.getenv("MEASUREITHOME"), "common/configuration.R"))
+source(file.path(Sys.getenv("ASKHOME"), "common/configuration.R"))
 testset = read.table(args[2])
 predicted = read.table(args[3])
 labelled = read.table(args[4])
