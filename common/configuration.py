@@ -1,4 +1,5 @@
 import json
+import math
 import os
 import os.path
 from util import fatal
@@ -41,6 +42,9 @@ class Configuration():
             # Change and check modules paths
             self.check_modules()
 
+            # Check the factors
+            self.check_factors()
+
             # Write live configuration to disk
             filename = "live_configuration.conf"
             self._conf["configuration_file"] = filename
@@ -49,7 +53,67 @@ class Configuration():
             f.write("\n")
             f.close()
 
+    def check_factors(self):
+        """ Check the factors configuration section """
+
+        if "factors" not in self._conf:
+            fatal("Configuration file is missing the factors section")
+        if not isinstance(self._conf["factors"], list):
+            fatal("Factors section should contain a list of factors")
+
+        names = set()
+        for f in self._conf["factors"]:
+            if "name" not in f:
+                fatal("Some factors are missing a name")
+            if f["name"] in names:
+                fatal("Two factors have the same name: {0}"
+                      .format(f["name"]))
+            else:
+                names.add(f["name"])
+                
+            if "type" not in f:
+                fatal("Factor {0} is missing a type"
+                      .format(f["name"]))
+
+            if f["type"] == "integer":
+                if "range" not in f or "min" not in f["range"] \
+                   or "max" not in f["range"]:
+                    fatal("Factor {0} needs a valid range")
+
+                # Check that min and max are integers and
+                # that min < max
+                mi = f["range"]["min"]
+                ma = f["range"]["max"]
+                if math.modf(mi)[0] != 0 or math.modf(ma)[0] != 0:
+                    fatal("Range bounds for factor {0} should be integers"
+                          .format(f["name"]))
+
+                if mi >= ma:
+                    fatal("Range of factor {0} is invalid : min >= max"
+                          .format(f["name"]))
+                                                     
+            elif f["type"] == "float":
+                if "range" not in f or "min" not in f["range"] \
+                   or "max" not in f["range"]:
+                    fatal("Factor {0} needs a valid range")
+
+                # Check that min < max
+                if f["range"]["min"] >= f["range"]["max"]:
+                    fatal("Range of factor {0} is invalid : min >= max"
+                          .format(f["name"]))
+
+            elif f["type"] == "categorical":
+                if "values" not in f or not isinstance(f["values"], list):
+                    fatal("Values field is missing or invalid for factor {0}"
+                          .format(f["name"]))
+            else:
+                fatal("Unknown type {0} for factor {1})"
+                      .format(f["type"], f["name"]))
+        
     def check_modules(self):
+        """ Check the modules configuration section
+            and replace module relative paths with absolute ones
+        """
         for module in expected_modules:
             # Check that the module executable can be found, and update it with its
             # complete path

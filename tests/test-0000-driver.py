@@ -12,6 +12,7 @@ class DriverTests(CommandLineT):
   def test_no_output_rewrite(self):
     """ The output directory should not be overwriten """
     self.conf({"output_directory": "outdir",
+               "factors" : [],
                "modules" : {
                   "bootstrap" : {"executable":"/bin/false"},
                   "oracle" : {"executable":"/bin/false"},
@@ -30,6 +31,7 @@ class DriverTests(CommandLineT):
         passing the --force_overwrite flag
     """
     self.conf({"output_directory": "outdir",
+               "factors" : [],
                "modules" : {
                   "bootstrap" : {"executable":"/bin/false"},
                   "oracle" : {"executable":"/bin/false"},
