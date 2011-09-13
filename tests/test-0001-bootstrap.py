@@ -54,3 +54,52 @@ class BootstrapRandomTests(CommandLineT):
                             expect_error=True)
         assert r.stderr.find("Not enough points") != -1,\
                  "error message should mention expected type"
+
+
+class BootstrapLatinsquareTests(CommandLineT):
+    def test_latinsquare_missing_params(self):
+        """ Latinsquare bootstrap should print a message
+        if parameters are missing
+        """
+        self.conf({
+            "factors": [],
+            "modules": {"bootstrap":
+                        {"params": {}}}})
+
+        r = self.run_module("bootstrap/latinsquare",
+                            "test.conf sample",
+                            expect_error=True)
+        assert "n" in r.stderr, "error message should mention n"
+
+    def test_wrong_parameter(self):
+        """ Latinsquare bootstrap should fail nicely when n is not integer """
+        self.conf(
+            {"factors": [],
+             "modules": {"bootstrap":
+                         {"params": {"n": "foo"}}}})
+
+        r = self.run_module("bootstrap/latinsquare",
+                            "test.conf sample",
+                            expect_error=True)
+        assert r.stderr.find("int") != -1,\
+                 "error message should mention expected type"
+        assert "n" in r.stderr, "error message should mention n"
+
+    def test_sampling(self):
+        """ Latinsquare bootstrap should sample points """
+        card = 17
+        self.conf(
+            {"factors": [{"name": "f1", "type": "integer",
+                          "range": {"min": -10, "max": 100}},
+                         {"name": "f2", "type": "float",
+                          "range": {"min": -10, "max": 100}},
+                         {"name": "f3", "type": "categorical",
+                          "values": ["a", "b", "c"]}],
+             "modules": {"bootstrap":
+                         {"params": {"n": card}}}})
+
+        r = self.run_module("bootstrap/latinsquare", "test.conf sample")
+        assert "sample" in r.files_created, "sample is created"
+        sample = r.files_created["sample"]
+        sample_card = len([l for l in sample.bytes.split("\n") if l])
+        assert sample_card == card, "we should get exactly 17 samples"

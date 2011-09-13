@@ -39,4 +39,4 @@ class CommandLineT(unittest.TestCase):
 
     def conf(self, data, file_name="test.conf"):
         self.writefile(file_name,
-                       json.dumps(data))
+                       json.dumps(data)+"\n")

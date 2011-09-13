@@ -1,0 +1,42 @@
+#!/usr/bin/env Rscript
+# This module bootstrap n points in a random latin square
+# configuration.
+
+suppressPackageStartupMessages(require(lhs, quietly=T))
+
+args <- commandArgs(trailingOnly = T)
+if (length(args) != 2) {
+    stop("Usage: latinsquare <configuration.conf> <output_file>")
+}
+source(file.path(Sys.getenv("ASKHOME"), "common/configuration.R"))
+
+# Check that n is an integer
+if (!is.numeric(conf("modules.bootstrap.params.n"))) {
+  stop("modules.bootstrap.params.n must be an integer")
+}
+
+# Generate a latin square configuration for the factors
+samples = randomLHS(as.integer(conf("modules.bootstrap.params.n")),
+  length(conf("factors")))
+
+# Resample columns according to the factor ranges
+# and round columns corresponding to integer factors 
+i = 1
+for (f in conf("factors")) {
+  if (f$type == "categorical") {
+    samples[,i] = length(f$range$values)*samples[,i]
+  }
+  else
+  {
+    samples[,i] = f$range$min + (f$range$max-f$range$min)*samples[,i]
+  }
+
+  # Round columns for non float factors
+  if (f$type != "float") {
+    samples[,i] = as.integer(samples[,i])
+  }    
+  i = i + 1
+}
+
+# Write samples to output file
+write.table(samples, args[2], sep=" ", quote=F, col.names=F, row.names=F)
