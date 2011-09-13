@@ -164,7 +164,7 @@ def predict(configuration, input_file, output_file, n, cp):
     # open a file to write suggested points
     of = open(output_file, "w")
 
-    # take all the factors and create a set
+    # take all the labelled points and create a set
     already_labelled = set()
     for v in labelled[:,:-1]:
         already_labelled.add(tuple(v))
