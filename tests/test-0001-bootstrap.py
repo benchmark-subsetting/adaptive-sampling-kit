@@ -5,8 +5,11 @@ class BootstrapRandomTests(CommandLineT):
     def test_random_missing_params(self):
         """ Random bootstrap should print a message if parameters are missing
         """
-        self.conf(
-            {"modules": {"bootstrap":
+        self.conf({
+            "factors": [
+            {"name":"f1", "type":"integer", "range":{"min":1, "max":8}},
+            {"name":"f2", "type":"integer", "range":{"min":5, "max":4999}}],
+            "modules": {"bootstrap":
                         {"params": {"data_file": self.tfile("test1.data")}}}})
 
         r = self.run_module("bootstrap/random",
@@ -16,8 +19,11 @@ class BootstrapRandomTests(CommandLineT):
 
     def test_wrong_parameter(self):
         """ Random bootstrap should fail nicely when n is not integer """
-        self.conf(
-            {"modules": {"bootstrap":
+        self.conf({
+             "factors": [
+            {"name":"f1", "type":"integer", "range":{"min":1, "max":8}},
+            {"name":"f2", "type":"integer", "range":{"min":5, "max":4999}}],
+             "modules": {"bootstrap":
                          {"params": {"n": "foo", "data_file": "bar"}}}})
 
         r = self.run_module("bootstrap/random",
@@ -30,8 +36,11 @@ class BootstrapRandomTests(CommandLineT):
     def test_sampling(self):
         """ Random bootstrap should sample points """
         card = 17
-        self.conf(
-            {"modules": {"bootstrap":
+        self.conf({
+             "factors": [
+            {"name":"f1", "type":"integer", "range":{"min":1, "max":8}},
+            {"name":"f2", "type":"integer", "range":{"min":5, "max":4999}}],
+             "modules": {"bootstrap":
                          {"params": {"n": card,
                                      "data_file": self.tfile("test1.data")}}}})
 

@@ -113,7 +113,8 @@ class DriverTests(CommandLineT):
             "bootstrap": {"executable": "bootstrap/random",
                           "params": {"n": 1, "data_file": "test.data"}},
             "oracle": {"executable": "/bin/false"},
-            "source": {"executable": "/bin/false"},
+            "source": {"executable": "source/file",
+                       "params": {"data_file": "test.data"}},
             "control": {"executable": "control/points",
                         "params": {"points": 0}}}})
 

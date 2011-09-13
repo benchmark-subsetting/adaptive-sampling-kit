@@ -27,7 +27,7 @@ def select_n_random(input_file, output_file, n):
     samples = random.sample(lines, n)
     outf = open(output_file, "w")
     for s in samples:
-        outf.write(s)
+        outf.write(" ".join(s.split()[:len(conf("factors"))]) + "\n")
 
     outf.close()
 

@@ -86,10 +86,10 @@ def driver_loop():
 
         if iteration == 0:
             # Call bootstrap module to get the initial data
-            call_module("bootstrap", params=[newly_labelled])
-            if not os.path.exists(newly_labelled):
+            call_module("bootstrap", params=[requested])
+            if not os.path.exists(requested):
                 fatal("Bootstrap did not produce points "
-                      "({0} does not exist)".format(newly_labelled))
+                      "({0} does not exist)".format(requested))
         else:
             # Ask oracle to request new points
             call_module("oracle", params=[labelled, requested])
@@ -97,11 +97,11 @@ def driver_loop():
                 fatal("Oracle did not gave back requests "
                       "({0} does not exist)".format(requested))
 
-            # Call source to fulfill the requests
-            call_module("source", params=[requested, newly_labelled])
-            if not os.path.exists(newly_labelled):
-                fatal("Source did not fullfill requests "
-                      "({0} does not exist)".format(newly_labelled))
+        # Call source to fulfill the requests
+        call_module("source", params=[requested, newly_labelled])
+        if not os.path.exists(newly_labelled):
+            fatal("Source did not fullfill requests "
+                  "({0} does not exist)".format(newly_labelled))
 
         # Append newly_labelled points to labelled
         L.debug("Updating labelled points")
