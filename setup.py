@@ -20,6 +20,8 @@ except ImportError:
 
 
 if missing:
-    print "Please install the following python packages: {0}".format(" ".join(missing))
-    print "On ubuntu you can type: sudo apt-get install {0}".format(" ".join(ubuntu))
+    print ("Please install the following python packages: {0}"
+        .format("".join(missing)))
+    print ("On ubuntu you can type: sudo apt-get install {0}"
+        .format(" ".join(ubuntu)))
     sys.exit(1)
