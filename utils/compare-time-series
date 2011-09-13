@@ -1,0 +1,26 @@
+#!/usr/bin/env Rscript
+
+# This script compares time series statistics extracted by different ASK runs
+#
+
+require(lattice)
+
+args <- commandArgs(trailingOnly = T)
+if (length(args) < 2) {
+   stop("Usage: compare-time-series <output.png> <timeseries1> <timeseries2> ...")
+}
+
+data = data.frame()
+
+for (ts in args[-1]) {
+    dt = read.table(ts, header=T)
+    dt$population = ts
+    data = rbind(data, dt)
+}
+
+png(args[1], width=1000, height=700)
+colnames = names(dt)
+colnames = colnames[colnames != "samples" & colnames != "population"]
+
+form = formula(paste(paste(colnames, collapse="+"), "~ samples"))
+xyplot(form, data=data,  groups=population, layout=c(1,length(names(data))-1), ylab="", auto.key=list(space="right"))
