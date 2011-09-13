@@ -51,3 +51,15 @@ pp = levelplot(D$P ~ D$X*D$Y, cuts=31,
 
 print(ep, split=c(1,1,1,2), more=TRUE)
 print(pp, split=c(1,2,1,2), more=TRUE)
+
+
+# write time series statistics
+stats_out = conf("modules.reporter.params.timeseries", "") 
+if (stats_out != "") {
+    card = nrow(labelled)
+    mean_err = mean(D$E)
+    max_err = max(D$E)
+    sf = file(stats_out, "a")
+    writeLines(paste(card, mean_err, max_err),con=sf,sep="\n")
+    close(sf)
+}
