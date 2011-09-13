@@ -7,6 +7,14 @@ from common.util import fatal
 
 
 def report(configuration, iteration, labels, new_labels, model, test_set):
+    # when iteration is 0 initialize timeseries output file
+    ts = configuration("modules.reporter.params.timeseries",
+                       expected_type=basestring, default_value="")
+    if iteration == 0 and ts:
+        tf = open(ts,"w")
+        tf.write("samples mean-error max-error\n")
+        tf.close()
+
     # filenames
     prediction = "{0}/prediction{1:05d}.data".format(
         configuration("output_directory"),
