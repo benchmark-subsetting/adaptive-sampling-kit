@@ -18,9 +18,17 @@ for (ts in args[-1]) {
     data = rbind(data, dt)
 }
 
-png(args[1], width=1000, height=700)
+
 colnames = names(dt)
 colnames = colnames[colnames != "samples" & colnames != "population"]
 
-form = formula(paste(paste(colnames, collapse="+"), "~ samples"))
-xyplot(form, data=data,  groups=population, layout=c(1,length(names(data))-1), ylab="", auto.key=list(space="right"))
+
+png(args[1], width=1000, height=1000)
+i = 1
+for (cn in colnames) {
+  form = formula(paste(cn, "~ samples"))
+  pp = xyplot(form, data=data, groups=population,
+    auto.key=list(space="right"), type = c("l","o"))
+  print(pp, split=c(1,i,1,length(colnames)), more=TRUE)
+  i = i + 1
+}
