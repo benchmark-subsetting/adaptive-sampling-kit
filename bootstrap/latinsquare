@@ -16,8 +16,13 @@ if (!is.numeric(conf("modules.bootstrap.params.n"))) {
 }
 
 # Generate a latin square configuration for the factors
-samples = randomLHS(as.integer(conf("modules.bootstrap.params.n")),
-  length(conf("factors")))
+if (conf("modules.bootstrap.params.method", "random") == "genetic") {
+    samples = geneticLHS(as.integer(conf("modules.bootstrap.params.n")),
+        length(conf("factors")))
+} else {
+    samples = randomLHS(as.integer(conf("modules.bootstrap.params.n")),
+        length(conf("factors")))
+}
 
 # Resample columns according to the factor ranges
 # and round columns corresponding to integer factors 
