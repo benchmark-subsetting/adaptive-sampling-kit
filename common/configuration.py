@@ -48,7 +48,8 @@ class Configuration():
             self.check_factors()
 
             # Write live configuration to disk
-            filename = "live_configuration.conf"
+            filename = os.path.join(self._conf["output_directory"], 
+                                    "live_configuration.conf")
             self._conf["configuration_file"] = filename
             f = open(filename, "w")
             json.dump(self._conf, f, indent=2)
