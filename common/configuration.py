@@ -11,11 +11,18 @@ expected_modules = ["oracle", "reporter", "control",
 
 
 def check_executable(modulepath):
-    modulepath = os.path.join(os.environ["ASKHOME"], modulepath)
+    # Find exact module path
+    # try raw module path
     if not os.path.isfile(modulepath):
-        fatal("Module {0} could not be found".format(modulepath))
+        # if not found look relatively to ASKHOME
+        modulepath = os.path.join(os.environ["ASKHOME"], modulepath)
+        if not os.path.isfile(modulepath):
+            fatal("Module {0} could not be found".format(modulepath))
+
+    # Check if the found path is executable
     if not os.access(modulepath, os.X_OK):
         fatal("Module {0} is not executable".format(modulepath))
+
     return modulepath
 
 
