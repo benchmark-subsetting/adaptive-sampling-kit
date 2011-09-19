@@ -150,7 +150,8 @@ def main():
 
     # Read Configuration
     C = Configuration(user_configuration=args.configuration,
-                      reload_live_configuration=False)
+                      reload_live_configuration=False,
+                      force_overwrite=args.force_overwrite)
 
     # Start Logger
     print "Logging to {0}".format(C("log.logfile"))
@@ -163,20 +164,6 @@ def main():
     fh.setLevel(eval("logging." + C("log.level")))
     L.addHandler(fh)
     L.debug("Logger started at level {0}".format(C("log.level")))
-
-    # Check that the output directory does not exist
-    if os.path.exists(C("output_directory")):
-        if args.force_overwrite:
-            L.warning("Removing existing output directory {0}"
-                      " since --force_overwrite was passed."
-                      .format(C("output_directory")))
-            shutil.rmtree(C("output_directory"))
-        else:
-            fatal("Output directory \"{0}\" already exists."
-                  " Use --force_overwrite option to discard it."
-                  .format(C("output_directory")))
-
-    os.makedirs(C("output_directory"))
 
     # Enter driver loop
     driver_loop()

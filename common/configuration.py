@@ -2,6 +2,7 @@ import json
 import math
 import os
 import os.path
+import shutil
 
 from common.util import fatal
 
@@ -29,7 +30,8 @@ def check_executable(modulepath):
 class Configuration():
     def __init__(self,
                  user_configuration,
-                 reload_live_configuration=True):
+                 reload_live_configuration=True,
+                 force_overwrite=False):
 
         # If reloading a live configuration, there is
         # no need to check it for errors nor load the
@@ -48,6 +50,8 @@ class Configuration():
             # Overwrite default configuration with user's one
             Configuration.overwrite(self._conf, user_conf)
 
+            # Check and eventually create the output directory
+            self.check_outdir(force_overwrite)
             # Change and check modules paths
             self.check_modules()
 
@@ -55,13 +59,29 @@ class Configuration():
             self.check_factors()
 
             # Write live configuration to disk
-            filename = os.path.join(self._conf["output_directory"], 
-                                    "live_configuration.conf")
+            filename = os.path.join(self._conf["output_directory"],
+                                    ".ask.conf")
             self._conf["configuration_file"] = filename
             f = open(filename, "w")
             json.dump(self._conf, f, indent=2)
             f.write("\n")
             f.close()
+
+    def check_outdir(self, force_overwrite):
+        """ Ensure that the output directory can be used """
+
+        if os.path.exists(self("output_directory")):
+            if force_overwrite:
+                print("Removing existing output directory {0}"
+                        " since --force_overwrite was passed."
+                        .format(self("output_directory")))
+                shutil.rmtree(self("output_directory"))
+            else:
+                fatal("Output directory \"{0}\" already exists."
+                      " Use --force_overwrite option to discard it."
+                      .format(self("output_directory")))
+
+        os.makedirs(self("output_directory"))
 
     def check_factors(self):
         """ Check the factors configuration section """
