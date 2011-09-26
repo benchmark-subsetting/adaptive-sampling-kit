@@ -11,7 +11,7 @@ uniform_sampling <- function(variance, nsamples) {
   return(out$samples+1)
 }
 
-# Adaptative mart method from YU,LI,FANG,PENG 09
+# Adaptive mart method from YU,LI,FANG,PENG 09
 Amart <- function(sampled, available, formula, ssample, ntree, NRS) { 
   pred = vector("list", NRS)
   print("Building the trees ...")
@@ -36,8 +36,8 @@ Amart <- function(sampled, available, formula, ssample, ntree, NRS) {
   cov_list <- variance_list/mean_list
   covf <- data.frame(cl=cov_list, ind=c(1:nrow(available)))    
    
-  #draw new samples using the adaptative sampling method
-  print("Adaptative sampling")
+  #draw new samples using the adaptive sampling method
+  print("Adaptive sampling")
   covf.sorted = covf[order(covf$cl, decreasing=TRUE),]
   smp_indexes = uniform_sampling(covf.sorted[,1], ssample)
   print(paste("Last sampled=",smp_indexes[[length(smp_indexes)]]))
