@@ -6,10 +6,10 @@ require(rjson, quietly=T)
 args <- commandArgs(trailingOnly = T)
 
 if (length(args) != 4) {
-    stop("Usage: gbm <configuration.conf> <model> <requested_file> <output_file>")
+    stop("Usage: gbm_predict <configuration.conf> <model> <requested_file> <output_file>")
 }
 
-# Load the previous model
+# read the requested points 
 req = read.table(args[3])
 
 # Set up categorical variables as factors

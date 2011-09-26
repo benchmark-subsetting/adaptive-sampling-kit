@@ -7,7 +7,7 @@ require(rjson, quietly=T)
 args <- commandArgs(trailingOnly = T)
 
 if (length(args) != 3) {
-    stop("Usage: gbm <configuration.conf> <labelled_file> <output_file>")
+    stop("Usage: gbm_build <configuration.conf> <labelled_file> <output_file>")
 }
 
 source(file.path(Sys.getenv("ASKHOME"), "common/configuration.R"))
