@@ -70,8 +70,8 @@ class BootstrapLatinsquareTests(CommandLineT):
         """ Latinsquare bootstrap should print a message
         if parameters are missing
         """
-        self.conf({
-            "factors": [],
+        self.conf(
+            {"factors": [],
             "modules": {"bootstrap":
                         {"params": {}}}})
 
@@ -97,8 +97,10 @@ class BootstrapLatinsquareTests(CommandLineT):
     def test_sampling(self):
         """ Latinsquare bootstrap should sample points """
         card = 17
+        self.run("mkdir outdir")
         self.conf(
-            {"factors": [{"name": "f1", "type": "integer",
+            {"output_directory" : "outdir",
+             "factors": [{"name": "f1", "type": "integer",
                           "range": {"min": -10, "max": 100}},
                          {"name": "f2", "type": "float",
                           "range": {"min": -10, "max": 100}},
