@@ -1,0 +1,54 @@
+#!/usr/bin/env Rscript
+
+suppressPackageStartupMessages(require(lhs, quietly=T))
+
+# Parse the arguments
+args <- commandArgs(trailingOnly = T)
+
+if (length(args) != 3) {
+    stop("Usage: latinsquare <configuration.conf> <input_file> <output_file>")
+}
+
+source(file.path(Sys.getenv("ASKHOME"), "common/configuration.R"))
+
+# Check that n is an integer
+if (!is.numeric(conf("modules.oracle.params.n"))) {
+  stop("modules.oracle.params.n must be an integer")
+}
+n = conf("modules.oracle.params.n")
+
+# load previous latinsquare non resampled data : "samples"
+load(file.path(conf("output_directory"), "last_latinsquare.data"))
+
+# augment it
+samples = augmentLHS(samples, n)
+
+# Save latinsquare model for possible future augmenting by another latinsquare
+# sampler
+save(samples, file=file.path(conf("output_directory"), "last_latinsquare.data"))
+
+# keep only the new samples, which are the last n lines of the
+# samples matrix
+samples = samples[(nrow(samples)-n+1):(nrow(samples)),]
+
+# Resample columns according to the factor ranges
+# to get something close to the original [0, 1] lhs model.
+i = 1
+for (f in conf("factors")) {
+  if (f$type == "categorical") {
+    samples[,i] = length(f$range$values)*samples[,i]
+  }
+  else
+  {
+    samples[,i] = f$range$min + (f$range$max-f$range$min)*samples[,i]
+  }
+
+  # Round columns for non float factors
+  if (f$type != "float") {
+    samples[,i] = as.integer(samples[,i])
+  }
+  i = i + 1
+}
+
+# Write samples to output file
+write.table(samples, file=args[3], sep=" ", quote=F, col.names=F, row.names=F)

@@ -3,6 +3,8 @@
 # configuration.
 
 suppressPackageStartupMessages(require(lhs, quietly=T))
+# Parse the arguments
+require(rjson, quietly=T)
 
 args <- commandArgs(trailingOnly = T)
 if (length(args) != 2) {
@@ -24,8 +26,11 @@ if (conf("modules.bootstrap.params.method", "random") == "genetic") {
         length(conf("factors")))
 }
 
+# Save latinsquare model for possible future augmenting by latinsquare sampler
+save(samples, file=file.path(conf("output_directory"), "last_latinsquare.data"))
+
 # Resample columns according to the factor ranges
-# and round columns corresponding to integer factors 
+# and round columns corresponding to integer factors
 i = 1
 for (f in conf("factors")) {
   if (f$type == "categorical") {
@@ -39,7 +44,7 @@ for (f in conf("factors")) {
   # Round columns for non float factors
   if (f$type != "float") {
     samples[,i] = as.integer(samples[,i])
-  }    
+  }
   i = i + 1
 }
 
