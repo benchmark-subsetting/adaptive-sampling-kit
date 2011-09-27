@@ -49,7 +49,7 @@ Amart <- function(sampled, available, formula, ssample, ntree, NRS) {
 args <- commandArgs(trailingOnly = T)
 
 if (length(args) != 3) {
-    stop("Usage: file <configuration.conf> <input_file> <output_file>")
+    stop("Usage: amart <configuration.conf> <input_file> <output_file>")
 }
 source(file.path(Sys.getenv("ASKHOME"), "common/configuration.R"))
 
