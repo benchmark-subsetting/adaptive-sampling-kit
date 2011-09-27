@@ -2,7 +2,6 @@
 
 
 suppressPackageStartupMessages(require(gbm, quietly=T))
-require(rjson, quietly=T)
 
 args <- commandArgs(trailingOnly = T)
 

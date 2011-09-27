@@ -1,7 +1,6 @@
 #!/usr/bin/env Rscript
 
 suppressPackageStartupMessages(require(tgp, quietly=T))
-require(rjson, quietly=T)
 
 args <- commandArgs(trailingOnly = T)
 

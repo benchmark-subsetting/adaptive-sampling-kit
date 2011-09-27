@@ -1,7 +1,6 @@
 #!/usr/bin/env Rscript
 
 suppressPackageStartupMessages(require(tgp, quietly=T))
-require(rjson, quietly=T)
 
 args <- commandArgs(trailingOnly = T)
 
@@ -9,13 +8,14 @@ if (length(args) != 4) {
     stop("Usage: tgp_predict <configuration.conf> <model> <requested_file> <output_file>")
 }
 
+source(file.path(Sys.getenv("ASKHOME"), "common/configuration.R"))
 # read the requested points 
 req = read.table(args[3])
 
 # Set up categorical variables as factors
 configuration = fromJSON(paste(readLines(args[1]), collapse=""))
 i = 0
-for (f in configuration$factors) {
+for (f in conf("factors")) {
   i = i + 1
   if (f$type == "categorical") {
     stop("categorical data not yet supported in tgp module")
@@ -31,6 +31,9 @@ load(args[2])
 requested = req[,1:nfactors]
 
 i = 0
+
+# The gbm prediction must work in chunks. 
+# If passed a data.frame too large tgp package complains.
 while(T) {
     from = i*5000+1
     to = min((i+1)*5000,nrow(requested))

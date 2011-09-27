@@ -46,15 +46,13 @@ Amart <- function(sampled, available, formula, ssample, ntree, NRS) {
 }
 
 # Parse the arguments
-require(rjson, quietly=T)
-
 args <- commandArgs(trailingOnly = T)
 
 if (length(args) != 3) {
     stop("Usage: file <configuration.conf> <input_file> <output_file>")
 }
+source(file.path(Sys.getenv("ASKHOME"), "common/configuration.R"))
 
-configuration = fromJSON(paste(readLines(args[1]), collapse=""))
 
 # Read the data
 data = read.table(args[2])
@@ -63,7 +61,7 @@ data = read.table(args[2])
 # as factors
 lf = list()
 i = 1
-for (f in configuration$factors) {
+for (f in conf("factors")) {
   if (f$type == "categorical") {
     data[,i] = as.factor(data[,i])
     r = f$values
@@ -79,7 +77,7 @@ available = eval(parse(text=paste("cbind(available, V",
 # Rename avaible columns from Vari -> Vi so they are consistent
 # with the input
 i = 1
-for (f in configuration$factors) {
+for (f in conf("factors")) {
   names(available)[names(available)==paste("Var",i,sep="")] <- paste("V",i,sep="")
   i = i + 1
 }
@@ -87,23 +85,10 @@ for (f in configuration$factors) {
 # the regression formula
 formula = formula(paste("V",ncol(data),"~.", sep=""))
 
-ordefault <- function(v,d) {
-  if(is.null(v)) return(d) else return(v)
-}
-
 newsamples <- Amart(data, available, formula,
-                    ssample=ordefault(
-                      configuration$modules$oracle$params$n,
-                      10
-                      ),
-                    ntree=ordefault(
-                      configuration$modules$oracle$params$trees,
-                      1000
-                      ),
-                    NRS=ordefault(
-                      configuration$modules$oracle$params$seeds,
-                      20
-                      )
+                    ssample=conf("modules.oracle.params.n", 10),
+                    ntree=conf("modules.oracle.params.trees", 1000),
+                    NRS=conf("modules.oracle.params.seeds",20)
                     )
 
 write.table(newsamples[,1:ncol(newsamples)-1],
