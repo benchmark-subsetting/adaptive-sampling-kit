@@ -25,5 +25,5 @@ X = input[,-ncol(input)]
 Z = input[,ncol(input)]
 tgp1 <- btgpllm(X, Z, pred.n=F, verb=T)
 
-save.image(args[3])
+save(tgp1, file=args[3])
 
