@@ -34,9 +34,12 @@ i = 0
 
 # The gbm prediction must work in chunks.
 # If passed a data.frame too large tgp package complains.
+chunk_size=1000
+step=chunk_size/nrow(requested)*100
+progress= 0
 while(T) {
-    from = i*5000+1
-    to = min((i+1)*5000,nrow(requested))
+    from = i*chunk_size+1
+    to = min((i+1)*chunk_size,nrow(requested))
     r = requested[from:to,]
 
     pred = predict(tgp1, r, pred.n=F, zcov=F, krige=F)
@@ -45,4 +48,8 @@ while(T) {
 
     if (to == nrow(requested)) break;
     i = i + 1
+    progress = progress + step
+    if (round(progress,0) %% 10 == 0 && round(progress-step) %% 10 != 0) {
+        print(paste("Progress", round(progress,0), "%"))
+    }
 }

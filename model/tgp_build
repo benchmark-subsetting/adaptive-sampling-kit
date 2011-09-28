@@ -22,7 +22,7 @@ for (f in conf("factors")) {
 # split input in explicative variables, X, and response, Z.
 X = input[,-ncol(input)]
 Z = input[,ncol(input)]
-tgp1 <- btgpllm(X, Z, pred.n=F, verb=T)
+tgp1 <- btgpllm(X, Z, pred.n=F, verb=T, corr="exp")
 
 save(tgp1, file=args[3])
 

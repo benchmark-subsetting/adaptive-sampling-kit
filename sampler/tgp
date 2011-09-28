@@ -7,10 +7,17 @@ suppressPackageStartupMessages(require(lhs, quietly=T))
 dyn.load(file.path(Sys.getenv("ASKHOME"), "common/libuniformsampling.so"))
 
 tgp_sample <- function(X, Z, available, n) {
-  tgpout <- btgpllm(X, Z, verb=T)
+  #build D optimal design according to MAP tree
+  tgpout <- btgpllm(X = X, Z = Z, pred.n = FALSE, corr = "exp", verb = T)
   design = tgp.design(n, available, tgpout)
-  # strangely tgp.design returns more points than n
-  return(design[1:n,])
+
+  #Apply ALC to the selected D optimal points
+  tgpout <- btgpllm(X, Z, XX=design, verb=T, corr="exp", Ds2x = T)
+  rated = data.frame(design, SORTBY=tgpout$Ds2x)
+  # Sort by variance
+  rated = rated[order(rated$SORTBY, decreasing=T),]
+  # Select the n points with the highest variance
+  return(rated[1:n,1:ncol(rated)-1])
 }
 
 # Parse the arguments
@@ -32,7 +39,7 @@ lf = list()
 i = 1
 mins = c()
 maxs = c()
-for (f in conf("factors") {
+for (f in conf("factors")) {
   if (f$type == "categorical") {
     stop("categorical data not yet supported in tgp module")
   } else {
@@ -42,10 +49,10 @@ for (f in conf("factors") {
   i = i+1
 }
 
-available <- lhs(4*nsamples, cbind(mins,maxs))
+available <- lhs(10*nsamples, cbind(mins,maxs))
 
 i = 1
-for (f in conf("factors") {
+for (f in conf("factors")) {
     if (f$type == "integer") {
         available[,i] = as.integer(available[,i])
     }
@@ -55,7 +62,7 @@ for (f in conf("factors") {
 # Rename available columns from Vari -> Vi so they are consistent
 # with the input
 i = 1
-for (f in conf("factors") {
+for (f in conf("factors")) {
   names(available)[names(available)==paste("Var",i,sep="")] <- paste("V",i,sep="")
   i = i + 1
 }
