@@ -7,7 +7,7 @@ import shutil
 from common.util import fatal
 
  # Modules that need to be defined for the ask to work
-expected_modules = ["oracle", "reporter", "control",
+expected_modules = ["sampler", "reporter", "control",
                  "model", "bootstrap", "source"]
 
 

@@ -16,8 +16,8 @@ class AmartTests(CommandLineT):
              "range": {"min": 5, "max": 4999}}],
 
             "modules": {
-            "oracle": {
-            "executable": "oracle/amart",
+            "sampler": {
+            "executable": "sampler/amart",
             "params": {"n": 50, "seeds": 3, "trees": 10}},
 
             "control": {
@@ -54,8 +54,8 @@ class HierarchicalTests(CommandLineT):
              "range": {"min": 5, "max": 4999}}],
 
             "modules": {
-            "oracle": {
-            "executable": "oracle/hierarchical",
+            "sampler": {
+            "executable": "sampler/hierarchical",
             "params": {"n": 50, "cp": 0.01}},
 
             "control": {

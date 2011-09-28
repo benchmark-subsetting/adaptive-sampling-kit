@@ -24,7 +24,7 @@ source(file.path(Sys.getenv("ASKHOME"), "common/configuration.R"))
 
 # Read the data
 data = read.table(args[2])
-nsamples= conf("modules.oracle.params.n",10)
+nsamples= conf("modules.sampler.params.n",10)
 
 # Generate all available points and set up categorical variables
 # as factors

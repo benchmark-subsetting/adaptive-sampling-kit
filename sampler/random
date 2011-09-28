@@ -87,4 +87,4 @@ if __name__ == "__main__":
         conf,
         args.input_file,
         args.output_file,
-        conf("modules.oracle.params.n", int))
+        conf("modules.sampler.params.n", int))

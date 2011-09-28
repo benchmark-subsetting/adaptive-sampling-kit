@@ -12,10 +12,10 @@ if (length(args) != 3) {
 source(file.path(Sys.getenv("ASKHOME"), "common/configuration.R"))
 
 # Check that n is an integer
-if (!is.numeric(conf("modules.oracle.params.n"))) {
-  stop("modules.oracle.params.n must be an integer")
+if (!is.numeric(conf("modules.sampler.params.n"))) {
+  stop("modules.sampler.params.n must be an integer")
 }
-n = conf("modules.oracle.params.n")
+n = conf("modules.sampler.params.n")
 
 # load previous latinsquare non resampled data : "samples"
 load(file.path(conf("output_directory"), "last_latinsquare.data"))

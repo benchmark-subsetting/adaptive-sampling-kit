@@ -91,8 +91,8 @@ def driver_loop():
                 fatal("Bootstrap did not produce points "
                       "({0} does not exist)".format(requested))
         else:
-            # Ask oracle to request new points
-            call_module("oracle", params=[labelled, requested])
+            # Ask sampler to request new points
+            call_module("sampler", params=[labelled, requested])
             if not os.path.exists(requested):
                 fatal("Oracle did not gave back requests "
                       "({0} does not exist)".format(requested))

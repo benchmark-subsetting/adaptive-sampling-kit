@@ -14,7 +14,7 @@ class DriverTests(CommandLineT):
                    "factors" : [],
                    "modules" : {
                       "bootstrap" : {"executable":"/bin/false"},
-                      "oracle" : {"executable":"/bin/false"},
+                      "sampler" : {"executable":"/bin/false"},
                       "source" : {"executable":"/bin/false"},
                       "control" : {"executable":"/bin/false"},
                    }})
@@ -33,7 +33,7 @@ class DriverTests(CommandLineT):
                    "factors" : [],
                    "modules" : {
                       "bootstrap" : {"executable":"/bin/false"},
-                      "oracle" : {"executable":"/bin/false"},
+                      "sampler" : {"executable":"/bin/false"},
                       "source" : {"executable":"/bin/false"},
                       "control" : {"executable":"/bin/false"},
                    }})

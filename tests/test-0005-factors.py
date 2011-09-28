@@ -11,7 +11,7 @@ class DriverTests(CommandLineT):
           "output_directory": "outdir",
           "modules": {
             "bootstrap": {"executable": "/bin/false"},
-            "oracle": {"executable": "/bin/false"},
+            "sampler": {"executable": "/bin/false"},
             "source": {"executable": "/bin/false"},
             "control": {"executable": "/bin/false"}}})
 
@@ -28,7 +28,7 @@ class DriverTests(CommandLineT):
           "output_directory": "outdir",
           "modules": {
             "bootstrap": {"executable": "/bin/false"},
-            "oracle": {"executable": "/bin/false"},
+            "sampler": {"executable": "/bin/false"},
             "source": {"executable": "/bin/false"},
             "control": {"executable": "/bin/false"}}})
 
@@ -46,7 +46,7 @@ class DriverTests(CommandLineT):
           "output_directory": "outdir",
           "modules": {
             "bootstrap": {"executable": "/bin/false"},
-            "oracle": {"executable": "/bin/false"},
+            "sampler": {"executable": "/bin/false"},
             "source": {"executable": "/bin/false"},
             "control": {"executable": "/bin/false"}}})
 
@@ -63,7 +63,7 @@ class DriverTests(CommandLineT):
           "output_directory": "outdir",
           "modules": {
             "bootstrap": {"executable": "/bin/false"},
-            "oracle": {"executable": "/bin/false"},
+            "sampler": {"executable": "/bin/false"},
             "source": {"executable": "/bin/false"},
             "control": {"executable": "/bin/false"}}})
 
@@ -84,7 +84,7 @@ class DriverTests(CommandLineT):
           "output_directory": "outdir",
           "modules": {
             "bootstrap": {"executable": "/bin/false"},
-            "oracle": {"executable": "/bin/false"},
+            "sampler": {"executable": "/bin/false"},
             "source": {"executable": "/bin/false"},
             "control": {"executable": "/bin/false"}}})
 
@@ -112,7 +112,7 @@ class DriverTests(CommandLineT):
           "modules": {
             "bootstrap": {"executable": "bootstrap/random",
                           "params": {"n": 1, "data_file": "test.data"}},
-            "oracle": {"executable": "/bin/false"},
+            "sampler": {"executable": "/bin/false"},
             "source": {"executable": "source/file",
                        "params": {"data_file": "test.data"}},
             "control": {"executable": "control/points",

@@ -86,9 +86,9 @@ for (f in conf("factors")) {
 formula = formula(paste("V",ncol(data),"~.", sep=""))
 
 newsamples <- Amart(data, available, formula,
-                    ssample=conf("modules.oracle.params.n", 10),
-                    ntree=conf("modules.oracle.params.trees", 1000),
-                    NRS=conf("modules.oracle.params.seeds",20)
+                    ssample=conf("modules.sampler.params.n", 10),
+                    ntree=conf("modules.sampler.params.trees", 1000),
+                    NRS=conf("modules.sampler.params.seeds",20)
                     )
 
 write.table(newsamples[,1:ncol(newsamples)-1],
