@@ -9,7 +9,7 @@ if (length(args) != 4) {
 }
 
 source(file.path(Sys.getenv("ASKHOME"), "common/configuration.R"))
-# read the requested points 
+# read the requested points
 req = read.table(args[3])
 
 # Set up categorical variables as factors
@@ -20,7 +20,7 @@ for (f in conf("factors")) {
   if (f$type == "categorical") {
     stop("categorical data not yet supported in tgp module")
     #req[,i] = as.factor(req[,i])
-  } 
+  }
 }
 nfactors = i
 
@@ -32,7 +32,7 @@ requested = req[,1:nfactors]
 
 i = 0
 
-# The gbm prediction must work in chunks. 
+# The gbm prediction must work in chunks.
 # If passed a data.frame too large tgp package complains.
 while(T) {
     from = i*5000+1

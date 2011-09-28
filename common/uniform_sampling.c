@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <assert.h>
 
-/* When finding the delta, we stop when the last selected point position is whithin 
+/* When finding the delta, we stop when the last selected point position is whithin
    PRECISION % of the last available point
 */
-#define PRECISION 10 
+#define PRECISION 10
 
 
 #define RESOLUTION 0.000000001
@@ -55,19 +55,19 @@ void uniform_sampling(int * vsize, int * ssize, double * variance, int * samples
         double delta = (max_delta + min_delta) / 2.0 ;
         if ( (max_delta - min_delta)  < RESOLUTION) {
             int decision = try_delta(min_delta-RESOLUTION, vs, ss, variance, samples);
-            assert(decision >= 0); 
+            assert(decision >= 0);
             return;
         }
         printf("Trying delta %lE\n", delta);
         int decision = try_delta(delta, vs, ss, variance, samples);
         if (decision == 0 ) /* All done */
         {
-            break; 
-        } 
-        else if (decision == -1) /* decrease delta */ 
-        { 
+            break;
+        }
+        else if (decision == -1) /* decrease delta */
+        {
             max_delta = delta;
-        } 
+        }
         else if (decision == 1) /* increase delta */
         {
             min_delta = delta;

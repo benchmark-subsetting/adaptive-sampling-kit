@@ -18,16 +18,16 @@ i = 1
 for (f in conf("factors")) {
   if (f$type == "categorical") {
     input[,i] = as.factor(input[,i])
-  } 
+  }
   i = i+1
 }
 
 expr = eval(parse(text=paste("input$V",ncol(input),"~ .",sep="")))
-gbm1 = gbm(expr , 
-           data=input, 
-           n.trees=conf("modules.model.params.ntrees",100), 
-           interaction.depth=conf("modules.model.params.interactiondepth", 5), 
-           shrinkage=conf("modules.model.params.shrinkage", 0.01), 
+gbm1 = gbm(expr ,
+           data=input,
+           n.trees=conf("modules.model.params.ntrees",100),
+           interaction.depth=conf("modules.model.params.interactiondepth", 5),
+           shrinkage=conf("modules.model.params.shrinkage", 0.01),
            distribution=conf("modules.model.params.distribution","gaussian"),
            verbose=conf("modules.model.params.verbose", F))
 best.iter = gbm.perf(gbm1,method="OOB",plot.it=FALSE)

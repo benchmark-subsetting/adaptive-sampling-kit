@@ -12,18 +12,18 @@ uniform_sampling <- function(variance, nsamples) {
 }
 
 # Adaptive mart method from YU,LI,FANG,PENG 09
-Amart <- function(sampled, available, formula, ssample, ntree, NRS) { 
+Amart <- function(sampled, available, formula, ssample, ntree, NRS) {
   pred = vector("list", NRS)
   print("Building the trees ...")
   for (see in c(1:NRS)) {
     print(paste("Tree ", see, "/", NRS))
     # select a new random seed
     set.seed(floor(runif(1,1,2**16)))
-      
+
     # build a tree
     gbm1 <- gbm(formula, data=sampled, distribution="gaussian",
                 n.trees=ntree,
-                interaction.depth=3, shrinkage=0.01, verbose=F)           
+                interaction.depth=3, shrinkage=0.01, verbose=F)
     best.iter <- gbm.perf(gbm1,method="OOB",plot.it=FALSE)
     # generate predictions with the tree on the non sampled points
     pred[[see]] <- predict(gbm1, available, n.trees=best.iter)
@@ -34,8 +34,8 @@ Amart <- function(sampled, available, formula, ssample, ntree, NRS) {
   variance_list <- apply(m,2,var)
   mean_list <- apply(m,2,mean)
   cov_list <- variance_list/mean_list
-  covf <- data.frame(cl=cov_list, ind=c(1:nrow(available)))    
-   
+  covf <- data.frame(cl=cov_list, ind=c(1:nrow(available)))
+
   #draw new samples using the adaptive sampling method
   print("Adaptive sampling")
   covf.sorted = covf[order(covf$cl, decreasing=TRUE),]

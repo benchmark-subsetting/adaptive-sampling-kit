@@ -21,7 +21,7 @@ suppressPackageStartupMessages(require(graphics, quietly=T))
 suppressPackageStartupMessages(require(lattice, quietly=T))
 png(file=outputpng, width=1000, height=1200)
 
-ep = levelplot(D$E ~ D$X*D$Y, cuts=31, 
+ep = levelplot(D$E ~ D$X*D$Y, cuts=31,
         colorkey=list(col=rev(heat.colors(32))),
         col.regions=rev(heat.colors(32)),
         at=seq(from=0,to=conf("modules.reporter.params.max_error_scale",
@@ -38,7 +38,7 @@ ep = levelplot(D$E ~ D$X*D$Y, cuts=31,
         )
 
 
-pp = levelplot(D$P ~ D$X*D$Y, cuts=31, 
+pp = levelplot(D$P ~ D$X*D$Y, cuts=31,
         colorkey=list(col=rev(heat.colors(32))),
         col.regions=rev(heat.colors(32)), xlab="X",
         ylab="Y     (Prediction)",
@@ -54,7 +54,7 @@ print(pp, split=c(1,2,1,2), more=TRUE)
 
 
 # write time series statistics
-stats_out = conf("modules.reporter.params.timeseries", "") 
+stats_out = conf("modules.reporter.params.timeseries", "")
 if (stats_out != "") {
     card = nrow(labelled)
     mean_err = mean(D$E)

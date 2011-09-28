@@ -16,11 +16,11 @@ for (f in conf("factors")) {
   if (f$type == "categorical") {
     #input[,i] = as.factor(input[,i])
     stop("categorical data not yet supported in tgp module")
-  } 
+  }
 }
 
-# split input in explicative variables, X, and response, Z.  
-X = input[,-ncol(input)] 
+# split input in explicative variables, X, and response, Z.
+X = input[,-ncol(input)]
 Z = input[,ncol(input)]
 tgp1 <- btgpllm(X, Z, pred.n=F, verb=T)
 

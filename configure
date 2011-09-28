@@ -24,4 +24,4 @@ fi
 
 # Build uniform_sampling so
 echo "Building uniform sampling dynamic library (only needed for amart oracle module)"
-gcc -O3 -fPIC -shared common/uniform_sampling.c -o common/libuniformsampling.so 
+gcc -O3 -fPIC -shared common/uniform_sampling.c -o common/libuniformsampling.so
