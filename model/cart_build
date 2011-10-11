@@ -13,5 +13,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     conf = Configuration(args.configuration)
-    T = common.cart.build_tree(conf, conf("modules.model.params.cp"), args.labelled_file)
+    T = common.cart.build_tree(conf, conf("modules.model.params.cp",
+                                          float, 0.01),
+                               args.labelled_file)
     save_tree(T, args.output_file)

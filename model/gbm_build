@@ -25,12 +25,12 @@ for (f in conf("factors")) {
 expr = eval(parse(text=paste("input$V",ncol(input),"~ .",sep="")))
 gbm1 = gbm(expr ,
            data=input,
-           n.trees=conf("modules.model.params.ntrees",100),
-           interaction.depth=conf("modules.model.params.interactiondepth", 5),
+           n.trees=conf("modules.model.params.ntrees",3000),
+           interaction.depth=conf("modules.model.params.interactiondepth", 8),
            shrinkage=conf("modules.model.params.shrinkage", 0.01),
            distribution=conf("modules.model.params.distribution","gaussian"),
            verbose=conf("modules.model.params.verbose", F))
-best.iter = gbm.perf(gbm1,method="OOB",plot.it=FALSE)
+best.iter = gbm.perf(gbm1,plot.it=FALSE, method="OOB")
 
 save(gbm1,best.iter,file=args[3])
 
