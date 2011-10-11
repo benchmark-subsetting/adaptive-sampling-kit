@@ -101,7 +101,6 @@ def find_sampling_distribution(configuration, T, samplesize):
 
     cons_raw = get_tagged_models(factors,
                                  T)
-    cons = []
     if ponderate:
         print "Ponderating by size"
         prob = [c["error"]["error"] * compute_size(c["constraint"])
