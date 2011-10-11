@@ -34,7 +34,7 @@ save(samples, file=file.path(conf("output_directory"), "last_latinsquare.data"))
 i = 1
 for (f in conf("factors")) {
   if (f$type == "categorical") {
-    samples[,i] = length(f$range$values)*samples[,i]
+    samples[,i] = length(f$values)*samples[,i]
   }
   else
   {
