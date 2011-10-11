@@ -7,44 +7,73 @@ points to label
 import math
 import numpy as np
 import pprint
-from random import shuffle, randint, choice
+from random import randint, choice, random
 
 from common.configuration import Configuration
 from common.util import fatal
-from common.tree import *
-from common.fit import *
+from common.tree import node_iterator
+from common.fit import residues
 from common.constraints import get_tagged_models
+from scipy import stats
 import common.cart
 
 
-def leaferror(N, mean_error):
+def leaferror_hoeffding(N, threshold):
     freq_error = 0
     m = N.model[0]
     card = 0
     for d in N.data:
         card += 1
-        if abs(d[-1] - m) > mean_error:
+        if abs(d[-1] - m) >= threshold:
             freq_error += 1
 
     error_probability = (float(freq_error) / float(card))
     assert(0 <= error_probability <= 1)
     R = 1
-    confidence = math.log(1.0 / 0.001)
-    hoeff = math.sqrt(R * R * confidence / (2 * card))
-    return min(error_probability + hoeff, 1.0)
+    confidence = math.log(1.0 / 0.1)
+    hoeff = math.sqrt(R * R * confidence / (3 * card))
+    return {"error": min(error_probability + hoeff, 1.0),
+            "confidence": hoeff,
+            "raw_error": error_probability}
 
 
-def compute_error_pernode(data, T):
-    # compute mean error
-    mean_error = compute_mean_error(data, T)
+def leaferror_variance(N, threshold):
+    est_variance = 0
+    m = N.model[0]
+    card = 0
+    for d in N.data:
+        card += 1
+        est_variance += (d[-1] - m) ** 2
 
+    est_variance = est_variance / float(card)
+    variance_corr = (card - 1) / stats.chi.ppf(0.05, card - 1) ** 2
+    variance_ub = est_variance * variance_corr
+    return {"error": variance_ub,
+            "confidence": variance_ub - est_variance,
+            "raw_error": est_variance}
+
+
+def compute_error_pernode(data, T, configuration):
     # fill the tree nodes
     for d in data:
         T.fill(d)
 
+    use_hoeffding = configuration("modules.sampler.params.use_hoeffding",
+                              bool,
+                              False)
+    if use_hoeffding:
+        print "Using Hoeffding correction"
+        # compute threshold
+        threshold = np.median(map(abs, residues(data, T)))
+        method = leaferror_hoeffding
+    else:
+        print "Using Variance Chi^2 correction"
+        threshold = None
+        method = leaferror_variance
+
     # compute the error on each node
     for N in node_iterator(T):
-        N.error = leaferror(N, mean_error)
+        N.error = method(N, threshold)
 
 
 def compute_size(constraint):
@@ -75,15 +104,18 @@ def find_sampling_distribution(configuration, T, samplesize):
     cons = []
     if ponderate:
         print "Ponderating by size"
-        prob = [c["error"] * compute_size(c["constraint"])
+        prob = [c["error"]["error"] * compute_size(c["constraint"])
                 for c in cons_raw]
     else:
         print "Not ponderating by size"
-        prob = [c["error"] for c in cons_raw]
+        prob = [c["error"]["error"] for c in cons_raw]
 
     totalp = sum(prob)
     proportions = [p * samplesize / totalp for p in prob]
     rounded = map(int, map(math.ceil, proportions))
+
+    for k, p in zip(cons_raw, proportions):
+        k["raw_proportion"] = p
 
     # remove rounding error
     while (sum(rounded) - samplesize):
@@ -96,7 +128,23 @@ def find_sampling_distribution(configuration, T, samplesize):
     for k, p in zip(cons_raw, proportions):
         k["sampling_proportion"] = p
 
+    # Print tree regions to debug
     pprint.pprint(cons_raw)
+
+    # XXX This section was used to generate a figure for
+    # an article, remove it before any release.
+    #
+    #f=open(os.path.join(configuration("output_directory"),
+    #       "hierarchical.dump"), "w")
+    #f.write("mi ma variance ub mean\n")
+    #for k in cons_raw:
+    #    mi =float(k["constraint"]["x"]["min"])
+    #    ma =float(k["constraint"]["x"]["max"])
+    #    var = math.sqrt(k["error"]["error_raw"])
+    #    ub = math.sqrt(k["error"]["error"])
+    #    mean = k["model"][0]
+    #    f.write("%s %s %s %s %s\n"%(mi,ma, var, ub, mean))
+    #f.close()
 
     # ensure we satisfy exactly the samplesize
     assert(sum(proportions) == samplesize)
@@ -113,7 +161,7 @@ def draw_point(factors, constraints):
             g = randint(int(c["min"]),
                         int(c["max"]))
             p.append(g)
-        elif f["type"] == "continous":
+        elif f["type"] == "float":
             g = random() * (c["max"] - c["min"]) + c["min"]
             p.append(g)
         elif f["type"] == "categorical":
@@ -130,10 +178,12 @@ def generate_possible_points(factors, constraints, labelled, n):
     # factors satisfying constraints
     count = 0
     tries = 0
+    # We draw a random point until we find a point never selected
+    # or we have done more than MAX_TRIES
     MAX_TRIES = 50
     while(count < n):
         p = draw_point(factors, constraints)
-        if p in labelled and tries < 50:
+        if p in labelled and tries < MAX_TRIES:
             tries += 1
             continue
         else:
@@ -143,7 +193,7 @@ def generate_possible_points(factors, constraints, labelled, n):
 
 
 def predict(configuration, input_file, output_file, n, cp):
-    print "using cp = {0}".format(cp)
+    print "using cut cp = {0}".format(cp)
     # build partition tree
     T = common.cart.build_tree(configuration, cp, input_file)
 
@@ -156,7 +206,7 @@ def predict(configuration, input_file, output_file, n, cp):
         labelled = labelled.reshape(1, labelled.shape[0])
 
     # compute the leaf error
-    compute_error_pernode(labelled, T)
+    compute_error_pernode(labelled, T, configuration)
 
     # compute sampling distribution
     distribution = find_sampling_distribution(configuration, T, n)
