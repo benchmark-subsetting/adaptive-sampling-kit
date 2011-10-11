@@ -111,6 +111,10 @@ def build_tree(conf, cp, input_file):
     rfile.write("rtree = rpart(data$V{0} ~ . , data=data, "
                 "control=rpart.control(cp={1}))\n".format(i+2,cp))
 
+    # Try to do cross validation pruning if enough samples are available
+    rfile.write('if ("xerror" %in% colnames(rtree$cptable)) {') 
+    rfile.write('bcp=rtree$cptable[which.min(rtree$cptable[,"xerror"]),"CP"]\n')
+    rfile.write('rtree = prune(rtree, bcp)\n}\n')
     rfile.write("print(rtree)\n")
     rfile.close()
 
