@@ -12,7 +12,7 @@ def report(configuration, iteration, labels, new_labels, model, test_set):
                        expected_type=basestring, default_value="")
     if iteration == 0 and ts:
         tf = open(ts,"w")
-        tf.write("samples mean-error max-error\n")
+        tf.write("samples mean-error max-error rmse\n")
         tf.close()
 
     # filenames
@@ -35,7 +35,9 @@ def report(configuration, iteration, labels, new_labels, model, test_set):
               " ".join(cmd))
 
     # plot 2D graph
-    cmd = [os.path.join(os.environ["ASKHOME"], "reporter/2D/2D.R"),
+    cmd = [os.path.join(os.environ["ASKHOME"],
+           "reporter/generic/{0}".format(
+           configuration("modules.reporter.params.script"))),
            configuration("configuration_file"),
            test_set,
            prediction,

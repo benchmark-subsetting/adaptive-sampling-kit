@@ -59,7 +59,8 @@ if (stats_out != "") {
     card = nrow(labelled)
     mean_err = mean(D$E)
     max_err = max(D$E)
+    rmse_err = sqrt(mean(D$E*D$E))
     sf = file(stats_out, "a")
-    writeLines(paste(card, mean_err, max_err),con=sf,sep="\n")
+    writeLines(paste(card, mean_err, max_err, rmse_err),con=sf,sep="\n")
     close(sf)
 }
