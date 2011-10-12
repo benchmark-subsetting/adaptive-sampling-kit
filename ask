@@ -70,7 +70,7 @@ def call_module(module, params=None):
                   .format(module, p.returncode), p.returncode)
 
 
-def driver_loop():
+def driver_loop(args):
     """ Main loop of the driver """
 
     L.debug("Starting driver loop")
@@ -78,30 +78,32 @@ def driver_loop():
     out_dir = C("output_directory")
     iteration = 0
     labelled = "{0}/labelled.data".format(out_dir)
+    os.remove(labelled)
     while(1):
         L.debug("**** Starting ITERATION {0} ****".format(iteration))
         model = "{0}/model{1:05d}.data".format(out_dir, iteration)
         newly_labelled = "{0}/labelled{1:05d}.data".format(out_dir, iteration)
         requested = "{0}/requested{1:05d}.data".format(out_dir, iteration)
 
-        if iteration == 0:
-            # Call bootstrap module to get the initial data
-            call_module("bootstrap", params=[requested])
-            if not os.path.exists(requested):
-                fatal("Bootstrap did not produce points "
-                      "({0} does not exist)".format(requested))
-        else:
-            # Ask sampler to request new points
-            call_module("sampler", params=[labelled, requested])
-            if not os.path.exists(requested):
-                fatal("Oracle did not gave back requests "
-                      "({0} does not exist)".format(requested))
+        if not args.replay_only:
+            if iteration == 0:
+                # Call bootstrap module to get the initial data
+                call_module("bootstrap", params=[requested])
+                if not os.path.exists(requested):
+                    fatal("Bootstrap did not produce points "
+                          "({0} does not exist)".format(requested))
+            else:
+                # Ask sampler to request new points
+                call_module("sampler", params=[labelled, requested])
+                if not os.path.exists(requested):
+                    fatal("Oracle did not gave back requests "
+                          "({0} does not exist)".format(requested))
 
-        # Call source to fulfill the requests
-        call_module("source", params=[requested, newly_labelled])
-        if not os.path.exists(newly_labelled):
-            fatal("Source did not fullfill requests "
-                  "({0} does not exist)".format(newly_labelled))
+            # Call source to fulfill the requests
+            call_module("source", params=[requested, newly_labelled])
+            if not os.path.exists(newly_labelled):
+                fatal("Source did not fullfill requests "
+                      "({0} does not exist)".format(newly_labelled))
 
         # Append newly_labelled points to labelled
         L.debug("Updating labelled points")
@@ -112,13 +114,16 @@ def driver_loop():
         orig.close()
 
         # Call model module
-        call_module("model", params=[labelled, model])
+
+        if not args.skip_model:
+            call_module("model", params=[labelled, model])
 
         # Call reporter module
-        call_module("reporter", params=[str(iteration),
-                                       labelled,
-                                       newly_labelled,
-                                       model])
+        if not args.skip_reporter:
+            call_module("reporter", params=[str(iteration),
+                                            labelled,
+                                            newly_labelled,
+                                            model])
 
         # Call control module (which will decide when to exit this loop)
         call_module("control", params=[str(iteration), labelled, model])
@@ -135,9 +140,34 @@ def main():
         action='store_true',
         help="If a previous output directory is found its contents"
         " will be overwritten")
+    parser.add_argument(
+        '--replay_only',
+        action='store_true',
+        help="(Must be run over a full previous ask run). Skip bootstrap and"
+             " sampler modules, but runs previous labels through the model and"
+             " reporter. This option is useful is one wants to run sampling"
+             " and analyse results separately.")
+
+    parser.add_argument(
+        '--skip_model',
+        action='store_true',
+        help="Skip model module. (WARNING: if the control module chosen"
+             " relies on the output of the model module, this option will"
+             " break ASK.)")
+
+    parser.add_argument(
+        '--skip_reporter',
+        action='store_true',
+        help="Skip reporter module. (WARNING: if the control module chosen"
+             " relies on the output of the model module, this option will"
+             "break ASK.)")
+
     parser.add_argument('configuration',
                         help="the experiment configuration file")
+
     args = parser.parse_args()
+    if args.replay_only and args.force_overwrite:
+        fatal("--force_overwrite and --replay_only are exclusive options.")
 
     # Setup the ASKHOME
     os.environ["ASKHOME"] = os.path.dirname(os.path.realpath(__file__))
@@ -151,7 +181,8 @@ def main():
     # Read Configuration
     C = Configuration(user_configuration=args.configuration,
                       reload_live_configuration=False,
-                      force_overwrite=args.force_overwrite)
+                      force_overwrite=args.force_overwrite,
+                      replay_only=args.replay_only)
 
     # Start Logger
     print "Logging to {0}".format(C("log.logfile"))
@@ -166,7 +197,7 @@ def main():
     L.debug("Logger started at level {0}".format(C("log.level")))
 
     # Enter driver loop
-    driver_loop()
+    driver_loop(args)
 
 
 if __name__ == "__main__":
