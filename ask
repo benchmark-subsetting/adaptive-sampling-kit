@@ -78,7 +78,8 @@ def driver_loop(args):
     out_dir = C("output_directory")
     iteration = 0
     labelled = "{0}/labelled.data".format(out_dir)
-    os.remove(labelled)
+    # Blank labelled file (needed in replay)
+    open(labelled, 'w').close()
     while(1):
         L.debug("**** Starting ITERATION {0} ****".format(iteration))
         model = "{0}/model{1:05d}.data".format(out_dir, iteration)
