@@ -3,8 +3,7 @@
 This module draws random points
 """
 
-import numpy as np
-from random import shuffle, randint
+from random import randint, random
 
 from common.configuration import Configuration
 from common.util import fatal
@@ -17,7 +16,7 @@ def draw_point(factors):
             g = randint(int(f["range"]["min"]),
                         int(f["range"]["max"]))
             p.append(g)
-        elif f["type"] == "continous":
+        elif f["type"] == "float":
             g = (random() *
                 (f["range"]["max"] - f["range"]["min"]) +
                 f["range"]["min"])
@@ -39,7 +38,7 @@ def generate_possible_points(factors, labelled, n):
     MAX_TRIES = 50
     while(count < n):
         p = draw_point(factors)
-        if p in labelled and tries < 50:
+        if p in labelled and tries < MAX_TRIES:
             tries += 1
             continue
         else:
