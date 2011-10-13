@@ -15,35 +15,40 @@ outputpng = args[6]
 
 suppressPackageStartupMessages(require(graphics, quietly=T))
 suppressPackageStartupMessages(require(lattice, quietly=T))
-png(file=outputpng, width=1000, height=1200)
+png(file=outputpng, width=10000, height=10000)
 
-colnames(testset)   =  c("N","M","dimX","dimY","cpi")
-colnames(predicted) =  c("N","M","dimX","dimY","cpi")
-colnames(labelled)   =  c("N","M","dimX","dimY","cpi")
+colnames(testset)   =  c("T","N","M","dimX","dimY","cpi")
+colnames(predicted) =  c("T","N","M","dimX","dimY","cpi")
+colnames(labelled)   =  c("T","N","M","dimX","dimY","cpi")
 
-testset=testset[testset$N > 64 & testset$M > 64,]
-predicted=predicted[predicted$N > 64 & predicted$M > 64,]
+CUTS=10
+LAYOUT=c(8,25)
 
-ep = levelplot(cpi ~ N * M | dimX + dimY,
+ep = levelplot(cpi ~ N * M | T + dimX + dimY,
 	       data=testset,
-               cuts=40,
-               at=seq(from=min(testset$cpi),to=max(testset$cpi), length=41),
-               col.regions=rev(heat.colors(41)),
-               main="exhaustive"
+               cuts=CUTS,
+               at=seq(from=min(testset$cpi),to=max(testset$cpi), length=CUTS+1),
+               col.regions=rev(heat.colors(CUTS+1)),
+               layout=LAYOUT,
+               main="exhaustive",
+               strip=strip.custom(strip.levels = c(TRUE, TRUE))
 	      )
 
-pp = levelplot(cpi ~ N * M | dimX + dimY,
+pp = levelplot(cpi ~ N * M | T + dimX + dimY,
 	       data=predicted,
-               cuts=40,
-               at=seq(from=min(testset$cpi),to=max(testset$cpi), length=41),
-               col.regions=rev(heat.colors(41)),
+               cuts=CUTS,
+               at=seq(from=min(testset$cpi),to=max(testset$cpi), length=CUTS+1),
+               col.regions=rev(heat.colors(CUTS+1)),
                main="predicted",
+               layout=LAYOUT,
+               strip=strip.custom(strip.levels = c(TRUE, TRUE)),
 	       panel=function(x, y, subscripts, ...) {
        		     panel.levelplot(x, y, subscripts=subscripts, ...)
 		     aPoint = predicted[subscripts[1],]
 		     dX = aPoint$dimX
 		     dY = aPoint$dimY
-		     la = labelled[labelled$dimX == dX & labelled$dimY == dY,]
+		     dT = aPoint$T
+		     la = labelled[labelled$dimX == dX & labelled$dimY == dY & labelled$T == dT,]
             	     lpoints(la$N, la$M, pch=1, col=1, cex=1)
 		     la = newlylabelled[newlylabelled$dimX == dX & newlylabelled$dimY == dY,]
             	     lpoints(la$N, la$M, pch=1, col=2, cex=1)
