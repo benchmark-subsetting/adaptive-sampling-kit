@@ -110,7 +110,7 @@ class DriverTests(CommandLineT):
            "values": ["a", "b", "foo"]}],
           "output_directory": "outdir",
           "modules": {
-            "bootstrap": {"executable": "bootstrap/random",
+            "bootstrap": {"executable": "bootstrap/random-file",
                           "params": {"n": 1, "data_file": "test.data"}},
             "sampler": {"executable": "/bin/false"},
             "source": {"executable": "source/file",

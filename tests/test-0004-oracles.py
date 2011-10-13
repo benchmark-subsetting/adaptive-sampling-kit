@@ -25,7 +25,7 @@ class AmartTests(CommandLineT):
             "params": {"points": 150}},
 
             "bootstrap": {
-            "executable": "bootstrap/random",
+            "executable": "bootstrap/random-file",
             "params": {"data_file": self.tfile("test1.data"), "n": 50}},
 
             "source": {
@@ -63,7 +63,7 @@ class HierarchicalTests(CommandLineT):
             "params": {"points": 150}},
 
             "bootstrap": {
-            "executable": "bootstrap/random",
+            "executable": "bootstrap/random-file",
             "params": {"data_file": self.tfile("test1.data"), "n": 50}},
 
             "source": {

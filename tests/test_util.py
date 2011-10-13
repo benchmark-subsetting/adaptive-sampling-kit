@@ -13,7 +13,7 @@ class CommandLineT(unittest.TestCase):
             os.environ["PYTHONPATH"] += ":" + self.ask_path
         else:
             os.environ["PYTHONPATH"] = self.ask_path
-        os.environ["PATH"] += ":" + self.ask_path
+        os.environ["PATH"] = self.ask_path + ":" + os.environ["PATH"]
 
         # ensure test sandbox exists
         try:
