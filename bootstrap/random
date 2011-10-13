@@ -1,46 +1,75 @@
 #!/usr/bin/env python
 """
-This module select n random samples from a set of points in filename
+This module draws random points
 """
-import random
+
+import numpy as np
+from random import shuffle, randint
 
 from common.configuration import Configuration
 from common.util import fatal
 
 
-def select_n_random(input_file, output_file, n):
-    """
-    Select n random points in the file. This approach is innefficient since it
-    loads the entire file in memory to sample it.  If it becomes a bottleneck
-    we should try the approach outlined in
-    http://www.bryceboe.com/2009/03/23/random-lines-from-a-file/ (after proving
-    it is sound).
-    """
+def draw_point(factors):
+    p = []
+    for f in factors:
+        if f["type"] == "integer":
+            g = randint(int(f["range"]["min"]),
+                        int(f["range"]["max"]))
+            p.append(g)
+        elif f["type"] == "continous":
+            g = (random() *
+                (f["range"]["max"] - f["range"]["min"]) +
+                f["range"]["min"])
+            p.append(g)
+        elif f["type"] == "categorical":
+            g = randint(0, len(f["values"]) - 1)
+            p.append(g)
+        else:
+            fatal("Wrong factor type: <{0}>"
+                  .format(f["type"]))
+    return tuple(p)
 
-    inpf = open(input_file, "r")
-    lines = inpf.readlines()
-    inpf.close()
-    if (n > len(lines)):
-        fatal("Not enough points in {0} to satisfy your sampling size of {1}"
-              .format(input_file, n))
 
-    samples = random.sample(lines, n)
-    outf = open(output_file, "w")
-    for s in samples:
-        outf.write(" ".join(s.split()[:len(conf("factors"))]) + "\n")
+def generate_possible_points(factors, labelled, n):
+    # Prepare a list of generators that generate all possible
+    # factors satisfying constraints
+    count = 0
+    tries = 0
+    MAX_TRIES = 50
+    while(count < n):
+        p = draw_point(factors)
+        if p in labelled and tries < 50:
+            tries += 1
+            continue
+        else:
+            tries = 0
+            count += 1
+            yield p
 
-    outf.close()
+
+def randomsample(configuration, output_file, n):
+    already_labelled = set()
+
+    # open a file to write suggested points
+    of = open(output_file, "w")
+    for p in generate_possible_points(configuration["factors"],
+                                      already_labelled,
+                                      n):
+        already_labelled.add(p)
+        of.write(" ".join(map(str, p)) + "\n")
+    of.close()
 
 
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(
-        description="Select random samples from a set of"
-        " points in the filename")
+        description="Draws unique random points")
     parser.add_argument('configuration')
     parser.add_argument('output_file')
     args = parser.parse_args()
-
     conf = Configuration(args.configuration)
-    select_n_random(conf("modules.bootstrap.params.data_file"),
-                    args.output_file, conf("modules.bootstrap.params.n", int))
+    randomsample(
+        conf,
+        args.output_file,
+        conf("modules.bootstrap.params.n", int))
