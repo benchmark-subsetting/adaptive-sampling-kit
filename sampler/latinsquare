@@ -36,7 +36,7 @@ samples = samples[(nrow(samples)-n+1):(nrow(samples)),]
 i = 1
 for (f in conf("factors")) {
   if (f$type == "categorical") {
-    samples[,i] = length(f$range$values)*samples[,i]
+    samples[,i] = length(f$values)*samples[,i]
   }
   else
   {
