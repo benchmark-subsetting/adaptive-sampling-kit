@@ -52,6 +52,21 @@ def leaferror_variance(N, threshold):
             "confidence": variance_ub - est_variance,
             "raw_error": est_variance}
 
+def leaferror_cov(N, threshold):
+    est_variance = 0
+    m = N.model[0]
+    card = 0
+    for d in N.data:
+        card += 1
+        est_variance += (d[-1] - m) ** 2
+
+    est_variance = est_variance / float(card)
+    est_variance = est_variance / m**2
+    variance_corr = (card - 1) / stats.chi.ppf(0.05, card - 1) ** 2
+    variance_ub = est_variance * variance_corr
+    return {"error": variance_ub,
+            "confidence": variance_ub - est_variance,
+            "raw_error": est_variance}
 
 def compute_error_pernode(data, T, configuration):
     # fill the tree nodes
@@ -61,11 +76,20 @@ def compute_error_pernode(data, T, configuration):
     use_hoeffding = configuration("modules.sampler.params.use_hoeffding",
                               bool,
                               False)
+    use_cov = configuration("modules.sampler.params.use_cov",
+                              bool,
+                              False)
+
+
     if use_hoeffding:
         print "Using Hoeffding correction"
         # compute threshold
         threshold = np.median(map(abs, residues(data, T)))
         method = leaferror_hoeffding
+    elif use_cov:
+        print "Using COV Chi^2 correction"
+        threshold = None
+        method = leaferror_cov
     else:
         print "Using Variance Chi^2 correction"
         threshold = None
