@@ -12,7 +12,7 @@ def report(configuration, iteration, labels, new_labels, model, test_set):
                        expected_type=basestring, default_value="")
     if iteration == 0 and ts:
         tf = open(ts,"w")
-        tf.write("samples mean-error max-error rmse\n")
+        tf.write("samples mean-error max-error rmse mean-relative max-relative\n")
         tf.close()
 
     # filenames

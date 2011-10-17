@@ -25,7 +25,7 @@ CUTS=10
 LAYOUT=c(8,25)
 
 ep = levelplot(cpi ~ N * M | T + dimX + dimY,
-	       data=testset,
+	       data=testset[1:12800,],
                cuts=CUTS,
                at=seq(from=min(testset$cpi),to=max(testset$cpi), length=CUTS+1),
                col.regions=rev(heat.colors(CUTS+1)),
@@ -35,7 +35,7 @@ ep = levelplot(cpi ~ N * M | T + dimX + dimY,
 	      )
 
 pp = levelplot(cpi ~ N * M | T + dimX + dimY,
-	       data=predicted,
+	       data=predicted[1:12800,],
                cuts=CUTS,
                at=seq(from=min(testset$cpi),to=max(testset$cpi), length=CUTS+1),
                col.regions=rev(heat.colors(CUTS+1)),
@@ -49,6 +49,12 @@ pp = levelplot(cpi ~ N * M | T + dimX + dimY,
 		     dY = aPoint$dimY
 		     dT = aPoint$T
 		     la = labelled[labelled$dimX == dX & labelled$dimY == dY & labelled$T == dT,]
+		     ts = testset[testset$dimX == dX & testset$dimY == dY & testset$T == dT,]
+		     pe = predicted[predicted$dimX == dX & predicted$dimY == dY & predicted$T == dT,]
+		     res = ts$cpi - pe$cpi
+		     mean_error = mean(abs(res))
+		     per_error = mean(abs(res)/ts$cpi*100) 
+		     panel.text(x=1000,y=1000,cex=10,label=paste(round(mean_error,2), "/", round(per_error,2), "%"))
             	     lpoints(la$N, la$M, pch=1, col=1, cex=1)
 		     la = newlylabelled[newlylabelled$dimX == dX & newlylabelled$dimY == dY,]
             	     lpoints(la$N, la$M, pch=1, col=2, cex=1)
@@ -67,7 +73,9 @@ if (stats_out != "") {
     mean_err = mean(abs(res))
     max_err = max(abs(res))
     rmse_err = sqrt(mean(res*res))
+    per_err = mean(abs(res)/testset$cpi*100)
+    max_per_err = max(abs(res)/testset$cpi*100)
     sf = file(stats_out, "a")
-    writeLines(paste(card, mean_err, max_err, rmse_err),con=sf,sep="\n")
+    writeLines(paste(card, mean_err, max_err, rmse_err, per_err, max_per_err),con=sf,sep="\n")
     close(sf)
 }
