@@ -12,12 +12,12 @@ source(file.path(Sys.getenv("ASKHOME"), "common/configuration.R"))
 input = read.table(args[2])
 
 # Set up categorical variables as factors
-for (f in conf("factors")) {
-  if (f$type == "categorical") {
-    #input[,i] = as.factor(input[,i])
-    stop("categorical data not yet supported in tgp module")
-  }
-}
+#for (f in conf("factors")) {
+#  if (f$type == "categorical") {
+#    input[,i] = input[,i]
+#    #warn("categorical data not well supported in tgp module")
+#  }
+#}
 
 # split input in explicative variables, X, and response, Z.
 X = input[,-ncol(input)]

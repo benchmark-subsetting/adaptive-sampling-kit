@@ -17,10 +17,10 @@ configuration = fromJSON(paste(readLines(args[1]), collapse=""))
 i = 0
 for (f in conf("factors")) {
   i = i + 1
-  if (f$type == "categorical") {
-    stop("categorical data not yet supported in tgp module")
-    #req[,i] = as.factor(req[,i])
-  }
+#  if (f$type == "categorical") {
+#    stop("categorical data not yet supported in tgp module")
+#    #req[,i] = as.factor(req[,i])
+#  }
 }
 nfactors = i
 
