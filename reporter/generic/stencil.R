@@ -24,45 +24,45 @@ colnames(labelled)   =  c("T","N","M","dimX","dimY","cpi")
 CUTS=10
 LAYOUT=c(8,25)
 
-ep = levelplot(cpi ~ N * M | T + dimX + dimY,
-	       data=testset[1:12800,],
-               cuts=CUTS,
-               at=seq(from=min(testset$cpi),to=max(testset$cpi), length=CUTS+1),
-               col.regions=rev(heat.colors(CUTS+1)),
-               layout=LAYOUT,
-               main="exhaustive",
-               strip=strip.custom(strip.levels = c(TRUE, TRUE))
-	      )
+#ep = levelplot(cpi ~ N * M | T + dimX + dimY,
+#	       data=testset[1:12800,],
+#               cuts=CUTS,
+#               at=seq(from=min(testset$cpi),to=max(testset$cpi), length=CUTS+1),
+#               col.regions=rev(heat.colors(CUTS+1)),
+#               layout=LAYOUT,
+#               main="exhaustive",
+#               strip=strip.custom(strip.levels = c(TRUE, TRUE))
+#	      )
 
-pp = levelplot(cpi ~ N * M | T + dimX + dimY,
-	       data=predicted[1:12800,],
-               cuts=CUTS,
-               at=seq(from=min(testset$cpi),to=max(testset$cpi), length=CUTS+1),
-               col.regions=rev(heat.colors(CUTS+1)),
-               main="predicted",
-               layout=LAYOUT,
-               strip=strip.custom(strip.levels = c(TRUE, TRUE)),
-	       panel=function(x, y, subscripts, ...) {
-       		     panel.levelplot(x, y, subscripts=subscripts, ...)
-		     aPoint = predicted[subscripts[1],]
-		     dX = aPoint$dimX
-		     dY = aPoint$dimY
-		     dT = aPoint$T
-		     la = labelled[labelled$dimX == dX & labelled$dimY == dY & labelled$T == dT,]
-		     ts = testset[testset$dimX == dX & testset$dimY == dY & testset$T == dT,]
-		     pe = predicted[predicted$dimX == dX & predicted$dimY == dY & predicted$T == dT,]
-		     res = ts$cpi - pe$cpi
-		     mean_error = mean(abs(res))
-		     per_error = mean(abs(res)/ts$cpi*100) 
-		     panel.text(x=1000,y=1000,cex=10,label=paste(round(mean_error,2), "/", round(per_error,2), "%"))
-            	     lpoints(la$N, la$M, pch=1, col=1, cex=1)
-		     la = newlylabelled[newlylabelled$dimX == dX & newlylabelled$dimY == dY,]
-            	     lpoints(la$N, la$M, pch=1, col=2, cex=1)
-               }
-	      )
+#pp = levelplot(cpi ~ N * M | T + dimX + dimY,
+#	       data=predicted[1:12800,],
+#               cuts=CUTS,
+#               at=seq(from=min(testset$cpi),to=max(testset$cpi), length=CUTS+1),
+#               col.regions=rev(heat.colors(CUTS+1)),
+#               main="predicted",
+#               layout=LAYOUT,
+#               strip=strip.custom(strip.levels = c(TRUE, TRUE)),
+#	       panel=function(x, y, subscripts, ...) {
+#       		     panel.levelplot(x, y, subscripts=subscripts, ...)
+#		     aPoint = predicted[subscripts[1],]
+#		     dX = aPoint$dimX
+#		     dY = aPoint$dimY
+#		     dT = aPoint$T
+#		     la = labelled[labelled$dimX == dX & labelled$dimY == dY & labelled$T == dT,]
+#		     ts = testset[testset$dimX == dX & testset$dimY == dY & testset$T == dT,]
+#		     pe = predicted[predicted$dimX == dX & predicted$dimY == dY & predicted$T == dT,]
+#		     res = ts$cpi - pe$cpi
+#		     mean_error = mean(abs(res))
+#		     per_error = mean(abs(res)/ts$cpi*100) 
+#		     panel.text(x=1000,y=1000,cex=10,label=paste(round(mean_error,2), "/", round(per_error,2), "%"))
+#            	     lpoints(la$N, la$M, pch=1, col=1, cex=1)
+#		     la = newlylabelled[newlylabelled$dimX == dX & newlylabelled$dimY == dY,]
+#            	     lpoints(la$N, la$M, pch=1, col=2, cex=1)
+#               }
+#	      )
 
-print(ep, split=c(1,1,1,2), more=TRUE)
-print(pp, split=c(1,2,1,2), more=FALSE)
+#print(ep, split=c(1,1,1,2), more=TRUE)
+#print(pp, split=c(1,2,1,2), more=FALSE)
 
 
 # write time series statistics

@@ -43,8 +43,10 @@ lines(testset$V1, testset$V2, t="l")
 
 rug(labelled$V1)
 #lines(predicted$V1, predicted$V2, t="l", col="green")
-points(labelled$V1, labelled$V2)
-points(newlylabelled$V1, newlylabelled$V2,col="red")
+lab = labelled[1:(nrow(labelled)-nrow(newlylabelled)),] 
+points(lab$V1, lab$V2)
+points(newlylabelled$V1, newlylabelled$V2,col="red", pch=4)
+legend("topleft", c("samples", "last iteration samples"), col=c("black", "red"), pch=c(1,4))
 
 
 # write time series statistics

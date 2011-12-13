@@ -2,6 +2,8 @@
 # This module bootstrap n points in a random latin square
 # configuration.
 
+set.seed(2)
+
 suppressPackageStartupMessages(require(lhs, quietly=T))
 # Parse the arguments
 require(rjson, quietly=T)

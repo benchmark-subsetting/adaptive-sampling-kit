@@ -1,41 +1,40 @@
 #include <stdio.h>
 #include <assert.h>
 
-/* When finding the delta, we stop when the last selected point position is whithin
-   PRECISION % of the last available point
-*/
-#define PRECISION 10
+#define RESOLUTION 0.00000000001
 
-
-#define RESOLUTION 0.000000001
-
-int try_delta(double delta, int vs, int ss, double * variance, int * samples) {
-    int i;
+int try_delta(double delta, int vs, int ss, int * variance, 
+	      int * samples, double * dist) {
+    int i,j;
     /* Always select the first sample (largest variance) */
-    samples[0] = 0;
+    samples[0] = variance[0]-1;
     int count = 1;
-    /* The next point must be below variance[0] - delta */
-    double below = variance[0] - delta;
 
     for (i = 1; i < vs; i++) {
-        /* Find the next point below the threshold */
-        if (variance[i] >= below) continue;
+	int next = variance[i]-1;
+        /* Check that the next point distance to all other sampled points
+	 * is above the threshold */
+	int ok = 1;
+	for (j=0; j < count; j++) {
+	    if (dist[next+samples[j]*vs] < delta) {
+	       ok = 0;
+	       break;
+	    }
+	}
 
-        /* Update threshold */
-        below = variance[i]-delta;
+	/* If that is not the case continue to next point */
+	if (!ok) continue;
 
-        /* Add the point to the selected samples list */
-        samples[count] = i;
+        /* If that is the case, add the point to the selected samples list */
+        samples[count] = next;
         count++;
 
         /* Did we select all the needed samples ? */
         if (count == ss) {
-            double within = ((float)(vs - i) * 100.0)/(float)i ;
-            /* If PRECISION is reached, finish dichotomy */
-            printf("within = %E\n",within);
-            if (within < PRECISION) return 0;
-            /* else we need to increase delta */
-            else return 1;
+	    printf("last position = %d\n", i);
+	    if (i==vs-1) return 0;
+	    else return 1;
+            /* We reached ss points, we need to increase delta */
         }
     }
 
@@ -43,10 +42,11 @@ int try_delta(double delta, int vs, int ss, double * variance, int * samples) {
     return -1;
 }
 
-void uniform_sampling(int * vsize, int * ssize, double * variance, int * samples) {
+void uniform_sampling(int * vsize, int * ssize, int *variance,  
+		      int * samples, double * dist, double *max_distance) {
     int vs = vsize[0];
     int ss = ssize[0];
-    double max_delta = variance[0] - variance[vs-1];
+    double max_delta = max_distance[0];
     double min_delta = 0;
 
     /* Find optimal delta by dichotomy */
@@ -54,12 +54,12 @@ void uniform_sampling(int * vsize, int * ssize, double * variance, int * samples
 
         double delta = (max_delta + min_delta) / 2.0 ;
         if ( (max_delta - min_delta)  < RESOLUTION) {
-            int decision = try_delta(min_delta-RESOLUTION, vs, ss, variance, samples);
+            int decision = try_delta(min_delta, vs, ss, variance, samples, dist);
             assert(decision >= 0);
             return;
         }
         printf("Trying delta %lE\n", delta);
-        int decision = try_delta(delta, vs, ss, variance, samples);
+        int decision = try_delta(delta, vs, ss, variance, samples, dist);
         if (decision == 0 ) /* All done */
         {
             break;
@@ -75,6 +75,7 @@ void uniform_sampling(int * vsize, int * ssize, double * variance, int * samples
     }
 }
 
+/*
 int main() {
     int vsize = 5;
     int ssize = 3;
@@ -91,3 +92,4 @@ int main() {
     printf("\n");
 
 }
+*/

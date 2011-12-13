@@ -3,13 +3,20 @@
 suppressPackageStartupMessages(require(gbm, quietly=T))
 # We want the lhs method inside tgp
 suppressPackageStartupMessages(require(tgp, quietly=T))
+# We want the rdist method inside fields
+suppressPackageStartupMessages(require(fields, quietly=T))
 
 #### Define some utility functions
 # Import the uniform sampling scheme that is writing in C
 dyn.load(file.path(Sys.getenv("ASKHOME"), "common/libuniformsampling.so"))
-uniform_sampling <- function(variance, nsamples) {
+uniform_sampling <- function(variance, nsamples, available) {
   samples = rep(-1, nsamples)
-  out = .C("uniform_sampling", vsize=as.integer(length(variance)), ssize=as.integer(nsamples), variance=as.double(variance), samples=as.integer(samples))
+  #compute distance between all the pairs of available points
+  dist = rdist(available[,1:ncol(available-1)])
+  out = .C("uniform_sampling", vsize=as.integer(length(variance)), 
+           ssize=as.integer(nsamples), 
+           variance=as.integer(variance), samples=as.integer(samples),
+           dist=as.double(dist), max_distance=as.double(max(dist)))
   return(out$samples+1)
 }
 
@@ -25,7 +32,7 @@ Amart <- function(sampled, available, formula, ssample, ntree, NRS) {
     # build a tree
     gbm1 <- gbm(formula, data=sampled, distribution="gaussian",
                 n.trees=ntree,
-                interaction.depth=3, shrinkage=0.01, verbose=F)
+                interaction.depth=8, shrinkage=0.01, verbose=F)
     best.iter <- gbm.perf(gbm1,method="OOB",plot.it=FALSE)
     # generate predictions with the tree on the non sampled points
     pred[[see]] <- predict(gbm1, available, n.trees=best.iter)
@@ -41,8 +48,7 @@ Amart <- function(sampled, available, formula, ssample, ntree, NRS) {
   #draw new samples using the adaptive sampling method
   print("Adaptive sampling")
   covf.sorted = covf[order(covf$cl, decreasing=TRUE),]
-  smp_indexes = uniform_sampling(covf.sorted[,1], ssample)
-  print(paste("Last sampled=",smp_indexes[[length(smp_indexes)]]))
+  smp_indexes = uniform_sampling(covf.sorted[,2], ssample, available)
   new_samples = covf.sorted[smp_indexes,2]
   return (available[new_samples,])
 }
@@ -88,7 +94,7 @@ if (conf("modules.sampler.params.predict_on_all", F)) {
 	}
 
 } else {
-	# Choose a 10*nsamples lhs set of points
+	# Choose a 20*nsamples lhs set of points
 	lf = list()
 	mins = c()
 	maxs = c()
@@ -102,7 +108,7 @@ if (conf("modules.sampler.params.predict_on_all", F)) {
 	  }
         }
 
-	available <- lhs(10*nsamples, cbind(mins,maxs))
+	available <- lhs(20*nsamples, cbind(mins,maxs))
 
 	i = 1
 	for (f in conf("factors")) {

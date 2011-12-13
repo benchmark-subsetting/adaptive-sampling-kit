@@ -8,11 +8,11 @@ dyn.load(file.path(Sys.getenv("ASKHOME"), "common/libuniformsampling.so"))
 
 tgp_sample <- function(X, Z, available, n) {
   #build D optimal design according to MAP tree
-  tgpout <- btgpllm(X = X, Z = Z, pred.n = FALSE, corr="exp", verb = T)
+  tgpout <- btgp(X = X, Z = Z, pred.n = FALSE, verb = T)
   design = tgp.design(n, available, tgpout)
 
   #Apply ALC to the selected D optimal points
-  tgpout <- btgpllm(X, Z, XX=design, verb=T, corr="exp", Ds2x = T)
+  tgpout <- btgpllm(X, Z, XX=design, verb=T, Ds2x = T)
   rated = data.frame(design, SORTBY=tgpout$Ds2x)
   # Sort by variance
   rated = rated[order(rated$SORTBY, decreasing=T),]
@@ -47,7 +47,7 @@ for (f in conf("factors")) {
   }
 }
 
-available <- lhs(10*nsamples, cbind(mins,maxs))
+available <- lhs(20*nsamples, cbind(mins,maxs))
 
 i = 1
 for (f in conf("factors")) {
