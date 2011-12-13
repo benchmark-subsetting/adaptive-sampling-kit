@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 
-packages = c("gbm", "rpart", "lattice", "rjson", "lhs", "tgp")
+packages = c("gbm", "rpart", "lattice", "rjson", "lhs", "tgp", "fields")
 
 new.repos <- getOption("repos")
 new.repos["CRAN"] <- "http://cran.stat.ucla.edu"
