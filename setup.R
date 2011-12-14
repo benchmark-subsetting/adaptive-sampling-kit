@@ -7,7 +7,8 @@ new.repos["CRAN"] <- "http://cran.stat.ucla.edu"
 options(repos = new.repos)
 
 for (p in packages) {
-  if(!(p %in% .packages(all.available=TRUE))) {
+  # if the package is not installed or old, install/upgrade it
+  if ((!(p %in% installed.packages())) | (p %in% old.packages())) {
     install.packages(p)
   }
 }
