@@ -6,7 +6,6 @@ set.seed(2)
 
 suppressPackageStartupMessages(require(lhs, quietly=T))
 # Parse the arguments
-require(rjson, quietly=T)
 
 args <- commandArgs(trailingOnly = T)
 if (length(args) != 2) {

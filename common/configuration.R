@@ -1,5 +1,6 @@
-require(rjson, quietly=T)
-configuration = fromJSON(paste(readLines(args[1]), collapse=""))
+require(RJSONIO, quietly=T)
+configuration = fromJSON(paste(readLines(args[1]), collapse=""),
+                         simplify=F)
 
 conf <- function(key, default=NULL) {
   dollarkey = gsub("\\.","$", key)
