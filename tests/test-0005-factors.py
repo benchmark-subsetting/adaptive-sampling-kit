@@ -1,7 +1,7 @@
 from test_util import CommandLineT
 
 
-class DriverTests(CommandLineT):
+class FactorTests(CommandLineT):
     def test_ranges(self):
         """ Ranges should make sense """
         self.conf({"factors": [
