@@ -57,7 +57,9 @@ if (stats_out != "") {
     mean_err = mean(abs(res))
     max_err = max(abs(res))
     rmse_err = sqrt(mean(res*res))
+    per_err = mean(abs(res)/testset$V2*100)
+    max_per_err = max(abs(res)/testset$V2*100)
     sf = file(stats_out, "a")
-    writeLines(paste(card, mean_err, max_err, rmse_err),con=sf,sep="\n")
+    writeLines(paste(card, mean_err, max_err, rmse_err, per_err, max_per_err),con=sf,sep="\n")
     close(sf)
 }

@@ -57,10 +57,14 @@ print(pp, split=c(1,2,1,2), more=TRUE)
 stats_out = conf("modules.reporter.params.timeseries", "")
 if (stats_out != "") {
     card = nrow(labelled)
-    mean_err = mean(D$E)
-    max_err = max(D$E)
-    rmse_err = sqrt(mean(D$E*D$E))
+    res = D$E
+    mean_err = mean(abs(res))
+    max_err = max(abs(res))
+    rmse_err = sqrt(mean(res*res))
+    per_err = mean(abs(res)/testset$V3*100)
+    max_per_err = max(abs(res)/testset$V3*100)
     sf = file(stats_out, "a")
-    writeLines(paste(card, mean_err, max_err, rmse_err),con=sf,sep="\n")
+    writeLines(paste(card, mean_err, max_err, rmse_err, per_err, max_per_err),con=sf,sep="\n")
     close(sf)
 }
+
