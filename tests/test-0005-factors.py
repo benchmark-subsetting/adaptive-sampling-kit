@@ -116,6 +116,6 @@ class FactorTests(CommandLineT):
             "source": {"executable": "source/file",
                        "params": {"data_file": "test.data"}},
             "control": {"executable": "control/points",
-                        "params": {"points": 0}}}})
+                        "params": {"n": 0}}}})
 
         self.run("ask test.conf", expect_error=False)

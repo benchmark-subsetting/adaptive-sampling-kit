@@ -14,9 +14,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Stops the driver after a given number of points")
     parser.add_argument('configuration')
-    parser.add_argument('iteration')
+    parser.add_argument('iteration', type=int)
     parser.add_argument('labelled_file')
     parser.add_argument('model_file')
     args = parser.parse_args()
     conf = Configuration(args.configuration)
-    should_stop(conf("modules.control.params.points", int), args.labelled_file)
+    should_stop(conf("modules.control.params.n", int), args.labelled_file)

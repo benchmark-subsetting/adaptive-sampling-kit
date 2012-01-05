@@ -90,7 +90,7 @@ class BootstrapRandomTests(CommandLineT):
             "source": {"executable": "source/file",
                        "params": {"data_file": "test.data"}},
             "control": {"executable": "control/points",
-                        "params": {"points": 0}}}})
+                        "params": {"n": 0}}}})
 
         r = self.run("ask test.conf", expect_error=False)
         assert "outdir/requested00000.data" in r.files_created, "sample is created"

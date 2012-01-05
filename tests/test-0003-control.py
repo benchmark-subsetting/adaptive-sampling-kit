@@ -9,7 +9,7 @@ class ControlTests(CommandLineT):
             "modules": {
             "control": {
             "executable": "control/points",
-            "params": {"points": 150}}}})
+            "params": {"n": 150}}}})
 
         data = self.tfile("test1.data")
         r = self.run_module("control/points",
@@ -24,7 +24,7 @@ class ControlTests(CommandLineT):
             "modules": {
             "control": {
             "executable": "control/points",
-            "params": {"points": 2 ** 32}}}})
+            "params": {"n": 2 ** 32}}}})
 
         data = self.tfile("test1.data")
         r = self.run_module("control/points",

@@ -22,7 +22,7 @@ class AmartTests(CommandLineT):
 
             "control": {
             "executable": "control/points",
-            "params": {"points": 150}},
+            "params": {"n": 150}},
 
             "bootstrap": {
             "executable": "bootstrap/random-file",
@@ -60,7 +60,7 @@ class HierarchicalTests(CommandLineT):
 
             "control": {
             "executable": "control/points",
-            "params": {"points": 150}},
+            "params": {"n": 150}},
 
             "bootstrap": {
             "executable": "bootstrap/random-file",
