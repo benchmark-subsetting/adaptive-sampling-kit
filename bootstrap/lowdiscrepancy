@@ -1,0 +1,50 @@
+#!/usr/bin/env Rscript
+# This module bootstrap n points in a low discrepancy 
+# configuration.
+
+suppressPackageStartupMessages(require(fOptions, quietly=T))
+
+# Parse the arguments
+args <- commandArgs(trailingOnly = T)
+if (length(args) != 2) {
+    stop("Usage: lowdiscrepancy <configuration.conf> <output_file>")
+}
+source(file.path(Sys.getenv("ASKHOME"), "common/configuration.R"))
+
+# Check that n is an integer
+if (!is.numeric(conf("modules.bootstrap.params.n"))) {
+  stop("modules.bootstrap.params.n must be an integer")
+}
+
+if (conf("modules.bootstrap.params.method", "sobol") == "sobol") {
+   samples = runif.sobol(as.integer(conf("modules.bootstrap.params.n")),
+                         length(conf("factors")))
+} else 
+if (conf("modules.bootstrap.params.method") == "halton") {
+   samples = runif.halton(as.integer(conf("modules.bootstrap.params.n")),
+                         length(conf("factors")))
+} else {
+  stop("modules.bootstrap.params.method must be either halton or sobol")
+}
+
+# Resample columns according to the factor ranges
+# and round columns corresponding to integer factors
+i = 1
+for (f in conf("factors")) {
+  if (f$type == "categorical") {
+    samples[,i] = length(f$values)*samples[,i]
+  }
+  else
+  {
+    samples[,i] = f$range$min + (f$range$max-f$range$min)*samples[,i]
+  }
+
+  # Round columns for non float factors
+  if (f$type != "float") {
+    samples[,i] = as.integer(samples[,i])
+  }
+  i = i + 1
+}
+
+# Write samples to output file
+write.table(samples, args[2], sep=" ", quote=F, col.names=F, row.names=F)
