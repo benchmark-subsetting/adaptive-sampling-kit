@@ -148,3 +148,54 @@ class BootstrapLatinsquareTests(CommandLineT):
         sample = r.files_created["sample"]
         sample_card = len([l for l in sample.bytes.split("\n") if l])
         assert sample_card == card, "we should get exactly 17 samples"
+
+class BootstrapLowDiscrepancyTests(CommandLineT):
+    def test_lowdiscrepancy_missing_params(self):
+        """ Lowdiscrepancy bootstrap should print a message
+        if parameters are missing
+        """
+        self.conf(
+            {"factors": [],
+            "modules": {"bootstrap":
+                        {"params": {}}}})
+
+        r = self.run_module("bootstrap/lowdiscrepancy",
+                            "test.conf sample",
+                            expect_error=True)
+        assert "n" in r.stderr, "error message should mention n"
+
+    def test_wrong_parameter(self):
+        """ Lowdiscrepancy bootstrap should fail nicely when n is not integer 
+        """
+        self.conf(
+            {"factors": [],
+             "modules": {"bootstrap":
+                         {"params": {"n": "foo"}}}})
+
+        r = self.run_module("bootstrap/lowdiscrepancy",
+                            "test.conf sample",
+                            expect_error=True)
+        assert r.stderr.find("int") != -1,\
+                 "error message should mention expected type"
+        assert "n" in r.stderr, "error message should mention n"
+
+    def test_sampling(self):
+        """ Lowdiscrepancy bootstrap should sample points """
+        card = 17
+        self.run("mkdir outdir")
+        self.conf(
+            {"output_directory" : "outdir",
+             "factors": [{"name": "f1", "type": "integer",
+                          "range": {"min": -10, "max": 100}},
+                         {"name": "f2", "type": "float",
+                          "range": {"min": -10, "max": 100}},
+                         {"name": "f3", "type": "categorical",
+                          "values": ["a", "b", "c"]}],
+             "modules": {"bootstrap":
+                         {"params": {"n": card}}}})
+
+        r = self.run_module("bootstrap/lowdiscrepancy", "test.conf sample")
+        assert "sample" in r.files_created, "sample is created"
+        sample = r.files_created["sample"]
+        sample_card = len([l for l in sample.bytes.split("\n") if l])
+        assert sample_card == card, "we should get exactly 17 samples"
