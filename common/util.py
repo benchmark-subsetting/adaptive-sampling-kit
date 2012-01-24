@@ -1,5 +1,7 @@
 import numpy as np
 import sys
+import os
+import subprocess
 
 def fatal(msg, exitcode = 1):
     """
@@ -39,3 +41,14 @@ def aggregate_same_measures(data):
     if prev:
         aggregated.append(prev+[np.mean(measures)])
     return np.array(aggregated)
+
+def get_cov_ub(mean, sd, card, alpha):
+    coef_path = os.path.join(os.environ["ASKHOME"],"./common/coef-variation.R")
+    print mean, sd, card, alpha
+    p = subprocess.Popen(map(str,[coef_path, mean, sd, card, alpha]), 
+            stdout=subprocess.PIPE)
+    out, err = p.communicate()
+    print float(out.split()[1])
+    return float(out.split()[1])
+
+

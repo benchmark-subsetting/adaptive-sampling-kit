@@ -10,12 +10,14 @@ import pprint
 from random import randint, choice, random
 
 from common.configuration import Configuration
-from common.util import fatal
+from common.util import fatal, get_cov_ub
 from common.tree import node_iterator
 from common.fit import residues
 from common.constraints import get_tagged_models
 from scipy import stats
 import common.cart
+
+confi = 0.9
 
 
 def leaferror_hoeffding(N, threshold):
@@ -30,7 +32,7 @@ def leaferror_hoeffding(N, threshold):
     error_probability = (float(freq_error) / float(card))
     assert(0 <= error_probability <= 1)
     R = 1
-    confidence = math.log(1.0 / 0.1)
+    confidence = math.log(1.0 / (1-confi))
     hoeff = math.sqrt(R * R * confidence / (3 * card))
     return {"error": min(error_probability + hoeff, 1.0),
             "confidence": hoeff,
@@ -46,7 +48,8 @@ def leaferror_variance(N, threshold):
         est_variance += (d[-1] - m) ** 2
 
     est_variance = est_variance / float(card-1)
-    variance_corr = (card - 1) / stats.chi.ppf(0.05, card - 1) ** 2
+    # Note: stats.chi.ppf(0.05)**2 computes chi^2(1-0.05) !
+    variance_corr = (card - 1) / stats.chi.ppf((1-confi)/2, card - 1) ** 2
     variance_ub = est_variance * variance_corr
     return {"error": variance_ub,
             "confidence": variance_ub - est_variance,
@@ -58,52 +61,24 @@ def leaferror_cov(N, threshold):
     card = 0
     for d in N.data:
         card += 1
-        est_variance += (d[-1]/m - 1) ** 2
-
-    est_variance = est_variance / float(card-1)
-    variance_corr = (card - 1) / stats.chi.ppf(0.05, card - 1) ** 2
-    variance_ub = est_variance * variance_corr
-    return {"error": variance_ub,
-            "confidence": variance_ub - est_variance,
-            "raw_error": est_variance}
-
-
-def leaferror_variance_std(N, threshold):
-    est_variance = 0
-    m = N.model[0]
-    card = 0
-    for d in N.data:
-        card += 1
         est_variance += (d[-1] - m) ** 2
 
     est_variance = est_variance / float(card-1)
-    variance_corr = (card - 1) / stats.chi.ppf(0.05, card - 1) ** 2
-    variance_ub = math.sqrt(est_variance * variance_corr)
-    est_variance = math.sqrt(est_variance)
+    est_sd = math.sqrt(est_variance)
+    est_cov = est_sd/abs(m)
+    cov_ub = get_cov_ub(abs(m), est_sd, card, confi)
+    if cov_ub == float("inf"):
+        cov_ub = 2*est_cov
+    variance_ub = (cov_ub)**2
+
     return {"error": variance_ub,
-            "confidence": variance_ub - est_variance,
-            "raw_error": est_variance}
-
-
-def leaferror_cov_std(N, threshold):
-    est_variance = 0
-    m = N.model[0]
-    card = 0
-    for d in N.data:
-        card += 1
-        est_variance += (d[-1]/m - 1) ** 2
-
-    est_variance = est_variance / float(card-1)
-    variance_corr = (card - 1) / stats.chi.ppf(0.05, card - 1) ** 2
-    variance_ub = est_variance * variance_corr
-    variance_ub = math.sqrt(est_variance * variance_corr)
-    est_variance = math.sqrt(est_variance)
-    return {"error": variance_ub,
-            "confidence": variance_ub - est_variance,
-            "raw_error": est_variance}
-
+            "confidence": variance_ub - est_cov**2,
+            "raw_error": est_cov**2}
 
 def compute_error_pernode(data, T, configuration):
+    global confi
+    confi = configuration("modules.samples.params.confidence", float, 0.9)
+
     # fill the tree nodes
     for d in data:
         T.fill(d)
@@ -114,9 +89,6 @@ def compute_error_pernode(data, T, configuration):
     use_cov = configuration("modules.sampler.params.use_cov",
                               bool,
                               False)
-    use_std =  configuration("modules.sampler.params.use_std",
-                              bool,
-                              False)
 
     if use_hoeffding:
         print "Using Hoeffding correction"
@@ -124,19 +96,13 @@ def compute_error_pernode(data, T, configuration):
         threshold = np.median(map(abs, residues(data, T)))
         method = leaferror_hoeffding
     elif use_cov:
-        print "Using COV Chi^2 correction"
+        print "Using COV correction"
         threshold = None
-        if use_std:
-            method = leaferror_cov_std
-        else:
-            method = leaferror_cov
+        method = leaferror_cov
     else:
         print "Using Variance Chi^2 correction"
         threshold = None
-        if use_std:
-            method = leaferror_variance_std
-        else:
-            method = leaferror_variance
+        method = leaferror_variance
 
     # compute the error on each node
     for N in node_iterator(T):
