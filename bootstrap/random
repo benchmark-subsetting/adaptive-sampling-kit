@@ -68,6 +68,8 @@ if __name__ == "__main__":
     parser.add_argument('output_file')
     args = parser.parse_args()
     conf = Configuration(args.configuration)
+    if "seed" in conf("modules.bootstrap.params"):
+        random.seed(conf("modules.bootstrap.params.seed", int))
     randomsample(
         conf,
         args.output_file,

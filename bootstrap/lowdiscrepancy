@@ -16,6 +16,8 @@ if (!is.numeric(conf("modules.bootstrap.params.n"))) {
   stop("modules.bootstrap.params.n must be an integer")
 }
 
+set.seed(as.integer(conf("modules.bootstrap.params.seed", default=NULL)))
+
 if (conf("modules.bootstrap.params.method", "sobol") == "sobol") {
    samples = runif.sobol(as.integer(conf("modules.bootstrap.params.n")),
                          length(conf("factors")))

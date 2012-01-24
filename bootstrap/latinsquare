@@ -2,7 +2,6 @@
 # This module bootstrap n points in a random latin square
 # configuration.
 
-set.seed(2)
 
 suppressPackageStartupMessages(require(lhs, quietly=T))
 # Parse the arguments
@@ -18,14 +17,22 @@ if (!is.numeric(conf("modules.bootstrap.params.n"))) {
   stop("modules.bootstrap.params.n must be an integer")
 }
 
+set.seed(as.integer(conf("modules.bootstrap.params.seed", default=NULL)))
+
 # Generate a latin square configuration for the factors
 if (conf("modules.bootstrap.params.method", "random") == "genetic") {
     samples = geneticLHS(as.integer(conf("modules.bootstrap.params.n")),
         length(conf("factors")))
-} else {
+} else 
+if (conf("modules.bootstrap.params.method", "random") == "maximin") {
+    samples = maximinLHS(as.integer(conf("modules.bootstrap.params.n")),
+        length(conf("factors")))
+} else 
+{
     samples = randomLHS(as.integer(conf("modules.bootstrap.params.n")),
         length(conf("factors")))
 }
+
 
 # Save latinsquare model for possible future augmenting by latinsquare sampler
 save(samples, file=file.path(conf("output_directory"), "last_latinsquare.data"))
