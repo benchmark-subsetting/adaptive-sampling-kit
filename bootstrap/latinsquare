@@ -17,7 +17,11 @@ if (!is.numeric(conf("modules.bootstrap.params.n"))) {
   stop("modules.bootstrap.params.n must be an integer")
 }
 
-set.seed(as.integer(conf("modules.bootstrap.params.seed", default=NULL)))
+seed = conf("modules.bootstrap.params.seed", default="default")
+if (seed != "default") {
+    set.seed(as.integer(seed))
+}
+
 
 # Generate a latin square configuration for the factors
 if (conf("modules.bootstrap.params.method", "random") == "genetic") {
