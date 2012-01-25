@@ -147,21 +147,21 @@ def main():
         help="(Must be run over a full previous ask run). Skip bootstrap and"
              " sampler modules, but runs previous labels through the model and"
              " reporter. This option is useful is one wants to run sampling"
-             " and analyse results separately.")
+             " and analyze results separately.")
 
     parser.add_argument(
         '--skip_model',
         action='store_true',
-        help="Skip model module. (WARNING: if the control module chosen"
-             " relies on the output of the model module, this option will"
-             " break ASK.)")
+        help="Skip model module. (WARNING: if the chosen control module"
+             " relies on the output of the model module, this option"
+             " fails.)")
 
     parser.add_argument(
         '--skip_reporter',
         action='store_true',
-        help="Skip reporter module. (WARNING: if the control module chosen"
-             " relies on the output of the model module, this option will"
-             "break ASK.)")
+        help="Skip reporter module. (WARNING: if the chosen control module"
+             " relies on the output of the reporter module, this option"
+             " fails.)")
 
     parser.add_argument('configuration',
                         help="the experiment configuration file")
