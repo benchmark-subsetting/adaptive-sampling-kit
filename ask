@@ -146,7 +146,7 @@ def main():
         action='store_true',
         help="(Must be run over a full previous ask run). Skip bootstrap and"
              " sampler modules, but runs previous labels through the model and"
-             " reporter. This option is useful is one wants to run sampling"
+             " reporter. This option is useful if one wants to run sampling"
              " and analyze results separately.")
 
     parser.add_argument(
