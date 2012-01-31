@@ -8,25 +8,25 @@ Documentation and Installation
 ==============================
 
 The documentation and installation procedures are detailed at
-http://code.google.com/p/exagraph/wiki/ExagraphManual
+http://code.google.com/p/adaptive-sampling-kit/wiki/ASKManual
 
 Licence
 =======
 
-Copyright 2011, 2012, Exascale Computing Research
+Copyright (c) 2011, 2012, Exascale Computing Research
 ASK is released under the GNU General Public License, version 2. Please refer to LICENSE, for details.
 
 Contact
 =======
 
-For any question regarding ASK, please write at <team-ask@exascale-computing.eu>
+For any question regarding ASK, please write at <team-ask@exascale-computing.eu>.
 
 Contributors
 ============
 
-- Pablo de Oliveira Castro <pablo.oliveira@exascale-computing.eu>
-- Eric Petit <eric.petit@uvsq.fr> contributed many ideas during ASK development and evaluated ASK on two performance case-studies
+- Pablo de Oliveira Castro, Exascale Computing Research
+- Eric Petit, UVSQ, contributed many ideas during ASK development and evaluated ASK on two performance case-studies
 - Erin Beyler, Jean Christophe Beyler, William Jalby, and Bettina Kramer, reviewed extensively the documentation 
-- Jean Christophe Beyler, Benoît Pradelle, Franck Talbart, and Nicolas Triquenaux provided very useful code reviews 
+- J.C. Beyler, M. Bordet, Y. Kashnikov, J. Noudohouenou, B. Pradelle, F. Talbart, and N. Triquenaux provided useful code reviews
 
 ASK original development has been done in the Exascale Computing research lab, thanks to the support of CEA, GENCI, Intel, and UVSQ.
