@@ -1,0 +1,50 @@
+#!/usr/bin/env python
+# Copyright 2011,2012 Exascale Computing Research
+#
+# This file is part of ASK.  ASK is free software: you can redistribute
+# it and/or modify it under the terms of the GNU General Public
+# License as published by the Free Software Foundation, version 2.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the Free Software Foundation, Inc., 51
+# Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+from common.configuration import Configuration
+from common.util import fatal
+
+def grid_bootstrap(output, grid_size, factors):
+    from itertools import product
+    coords = []
+    for f in factors:
+        coords.append(xrange(f["range"]["min"], f["range"]["max"] + 1,
+                             grid_size))
+
+    out = file(output, "w")
+    for c in product(*coords):
+        out.write(" ".join(map(str,c)) + "\n")
+    out.close()
+        
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(
+            description="Sample the design space in a grid fashion")
+    parser.add_argument("configuration")
+    parser.add_argument("output_file")
+    args = parser.parse_args()
+
+    conf = Configuration(args.configuration)
+
+    grid_size = conf("modules.bootstrap.params.grid_size", int, 2)
+
+    factors = conf("factors")
+    for f in factors:
+        if f["type"] not in ["integer", "float"]:
+            fatal("Grid bootstrap only works with integer and float factors.")
+
+    grid_bootstrap(args.output_file, grid_size, factors)
