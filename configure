@@ -23,8 +23,8 @@ else
     echo "Please install R"
 fi
 
-echo "Checking if python is installed"
-if which python > /dev/null ; then
+echo "Checking if python >= 2.6 is installed"
+if which python > /dev/null && python -c 'import sys; sys.exit(not (sys.hexversion >= 0x020600F0))' > /dev/null ; then 
     ./setup.py
     PYPACKAGES=$?
 else
