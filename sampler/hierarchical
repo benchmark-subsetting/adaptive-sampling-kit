@@ -178,22 +178,6 @@ def find_sampling_distribution(configuration, T, samplesize):
     # Print tree regions to debug
     pprint.pprint(cons_raw)
 
-    # XXX This section was used to generate a figure for
-    # an article, remove it before any release.
-    #
-    #import os
-    #f=open(os.path.join(configuration("output_directory"),
-    #       "hierarchical.dump"), "w")
-    #f.write("mi ma variance ub mean\n")
-    #for k in cons_raw:
-    #    mi =float(k["constraint"]["x"]["min"])
-    #    ma =float(k["constraint"]["x"]["max"])
-    #    var = math.sqrt(k["error"]["raw_error"])
-    #    ub = math.sqrt(k["error"]["error"])
-    #    mean = k["model"][0]
-    #    f.write("%s %s %s %s %s\n"%(mi,ma, var, ub, mean))
-    #f.close()
-
     # ensure we satisfy exactly the samplesize
     assert(sum(proportions) == samplesize)
     # ensure there are no negative proportions

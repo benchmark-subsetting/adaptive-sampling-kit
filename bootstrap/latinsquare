@@ -19,8 +19,8 @@
 
 
 suppressPackageStartupMessages(require(lhs, quietly=T))
-# Parse the arguments
 
+# Parse the arguments
 args <- commandArgs(trailingOnly = T)
 if (length(args) != 2) {
     stop("Usage: latinsquare <configuration.conf> <output_file>")
@@ -37,7 +37,6 @@ if (seed != "default") {
     set.seed(as.integer(seed))
 }
 
-
 # Generate a latin square configuration for the factors
 if (conf("modules.bootstrap.params.method", "random") == "genetic") {
     samples = geneticLHS(as.integer(conf("modules.bootstrap.params.n")),
@@ -51,7 +50,6 @@ if (conf("modules.bootstrap.params.method", "random") == "maximin") {
     samples = randomLHS(as.integer(conf("modules.bootstrap.params.n")),
         length(conf("factors")))
 }
-
 
 # Save latinsquare model for possible future augmenting by latinsquare sampler
 save(samples, file=file.path(conf("output_directory"), "last_latinsquare.data"))

@@ -25,6 +25,10 @@ from common.util import fatal
 
 
 def draw_point(factors):
+    """
+    Selects a random point that satisfies the factors constraints.
+    Each axis value is selected using a uniform distribution.
+    """
     p = []
     for f in factors:
         if f["type"] == "integer":
@@ -46,10 +50,14 @@ def draw_point(factors):
 
 
 def generate_possible_points(factors, labelled, n):
-    # Prepare a list of generators that generate all possible
-    # factors satisfying constraints
+    """
+    Prepare a list of generators of all possible
+    factors satisfying constraints
+    """
     count = 0
     tries = 0
+
+    # If no new point is available after MAX_TRIES, give up
     MAX_TRIES = 50
     while(count < n):
         p = draw_point(factors)

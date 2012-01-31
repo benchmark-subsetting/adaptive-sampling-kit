@@ -14,6 +14,10 @@
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 def residues(d,T):
+    """ 
+    Computes the residues between a CART prediction tree ''T'' and a 
+    set of data ''d''.
+    """
     x = d[:,:-1]
 
     y = map(lambda x: T.compute(x), x)

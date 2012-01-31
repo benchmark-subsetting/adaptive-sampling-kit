@@ -13,6 +13,9 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+# Defines the conf function to help reading ASK configuration files from R
+# modules.
+
 require(RJSONIO, quietly=T)
 configuration = fromJSON(paste(readLines(args[1]), collapse=""),
                          simplify=F)

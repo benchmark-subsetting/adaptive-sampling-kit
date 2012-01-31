@@ -40,27 +40,17 @@ def multiselect(x, set):
         l = l | (x == v)
     return l
 
-def aggregate_same_measures(data):
-    aggregated = []
-    measures = []
-    prev = None
-    for i in range(data.shape[0]):
-        if prev == list(data[i,:-1]):
-            measures.append(data[i,-1])
-            continue
-        else:
-            if prev:
-                aggregated.append(prev+[np.mean(measures)])
-            prev = list(data[i,:-1])
-            measures = [data[i,-1]]
-    if prev:
-        aggregated.append(prev+[np.mean(measures)])
-    return np.array(aggregated)
+def get_cov_ub(mean, sd, card, confidence):
+    """
+    Returns the confidence interval upper-bound of the coefficient of variance.
 
-def get_cov_ub(mean, sd, card, alpha):
+    mean: empirical mean of the distribution
+    sd: empirical standard deviation of the distribution
+    card: number of samples in the distribution
+    confidence: 0.9 means the upper-bound is correct 90% of the time
+    """
     coef_path = os.path.join(os.environ["ASKHOME"],"./common/coef-variation.R")
-    print mean, sd, card, alpha
-    p = subprocess.Popen(map(str,[coef_path, mean, sd, card, alpha]), 
+    p = subprocess.Popen(map(str,[coef_path, mean, sd, card, confidence]), 
             stdout=subprocess.PIPE)
     out, err = p.communicate()
     print float(out.split()[1])

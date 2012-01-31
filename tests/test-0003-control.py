@@ -30,7 +30,7 @@ class ControlTests(CommandLineT):
         r = self.run_module("control/points",
                             "test.conf 1 {0} fakemodel".format(data),
                             expect_error=True)
-        assert r.returncode == 254, "control should stop with 254 returncode"
+        assert r.returncode == 254, "control should stop with 254 return code"
 
     def test_points_control_continue(self):
         """ If not enough points reached control should continue """
@@ -45,4 +45,4 @@ class ControlTests(CommandLineT):
         r = self.run_module("control/points",
                             "test.conf 1 {0} fakemodel".format(data),
                             expect_error=True)
-        assert r.returncode == 0, "control should stop with 254 returncode"
+        assert r.returncode == 0, "control should continue with 0 return code"

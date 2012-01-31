@@ -17,8 +17,8 @@ import os
 import pickle
 import tempfile
 
-from common.colors import colors
-from common.regression import linear
+from colors import colors
+from regression import linear
 
 
 def tree2dot(outfilename, tree, axes, categories):
@@ -140,12 +140,18 @@ def node_iterator(tree):
 
 
 def save_tree(T, output_file):
+    """
+    Save a tree T to a file.
+    """
     f = open(output_file, "w")
     pickle.dump(T, f)
     f.close()
 
 
 def load_tree(input_file):
+    """
+    Load a tree T from a file.
+    """
     f = open(input_file, "r")
     l = pickle.load(f)
     f.close()
@@ -285,6 +291,10 @@ class Leaf(Node):
         self.tag = -1
 
     def compute(self, point):
+        """
+        This function computes the prediction of Tree ''self'' on
+        point ''point''.
+        """
         regression_d = len(self.model) - 1
         if regression_d == 0:
             return self.model[0]

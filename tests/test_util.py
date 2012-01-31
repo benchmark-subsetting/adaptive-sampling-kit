@@ -45,13 +45,16 @@ class CommandLineT(unittest.TestCase):
         self.clear = self.E.clear
 
     def run_module(self, module, args, **kwargs):
+        """ Run an ask modules by itself """
         m = os.path.join(self.ask_path, module)
         print m
         return self.run(m + " " + args, **kwargs)
 
     def tfile(self, name):
+        """ Shortcut to refer to test files """
         return os.path.join(self.test_path, name)
 
     def conf(self, data, file_name="test.conf"):
+        """ Shortcut to write custom test configurations """
         self.writefile(file_name,
                        json.dumps(data)+"\n")

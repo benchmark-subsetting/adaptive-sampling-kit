@@ -13,8 +13,6 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import numpy as np
-
 def linear(reg,*args):
     """
     reg: a numpy vector that contains the coefficients of a n-dim affine equation.
@@ -24,7 +22,8 @@ def linear(reg,*args):
     returns the value of the affine equation for the passed point.
 
     For example to compute f(x) = 2.x + 1 when x = 2,
-    we can call:
+   we can call:
+    >>> import numpy as np
     >>> linear(np.array([ 2.,  1.]), 2)
     5.0
     """

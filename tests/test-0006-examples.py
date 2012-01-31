@@ -57,9 +57,3 @@ class ExamplesTests(CommandLineT):
                "labelled.data is created"
         assert "output/plot00002.png" in r.files_created,\
                "a plot is created"
-
-
-
-
-
-

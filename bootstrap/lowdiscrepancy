@@ -31,6 +31,7 @@ if (!is.numeric(conf("modules.bootstrap.params.n"))) {
   stop("modules.bootstrap.params.n must be an integer")
 }
 
+# Load the given seed if necessary
 seed = conf("modules.bootstrap.params.seed", default="default")
 if (seed != "default") {
    set.seed(as.integer(seed))

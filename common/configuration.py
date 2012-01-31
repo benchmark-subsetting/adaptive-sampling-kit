@@ -21,7 +21,7 @@ import shutil
 
 from common.util import fatal
 
- # Modules that need to be defined for the ask to work
+ # Modules that need to be defined for ask to work
 expected_modules = ["sampler", "reporter", "control",
                  "model", "bootstrap", "source"]
 
@@ -68,6 +68,7 @@ class Configuration():
 
             # Check and eventually create the output directory
             self.check_outdir(force_overwrite, replay_only)
+
             # Change and check modules paths
             self.check_modules()
 

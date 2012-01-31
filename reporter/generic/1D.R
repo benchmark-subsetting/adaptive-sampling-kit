@@ -35,7 +35,7 @@ D = data.frame(X=testset$V1,
                E=abs(testset$V2-predicted$V2),
                P=predicted$V2)
 
-pdf(file=outputpng)
+png(file=outputpng)
 plot(testset$V1, testset$V2, t="l", col="white", xlab="factor", ylab="response")
 hierarchical_dump = file.path(conf("output_directory"), "hierarchical.dump")
 if (file.exists(hierarchical_dump)) {

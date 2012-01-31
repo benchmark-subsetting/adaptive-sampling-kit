@@ -52,7 +52,7 @@ class AmartTests(CommandLineT):
                "labelled.data is created"
         lines = r.files_created["outdir/labelled.data"].bytes.split("\n")
         card = len([l for l in lines if l])
-        assert card == 150, "150 samples should have beed obtained"
+        assert card == 150, "150 samples should have been obtained"
 
 
 class HierarchicalTests(CommandLineT):

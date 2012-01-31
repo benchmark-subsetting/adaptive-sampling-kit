@@ -18,9 +18,6 @@ suppressPackageStartupMessages(require(tgp, quietly=T))
 suppressPackageStartupMessages(require(lhs, quietly=T))
 
 #### Define some utility functions
-# Import the uniform sampling scheme that is writing in C
-dyn.load(file.path(Sys.getenv("ASKHOME"), "common/libuniformsampling.so"))
-
 tgp_sample <- function(X, Z, available, n) {
   #build D optimal design according to MAP tree
   tgpout <- btgp(X = X, Z = Z, pred.n = FALSE, verb = T)

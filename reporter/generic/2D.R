@@ -49,7 +49,6 @@ ep = levelplot(D$E ~ D$X*D$Y, cuts=31,
             lpoints(labelled$V1, labelled$V2, pch=1, col=1, cex=1)
             lpoints(newlylabelled$V1, newlylabelled$V2, pch=1, col=2, cex=1)
         }
-#        main="Absolute Error"
         )
 
 

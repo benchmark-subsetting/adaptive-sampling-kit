@@ -28,10 +28,10 @@ class DriverTests(CommandLineT):
         self.conf({"output_directory": "outdir",
                    "factors" : [],
                    "modules" : {
-                      "bootstrap" : {"executable":"/bin/false"},
-                      "sampler" : {"executable":"/bin/false"},
-                      "source" : {"executable":"/bin/false"},
-                      "control" : {"executable":"/bin/false"},
+                      "bootstrap" : {"executable" : "/bin/false"},
+                      "sampler" : {"executable" : "/bin/false"},
+                      "source" : {"executable" : "/bin/false"},
+                      "control" : {"executable" : "/bin/false"},
                    }})
 
         self.run("mkdir outdir")
@@ -47,10 +47,10 @@ class DriverTests(CommandLineT):
         self.conf({"output_directory": "outdir",
                    "factors" : [],
                    "modules" : {
-                      "bootstrap" : {"executable":"/bin/false"},
-                      "sampler" : {"executable":"/bin/false"},
-                      "source" : {"executable":"/bin/false"},
-                      "control" : {"executable":"/bin/false"},
+                      "bootstrap" : {"executable" : "/bin/false"},
+                      "sampler" : {"executable" : "/bin/false"},
+                      "source" : {"executable" : "/bin/false"},
+                      "control" : {"executable" : "/bin/false"},
                    }})
 
         self.run("mkdir outdir")

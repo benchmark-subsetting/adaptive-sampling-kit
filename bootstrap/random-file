@@ -28,8 +28,7 @@ def select_n_random(input_file, output_file, n):
     Select n random points in the file. This approach is innefficient since it
     loads the entire file in memory to sample it.  If it becomes a bottleneck
     we should try the approach outlined in
-    http://www.bryceboe.com/2009/03/23/random-lines-from-a-file/ (after proving
-    it is sound).
+    http://www.bryceboe.com/2009/03/23/random-lines-from-a-file/
     """
 
     inpf = open(input_file, "r")
