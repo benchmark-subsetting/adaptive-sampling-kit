@@ -32,11 +32,18 @@ else
 fi
 
 if [ "$PYPACKAGES" = "0" ] && [ "$RPACKAGES" = "0" ] ; then
-    echo "All the dependencies are satisfied."
+    echo "All the dependencies are satisfied"
 else
-    echo "Please install missing dependencies."
+    echo "Please install missing dependencies"
 fi
 
 # Build uniform_sampling so
-echo "Building uniform sampling dynamic library (only needed for amart sampler module)"
-gcc -O3 -fPIC -shared common/uniform_sampling.c -o common/libuniformsampling.so
+echo "Checking if gcc is installed"
+if which gcc > /dev/null ; then 
+    echo "Building uniform sampling dynamic library (only needed for amart sampler module)"
+    gcc -O3 -fPIC -shared common/uniform_sampling.c -o common/libuniformsampling.so
+else
+    echo "Please install gcc"
+fi
+
+
