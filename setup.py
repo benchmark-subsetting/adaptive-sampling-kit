@@ -33,6 +33,12 @@ except ImportError:
     missing.append("argparse")
     ubuntu.append("python-argparse")
 
+try:
+    import scipy
+except ImportError:
+    missing.append("scipy")
+    ubuntu.append("python-scipy")
+
 
 if missing:
     print ("Please install the following python packages: {0}"
