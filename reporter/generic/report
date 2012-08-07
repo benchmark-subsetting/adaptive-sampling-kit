@@ -17,7 +17,7 @@
 
 import os
 
-from common.configuration import Configuration
+from common.configuration import Configuration, check_executable
 from common.util import fatal
 
 
@@ -50,9 +50,7 @@ def report(configuration, iteration, labels, new_labels, model, test_set):
               " ".join(cmd))
 
     # plot 2D graph
-    cmd = [os.path.join(os.environ["ASKHOME"],
-           "reporter/generic/{0}".format(
-           configuration("modules.reporter.params.script"))),
+    cmd = [check_executable(configuration("modules.reporter.params.script")),
            configuration("configuration_file"),
            test_set,
            prediction,
