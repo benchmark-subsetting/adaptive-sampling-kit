@@ -1,4 +1,4 @@
-/* Copyright (c) 2011-2012, Université de Versailles St-Quentin-en-Yvelines
+/* Copyright (c) 2011-2012, Universite de Versailles St-Quentin-en-Yvelines
 
   This file is part of ASK.  ASK is free software: you can redistribute
   it and/or modify it under the terms of the GNU General Public
