@@ -8,7 +8,7 @@ Documentation and Installation
 ==============================
 
 The documentation and installation procedures are detailed at
-http://code.google.com/p/adaptive-sampling-kit/wiki/ASKManual
+http://code.google.com/p/adaptive-sampling-kit/wiki/main
 
 Licence
 =======
@@ -26,7 +26,7 @@ Contributors
 
 Pablo de Oliveira Castro, wrote ASK and its documentation
 Eric Petit contributed many ideas during ASK development and evaluated ASK on two performance case-studies
-
+Asma Farjallah helped test ASK on a Reverse Time Migration kernel
 E. Beyler, J.C. Beyler, and B. Krammer, reviewed extensively this documentation
 J.C. Beyler, M. Bordet, Y. Kashnikov, J. Noudohouenou, B. Pradelle, F. Talbart, and N. Triquenaux provided useful code reviews
 
