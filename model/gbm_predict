@@ -46,4 +46,4 @@ requested = eval(parse(text=paste("cbind(req[,1:nfactors], V",
 
 pred = predict(gbm1, requested, n.trees=best.iter)
 out_data = cbind(requested[,1:nfactors], pred)
-write.table(out_data, file=output, row.names=F, col.names=F)
+write.table(out_data, file=output, row.names=F, col.names=F, quote=F)

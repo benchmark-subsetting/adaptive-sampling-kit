@@ -19,6 +19,8 @@ This module call the hierarchical sampling module to find interesting
 points to label
 """
 
+import os
+import json
 import math
 import numpy as np
 import pprint
@@ -26,7 +28,7 @@ from random import randint, choice, random
 
 from common.configuration import Configuration
 from common.util import fatal, get_cov_ub
-from common.tree import node_iterator
+from common.tree import node_iterator, leaf_iterator
 from common.fit import residues
 from common.constraints import get_tagged_models
 from scipy import stats
@@ -149,6 +151,7 @@ def find_sampling_distribution(configuration, T, samplesize):
 
     cons_raw = get_tagged_models(factors,
                                  T)
+
     if ponderate:
         print "Ponderating by size"
         prob = [c["error"]["error"] * compute_size(c["constraint"])
@@ -175,8 +178,33 @@ def find_sampling_distribution(configuration, T, samplesize):
     for k, p in zip(cons_raw, proportions):
         k["sampling_proportion"] = p
 
-    # Print tree regions to debug
+
+    # Print also in the logs
     pprint.pprint(cons_raw)
+
+    # Get name of region file
+    region_file = os.path.join(configuration["output_directory"],
+            "hierarchical.regions")
+
+    # Load previous region dump if it exists
+    if os.path.exists(region_file):
+        f = file(region_file)
+        old_dump = json.load(f)
+        f.close()
+    else:
+        old_dump = []
+
+    # Update region dump with current iteration tree
+    # and write to disk
+    f = file(region_file, "w")
+    cons_dump = []
+    for c in cons_raw:
+        d = c
+        del(d['leaf'])
+        cons_dump.append(d)
+    old_dump.append(cons_dump)
+    json.dump(old_dump, f, indent=4)
+    f.close()
 
     # ensure we satisfy exactly the samplesize
     assert(sum(proportions) == samplesize)
@@ -248,6 +276,7 @@ def predict(configuration, input_file, output_file, n, cp):
 
     # take all the labelled points and create a set
     already_labelled = set()
+    all_labelled = list(labelled)
     for v in labelled[:,:-1]:
         already_labelled.add(tuple(v))
 
@@ -257,8 +286,58 @@ def predict(configuration, input_file, output_file, n, cp):
                                           already_labelled,
                                           size):
             already_labelled.add(p)
+            all_labelled.append(p)
             of.write(" ".join(map(str, p)) + "\n")
     of.close()
+
+    compute_weights = configuration("modules.sampler.params.use_weights",
+                                    bool,
+                                    True)
+
+
+    if compute_weights:
+        # all_labelled contains now all the labelled points, plus the new
+        # points chosen in the current iteration. We shall compute the weights
+        # for the model.
+
+        # First count for each leaf the number of points
+        # after the coming sample
+        total_points = len(all_labelled)
+        total_region_size = 0.0
+
+        nodes = []
+        region_sizes = []
+
+        for l in leaf_iterator(T):
+            total_region_size += compute_size(l.constraint.get_range())
+
+        for p in all_labelled:
+            n = T.whichnode(p)
+            nodes.append(n)
+            n.future_points += 1
+            region_size = compute_size(n.constraint.get_range())
+            region_sizes.append(region_size)
+
+
+        # Now compute the weights
+        weights = []
+        for i,p in enumerate(all_labelled):
+            region_size = region_sizes[i]
+            future_points = nodes[i].future_points
+            ratio_region_size = float(region_size) / float(total_region_size)
+            ratio_region_points = float(future_points) / float(total_points)
+            weights.append(ratio_region_size / ratio_region_points)
+
+        # Get name of weight file
+        region_file = os.path.join(configuration["output_directory"],
+                "hierarchical.weights")
+
+        # Dump weights
+        print "weights:", weights
+        f = file(region_file, "w")
+        f.write(" ".join(map(str, weights)))
+        f.write("\n")
+        f.close()
 
 if __name__ == "__main__":
     import argparse

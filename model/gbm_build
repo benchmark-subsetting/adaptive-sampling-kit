@@ -37,9 +37,19 @@ for (f in conf("factors")) {
   i = i+1
 }
 
+weights_file = paste(conf("output_directory"), "hierarchical.weights", sep="/")
+if (file.exists(weights_file)) {
+    print("GBM will use weights")
+    weights = scan(weights_file)
+} else {
+    weights = rep(1, nrow(input))
+}
+
+
 expr = eval(parse(text=paste("input$V",ncol(input),"~ .",sep="")))
 gbm1 = gbm(expr ,
            data=input,
+           weights=weights,
            n.trees=conf("modules.model.params.ntrees",3000),
            interaction.depth=conf("modules.model.params.interactiondepth", 8),
            shrinkage=conf("modules.model.params.shrinkage", 0.01),

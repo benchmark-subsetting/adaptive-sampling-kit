@@ -288,6 +288,7 @@ class Leaf(Node):
         self.model = model
         self.error = error
         self.data = []
+        self.future_points = 0
         self.tag = -1
 
     def compute(self, point):
