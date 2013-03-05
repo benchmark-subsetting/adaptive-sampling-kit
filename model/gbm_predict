@@ -41,8 +41,14 @@ output = args[4]
 load(args[2])
 
 
-requested = eval(parse(text=paste("cbind(req[,1:nfactors], V",
-                 nfactors+1,"=rep(0, nrow(req)))", sep="")))
+print(req)
+
+if (nfactors>1) {
+    requested = eval(parse(text=paste("cbind(req[,1:nfactors], V",
+                     nfactors+1,"=rep(0, nrow(req)))", sep="")))
+} else {
+    requested = req
+}
 
 pred = predict(gbm1, requested, n.trees=best.iter)
 out_data = cbind(requested[,1:nfactors], pred)
