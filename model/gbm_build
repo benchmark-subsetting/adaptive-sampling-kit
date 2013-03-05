@@ -44,6 +44,7 @@ gbm1 = gbm(expr ,
            interaction.depth=conf("modules.model.params.interactiondepth", 8),
            shrinkage=conf("modules.model.params.shrinkage", 0.01),
            distribution=conf("modules.model.params.distribution","gaussian"),
+           n.minobsinnode=conf("modules.model.params.minobsinnode",3),
            verbose=conf("modules.model.params.verbose", F))
 best.iter = gbm.perf(gbm1,plot.it=FALSE, method="OOB")
 
