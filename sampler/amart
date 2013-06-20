@@ -27,7 +27,7 @@ dyn.load(file.path(Sys.getenv("ASKHOME"), "common/libuniformsampling.so"))
 uniform_sampling <- function(variance, nsamples, available) {
   samples = rep(-1, nsamples)
   #compute distance between all the pairs of available points
-  dist = rdist(available[,1:ncol(available-1)])
+  dist = rdist(available[,1:ncol(available)-1])
   out = .C("uniform_sampling", vsize=as.integer(length(variance)), 
            ssize=as.integer(nsamples), 
            variance=as.integer(variance), samples=as.integer(samples),
