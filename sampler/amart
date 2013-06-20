@@ -143,10 +143,11 @@ if (conf("modules.sampler.params.predict_on_all", F)) {
 	  names(available)[names(available)==paste("X",i,sep="")] <- paste("V",i,sep="")
 	  i = i + 1
 	}
-
-
 }
-print(colnames(available))
+
+# Ensure in the 1D case that the first column is called V1
+colnames(available)[1] = "V1"
+
 # the regression formula
 formula = formula(paste("V",ncol(data),"~.", sep=""))
 
