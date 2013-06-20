@@ -15,7 +15,7 @@
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-packages = c("gbm", "rpart", "lattice", "RJSONIO", "lhs", "tgp", "fields", "fOptions")
+packages = c("gbm", "rpart", "lattice", "RJSONIO", "lhs", "tgp", "fOptions")
 
 new.repos <- getOption("repos")
 new.repos["CRAN"] <- "http://cran.stat.ucla.edu"
