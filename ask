@@ -25,6 +25,8 @@ import sys
 from common.configuration import Configuration
 from common.util import fatal
 
+VERSION="1.0.1"
+
 ###
 # Driver Main Loop
 #
@@ -177,6 +179,11 @@ def main():
         help="Skip reporter module. (WARNING: if the chosen control module"
              " relies on the output of the reporter module, this option"
              " fails.)")
+
+    parser.add_argument(
+        '--version',
+        action='version',
+        version="ask {}".format(VERSION))
 
     parser.add_argument('configuration',
                         help="the experiment configuration file")
