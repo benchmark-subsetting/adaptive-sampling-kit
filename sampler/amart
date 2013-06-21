@@ -15,21 +15,116 @@
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
+require(inline)
 suppressPackageStartupMessages(require(gbm, quietly=T))
+# We want the inline package for inlining C uniform_sampling code
+suppressPackageStartupMessages(require(inline, quietly=T))
 # We want the lhs method inside tgp
 suppressPackageStartupMessages(require(tgp, quietly=T))
 
 #### Define some utility functions
-# Import the uniform sampling scheme that is writing in C
-dyn.load(file.path(Sys.getenv("ASKHOME"), "common/libuniformsampling.so"))
 uniform_sampling <- function(variance, nsamples, available) {
   samples = rep(-1, nsamples)
   #compute distance between all the pairs of available points
   dist = as.matrix(dist(available[,1:ncol(available)-1], diag=T))
-  out = .C("uniform_sampling", vsize=as.integer(length(variance)), 
-           ssize=as.integer(nsamples), 
-           variance=as.integer(variance), samples=as.integer(samples),
-           dist=as.double(dist), max_distance=as.double(max(dist)))
+
+  # Inline the uniform sampling scheme that is written in C,
+  # the R version was too slow.
+  sig_uniform_sampling = signature(vsize="integer",
+                                   ssize="integer",
+                                   variance="integer",
+                                   samples="integer",
+                                   dist="double",
+                                   max_distance="double")
+  code_uniform_sampling = "
+        int vs = vsize[0];
+        int ss = ssize[0];
+        double max_delta = max_distance[0];
+        double min_delta = 0;
+
+        /* Find optimal delta by dichotomy */
+        while (1) {
+
+        double delta = (max_delta + min_delta) / 2.0;
+        if ((max_delta - min_delta) < RESOLUTION) {
+            int decision =
+            try_delta(min_delta, vs, ss, variance, samples, dist);
+            assert(decision >= 0);
+            return;
+        }
+        int decision = try_delta(delta, vs, ss, variance, samples, dist);
+        if (decision == 0) {	/* All done */
+            break;
+        } else if (decision == -1) {	/* decrease delta */
+            max_delta = delta;
+        } else if (decision == 1) {	/* increase delta */
+            min_delta = delta;
+        }
+        }
+    "
+
+  code_try_delta = "
+        int
+        try_delta(double delta, int vs, int ss, int *variance,
+                int *samples, double *dist)
+        {
+
+        int i, j;
+        /* Always select the first sample (largest variance) */
+        samples[0] = variance[0] - 1;
+        int count = 1;
+
+        for (i = 1; i < vs; i++) {
+        int next = variance[i] - 1;
+        /* Check that the next point distance to all other sampled points
+         * is above the threshold */
+        int ok = 1;
+        for (j = 0; j < count; j++) {
+            if (dist[next + samples[j] * vs] < delta) {
+            ok = 0;
+            break;
+            }
+        }
+
+        /* If that is not the case continue to next point */
+        if (!ok)
+            continue;
+
+        /* If that is the case, add the point to the selected samples list */
+        samples[count] = next;
+        count++;
+
+        /* Did we select all the needed samples ? */
+        if (count == ss) {
+            if (i == vs - 1)
+            return 0;
+            else
+            return 1;
+            /* We reached ss points, we need to increase delta */
+        }
+        }
+
+        /* We did not reach enough points, we need to decrease delta */
+        return -1;
+        }
+    "
+
+  fns = cfunction(list(uniform_sampling=sig_uniform_sampling),
+                  list(code_uniform_sampling),
+                  convention=".C",
+                  includes=c("#define RESOLUTION 0.00000000001",
+                             "#include <assert.h>"),
+                  otherdefs=c(code_try_delta)
+                 )
+
+  out = fns[["uniform_sampling"]](
+             vsize = as.integer(length(variance)),
+             ssize = as.integer(nsamples),
+             variance = as.integer(variance),
+             samples = as.integer(samples),
+             dist = as.double(dist),
+             max_dist = as.double(max(dist)))
+
   return(out$samples+1)
 }
 
