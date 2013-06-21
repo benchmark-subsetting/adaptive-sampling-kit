@@ -1,0 +1,60 @@
+.TH ASK "1" "June 2013" "ask 1.0.1" "User Commands"
+.SH NAME
+ask \- Adaptive Sampling Kit, a toolkit for sampling big experimental spaces
+.SH DESCRIPTION
+
+ASK stands for Adaptive Sampling Kit. Its main goal is accelerating long
+experiments. Two kinds of variables define an experiment: a response and a set
+of factors. The response is characterized on the factors' Cartesian product.
+
+When the space is small, the response can be measured for every point in the
+space. When the space is large, doing an exhaustive measurement is either not
+possible in terms of execution time or simply not practical. ASK tries to find
+good approximations of the response by sampling only a small fraction of the
+space. ASK features multiple active learning algorithms to prioritize the
+exploration of the interesting parts of the experimental space.
+
+.SH SYNOPSIS
+ask [\-h] [\-\-force_overwrite] [\-\-replay_only] [\-\-skip_model]
+    [\-\-skip_reporter] [\-\-version] configuration
+.SH COMMAND LINE OPTIONS
+.TP
+configuration
+the experiment configuration file
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+show this help message and exit
+.TP
+\fB\-\-force_overwrite\fR
+If a previous output directory is found its contents will
+be overwritten
+.TP
+\fB\-\-replay_only\fR
+(Must be run over a full previous ask run). Skip
+bootstrap and sampler modules, but runs previous labels
+through the model and reporter. This option is useful if
+one wants to run sampling and analyze results separately.
+.TP
+\fB\-\-skip_model\fR
+Skip model module. (WARNING: if the chosen control module
+relies on the output of the model module, this option
+fails.)
+.TP
+\fB\-\-skip_reporter\fR
+Skip reporter module. (WARNING: if the chosen control
+module relies on the output of the reporter module, this
+option fails.)
+.TP
+\fB\-\-version\fR
+show program's version number and exit
+
+.SH COPYRIGHT
+Copyright (C) 2011-2012 Universite de Versailles St-Quentin-en-Yvelines
+
+The Adaptive Sampling Kit (ASK) is released under the GNU General Public
+License, version 2. Please refer to the file LICENSE that accompanies your copy
+of ASK.
+
+.SH SEE ALSO
+For complete documentation, please refer to the ASK manual which should have
+been installed in /usr/share/doc/ask.

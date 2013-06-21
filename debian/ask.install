@@ -1,0 +1,15 @@
+ask /usr/share/ask/
+default.conf /usr/share/ask/
+bootstrap/* /usr/share/ask/bootstrap/
+common/*    /usr/share/ask/common/
+control/*   /usr/share/ask/control/
+model/*     /usr/share/ask/model/
+reporter/*  /usr/share/ask/reporter/
+sampler/*   /usr/share/ask/sampler/
+source/*    /usr/share/ask/source/
+utils/*     /usr/share/ask/utils/
+README      /usr/share/doc/ask/
+doc/ask-manual-*.pdf    /usr/share/doc/ask/
+examples/aiaik/         /usr/share/doc/ask/examples/
+examples/custom-module/ /usr/share/doc/ask/examples/
+

@@ -1,0 +1,32 @@
+Source: ask
+Section: science
+Priority: extra
+Build-Depends: debhelper (>= 8.0.0), texlive-latex-base, texlive-latex-extra,
+               latex-xcolor, python (>=2.6), python-pygments, python-nose,
+               python-argparse, python-numpy, python-scipy, r-base-core (>=2.5),
+               r-cran-gbm, r-cran-rpart, r-cran-lattice, r-cran-rjsonio,
+               r-cran-lhs, r-cran-tgp, r-cran-inline, r-cran-foptions
+X-Python-Version: >= 2.6
+Maintainer: Pablo Oliveira <pablo@sifflez.org>
+Standards-Version: 3.9.3
+Homepage: https://code.google.com/p/adaptive-sampling-kit/
+#Vcs-Git: git://git.debian.org/collab-maint/ask.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/ask.git;a=summary
+
+Package: ask
+Section: science
+Architecture: all
+Depends: ${python:Depends}, ${misc:Depends}, python (>=2.6),
+         python-argparse, python-numpy, python-scipy, r-base (>=2.5),
+         r-cran-gbm, r-cran-rpart, r-cran-lattice, r-cran-rjsonio,
+         r-cran-lhs, r-cran-tgp, r-cran-inline, r-cran-foptions
+Description: Adaptive Sampling Kit
+ Adaptive Sampling Kit (ASK) is a toolkit for sampling big experimental spaces.
+ When the space is small, the response can be measured for every point in the
+ space. When the space is large, doing an exhaustive measurement is either not
+ possible in terms of execution time or simply not practical. ASK tries to find
+ good approximations of the response by sampling only a small fraction of the
+ space. ASK features multiple active learning algorithms to prioritize the
+ exploration of the interesting parts of the experimental space.
+
+
