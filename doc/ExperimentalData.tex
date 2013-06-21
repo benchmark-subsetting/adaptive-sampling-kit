@@ -1,0 +1,114 @@
+
+
+\chapter{Experimental Data}
+
+The experimental data used in the paper \emph{ASK: Adaptive Sampling Kit for Performance Characterization}
+by Pablo de Oliveira Castro, Eric Petit, Jean Christophe Beyler, and William Jalby is available \href{http://adaptive-sampling-kit.googlecode.com/files/ask-experiments.tar.bz2}{here}.
+
+\section{Unpacking the Archive}
+
+The archive can be unpacked by typing:
+
+\begin{verbatim}
+	 $ tar xjvf ask-experiments.tar.bz2
+\end{verbatim}
+
+\section{Content of the Archive}
+
+The experimental data archive contents the following directories
+
+\begin{itemize}
+	\item \texttt{aiaik/}, this directory contains the experimental data for the ai\_aik experiment
+	\begin{itemize}
+		\item \texttt{aggregated-timeseries}: error time series files. The median among the nine ASK runs was taken.
+		\item \texttt{configurations}: ASK configuration files used to run the experiments
+		\item \texttt{runs}: nine ASK runs with amart, hvs, hvsrelative, latinsquare, random, and tgp strategies
+		\item \texttt{stride.data}: exhaustive measures of the ai\_aik kernel
+	\end{itemize}
+\end{itemize}
+
+\begin{itemize}
+	\item \texttt{stencil-codes/}, this directory contains the experimental data for the stencil codes experiment
+	\begin{itemize}
+		\item \texttt{aggregated-timeseries}: error time series files for the 32-core experiment. The median among the nine ASK runs was taken.
+		\item \texttt{bench}: source code of the stencil benchmark
+		\item \texttt{configurations}: ASK configuration files used to run the experiments
+		\item \texttt{runs}: nine ASK runs with amart, hvs, hvsrelative, latinsquare, random, and tgp strategies on the 32-core benchmark
+		\item \texttt{test-set-32.data}: 25600 samples test set used to measure the error on the 32-core benchmark
+	\end{itemize}
+\end{itemize}
+
+\section{Reproducing the Experiments}
+
+\subsection{Ai\_Aik}
+
+Because the ai\_aik's design space was exhaustively measured, it is easy to reproduce the experiment.
+First, change the path to the \texttt{aiaik/} directory:
+\begin{verbatim}
+	 $ cd aiaik/
+\end{verbatim}
+Create a new directory for your experiments:
+\begin{verbatim}
+	 $ mkdir myexperiments/; cd myexperiments/
+	
+\end{verbatim}
+To run the sampling strategies configurations in \texttt{aiaik/configurations/}, run:
+\begin{verbatim}
+	 $ for conf in ../configurations/*.conf; do ask $conf; done
+\end{verbatim}
+
+Alternatively, it is possible to replay the exact experiments used in the paper. Replaying means that
+ASK will reuse the samples from a previous run but will regenerate the error and plot reports. 
+To replay the paper experiments:
+Copy the exhaustive data inside aiaik/runs/ directory :
+\begin{verbatim}
+	 $ cd aiaik/runs/
+	 $ cp ../stride.data .
+\end{verbatim}
+
+Select the run to replay, for instance \texttt{run-1}, and move into its directory:
+\begin{verbatim}
+	 $ cd run-1/
+\end{verbatim}
+
+Select the configuration to replay, for instance \texttt{hvs.conf}, then run:
+\begin{verbatim}
+	 $ ask --replay_only ../../configurations/hvs.conf
+\end{verbatim}
+
+\subsection{Stencil Codes}
+
+The stencil codes' design space was too large to be exhaustively sampled; therefore, to reproduce the experiment
+the samples must be measured using the stencil benchmark available in \texttt{stencil-codes/bench}.
+The benchmark is a simple C program that can be compiled using the included \texttt{Makefile}:
+\begin{verbatim}
+	 $ cd stencil-codes/bench
+	 $ make
+\end{verbatim}
+
+Then, create a new directory for your experiments inside \texttt{stencil-codes/}:
+\begin{verbatim}
+	 $ mkdir myexperiment; cd myexperiment
+\end{verbatim}
+
+To run the sampling strategies configurations in \texttt{stencil-codes/configurations/}, run:
+\begin{verbatim}
+	 $ for conf in ../configurations/*.conf; do ask $conf; done
+\end{verbatim}
+
+This simple setup runs ASK and the stencil bench on the same computer and is not recommended. It is better to run the stencil bench on a remote computer in a isolated environment to get accurate measures. The paper's data was measured on a controlled and isolated environment. Details to reproduce our setup are available \href{mailto:ask-team@exascale-computing.eu}{on request}.
+
+Alternatively, it is possible to replay the exact experiments used in the paper. Replaying means that ASK will reuse the samples from a previous run but will regenerate the error and plot reports. 
+To replay the paper experiments, copy the test set data inside aiaik/runs/ directory :
+\begin{verbatim}
+	$ cd stencil-codes/runs/
+	$ cp ../test-set-32.data .
+\end{verbatim}
+Select the run to replay, for instance run-1, and move into its directory:
+\begin{verbatim}
+	$ cd run-1/
+\end{verbatim}
+Select the configuration to replay, for instance hvs.conf, then run:
+\begin{verbatim}
+	$ ask --replay_only ../../configurations/hvs.conf
+\end{verbatim}

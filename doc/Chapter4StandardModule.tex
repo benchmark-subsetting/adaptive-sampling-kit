@@ -1,0 +1,224 @@
+\chapter{Standard Modules}
+\section{Introduction}
+
+This chapter presents the options for the standard modules bundled in ASK.
+
+\section{Bootstrap Modules}
+
+Bootstrap modules select the first batch of sampled points in the experiment.
+
+\subsection{Module latinsquare}
+
+Module latinsquare selects points using a Latin Hypercube sampling. The method is described in \emph{Large sample properties of simulations using Latin Hypercube Sampling}, M. Stein, Technometrics 1987, 143--151, JSTOR. ASK's module uses the \href{http://cran.r-project.org/web/packages/lhs/}{R lhs package} implementation.
+
+	\vspace{0.5cm}\begin{tabular}{| p{0.18\textwidth} | p{0.18\textwidth} | p{0.14\textwidth} | p{0.50\textwidth}  |}
+		\hline
+		\textbf{ Parameters} & \textbf{ Mandatory} & \textbf{ Expects} & \textbf{ Description} \\ \hline
+		 n &  yes &  integer &  Number of samples \\ \hline
+		 method &   &  string: ``random'', ``genetic'' or ``maximin'' &  Method to generate the latin hypercube, refer to \href{http://cran.r-project.org/web/packages/lhs/}{lhs documentation} for details. ``random'' method is default. \\ \hline
+		 seed &   &  integer &  Seed to initialize the Random Number Generator (RNG). When missing the default R RNG initialization is used. \\ \hline
+	\end{tabular}
+
+\subsection{Module lowdiscrepancy}
+
+Module lowdiscrepancy selects points using a Low Discrepancy sequence. ASK's module uses the \href{http://cran.r-project.org/web/packages/fOptions/}{R fOptions package} implementation.
+
+	\vspace{0.5cm}\begin{tabular}{| p{0.18\textwidth} | p{0.18\textwidth} | p{0.14\textwidth} | p{0.50\textwidth}  |}
+		\hline
+		\textbf{ Parameters} & \textbf{ Mandatory} & \textbf{ Expects} & \textbf{ Description} \\ \hline
+		 n &  yes &  integer &  Number of samples \\ \hline
+		 method &   &  string: ``sobol'' or ``halton'' &  Type of low discrepancy sequence, refer to \href{http://cran.r-project.org/web/packages/fOptions/}{fOptions documentation} for details. ``sobol'' method is default. \\ \hline
+		 seed &   &  integer &  Seed to initialize the RNG. When missing the default R RNG initialization is used. \\ \hline
+	\end{tabular}
+
+\subsection{Module random}
+
+Module random selects points by choosing a value for each factor using a uniform random distribution. 
+
+	\vspace{0.5cm}\begin{tabular}{| p{0.18\textwidth} | p{0.18\textwidth} | p{0.14\textwidth} | p{0.50\textwidth}  |}
+		\hline
+		\textbf{ Parameters} & \textbf{ Mandatory} & \textbf{ Expects} & \textbf{ Description} \\ \hline
+		 n &  yes &  integer & \\ \hline
+		 seed &   &  integer &  Seed to initialize the RNG. When missing the default Python RNG initialization is used. \\ \hline
+	\end{tabular}
+
+\subsection{Module random-file}
+/
+Module random-file selects points by choosing samples at random from a samples file. The file must be in \hrefinternal{http:///wiki/Application\_Characterization:\_ASK:\_Chapter\_3:\_Experiment\_Setup\#Data\_Exchange\_Format}{ASK's data exchange format}.
+
+	\vspace{0.5cm}\begin{tabular}{| p{0.18\textwidth} | p{0.18\textwidth} | p{0.14\textwidth} | p{0.50\textwidth}  |}
+		\hline
+		\textbf{ Parameters} & \textbf{ Mandatory} & \textbf{ Expects} & \textbf{ Description} \\ \hline
+		 n &  yes &  integer &  Number of samples \\ \hline
+		 data\_file &  yes &  path &  samples file \\ \hline
+		 seed &   &  integer &  Seed to initialize the RNG. When missing the default Python RNG initialization is used. \\ \hline
+	\end{tabular}
+
+\section{Source Modules}
+
+Source modules measure the samples selected by a bootstrap or sampler module. Usually, the user writes a custom source module fitting the target experiment.
+
+\subsection{Module File}
+
+The module file uses a text file as a database for returning measures. 
+When the file module receives a requested set of samples, it tries to find them in the database file and returns the matching ones.
+
+	\vspace{0.5cm}\begin{tabular}{| p{0.18\textwidth} | p{0.18\textwidth} | p{0.14\textwidth} | p{0.50\textwidth}  |}
+		\hline
+		\textbf{ Parameters} & \textbf{ Mandatory} & \textbf{ Expects} & \textbf{ Description} \\ \hline
+		 data\_file &  yes &  path &  Path of the database file containing previously measured samples in \hrefinternal{http:///wiki/Application\_Characterization:\_ASK:\_Chapter\_3:\_Experiment\_Setup\#Data\_Exchange\_Format}{ASK's data exchange format}. \\ \hline
+	\end{tabular}
+
+\section{Sampler Modules}
+
+The sampler module samples additional points in each iteration of the experimental pipeline. 
+
+\subsection{Module amart}
+
+Module amart selects points using the method described in \emph{Accurate and efficient processor performance prediction via regression tree based modeling}, B. Li and L. Peng and B. Ramadass, Journal of Systems Architecture 2009, 457--467. 
+
+	\vspace{0.5cm}\begin{tabular}{| p{0.18\textwidth} | p{0.18\textwidth} | p{0.14\textwidth} | p{0.50\textwidth}  |}
+		\hline
+		\textbf{ Parameters} & \textbf{ Mandatory} & \textbf{ Expects} & \textbf{ Description} \\ \hline
+		 n &  yes &  integer &  Number of samples \\ \hline
+		 trees &   &  integer &  Number of trees used by the underlying GBM model. Default is 3000. \\ \hline
+		 seeds &   &  integer &  Size of the committee. \\ \hline
+		 predict\_on\_all &   &  boolean &  If true, the committee votes on all the candidate points. If false, the committee votes on a subsample of 20*n points using a Latin Hypercube sampling. Default is true. \\ \hline
+	\end{tabular}
+
+\subsection{Module hierarchical}
+
+Module hierarchical selects points using the Hierarchical Variance Sampling method.
+
+	\vspace{0.5cm}\begin{tabular}{| p{0.18\textwidth} | p{0.18\textwidth} | p{0.14\textwidth} | p{0.50\textwidth}  |}
+		\hline
+		\textbf{ Parameters} & \textbf{ Mandatory} & \textbf{ Expects} & \textbf{ Description} \\ \hline
+		 n &  yes &  integer &  Number of samples \\ \hline
+		 confidence &   &  float &  Confidence bound adjustment. A value of 0.9 means that the interval computed is valid 90\% of the time. Default is 0.9. \\ \hline
+		 use\_cov &   &  boolean &  If true, the error per region is computed from the square of the coefficient of variance, also called relative variance. By default, it is false and the error is computed from the variance. \\ \hline
+     use\_weights & & boolean & If true, a weights file is produced. It can be used by other modules (such as GBM) to compensate HVS uneven sampling during model construction. By default, it is true. \\ \hline
+		 ponderate\_by\_size &   &  boolean &  If true, the error per region is defined as the square of the coefficient of variance multiplied by the region size. By default, it is true. \\ \hline
+	\end{tabular}
+
+\subsection{Module tgp}
+
+Module tgp selects points using the \href{http://cran.r-project.org/web/packages/tgp/}{Tree Gaussian Process R package}. 
+
+	\vspace{0.5cm}\begin{tabular}{| p{0.18\textwidth} | p{0.18\textwidth} | p{0.14\textwidth} | p{0.50\textwidth}  |}
+		\hline
+		\textbf{ Parameters} & \textbf{ Mandatory} & \textbf{ Expects} & \textbf{ Description} \\ \hline
+		 n &  yes &  integer &  Number of samples \\ \hline
+	\end{tabular}
+
+\subsection{Module latinsquare}
+
+Module latinsquare selects points using augmented Latin Hypercube samplings using the \href{http://cran.r-project.org/web/packages/lhs/}{lhs R package}.
+If latinsquare is used as sampler, then latinsquare must be used as bootstrap.
+
+	\vspace{0.5cm}\begin{tabular}{| p{0.18\textwidth} | p{0.18\textwidth} | p{0.14\textwidth} | p{0.50\textwidth}  |}
+		\hline
+		\textbf{ Parameters} & \textbf{ Mandatory} & \textbf{ Expects} & \textbf{ Description} \\ \hline
+		 n &  yes &  integer &  Number of samples \\ \hline
+	\end{tabular}
+
+\subsection{Module random}
+
+The random module selects points by choosing a value for each factor using a uniform random distribution. 
+It also avoids selecting already sampled points.
+When selecting an already sampled point, it discards the point and chooses a new random combination. 
+The module finally gives up if, after 50 tries, it is unable to find a new combination, 
+
+	\vspace{0.5cm}\begin{tabular}{| p{0.18\textwidth} | p{0.18\textwidth} | p{0.14\textwidth} | p{0.50\textwidth}  |}
+		\hline
+		\textbf{ Parameters} & \textbf{ Mandatory} & \textbf{ Expects} & \textbf{ Description} \\ \hline
+		 n &  yes &  integer &  Number of samples \\ \hline
+	\end{tabular}
+
+\section{Model Modules}
+
+Model modules predict the response in locations not yet sampled.
+
+\subsection{Module cart}
+
+Module cart uses the model described in \emph{CART: Classification and regression trees}, L. Breiman and J. Friedman and R. Olshen and C. Stone and D. Steinberg and P. Colla, Wadsworth 1983.
+
+	\vspace{0.5cm}\begin{tabular}{| p{0.18\textwidth} | p{0.18\textwidth} | p{0.14\textwidth} | p{0.50\textwidth}  |}
+		\hline
+		\textbf{ Parameters} & \textbf{ Mandatory} & \textbf{ Expects} & \textbf{ Description} \\ \hline
+		 cp &  yes &  float &  Complexity parameter \\ \hline
+	\end{tabular}
+
+\subsection{Module gbm}
+
+Module gbm uses the model described in \href{http://cran.r-project.org/web/packages/gbm/}{\emph{Generalized Boosted Models: A guide to the gbm package}}, G. Ridgeway.
+
+	\vspace{0.5cm}\begin{tabular}{| p{0.18\textwidth} | p{0.18\textwidth} | p{0.14\textwidth} | p{0.50\textwidth}  |}
+		\hline
+		\textbf{ Parameters} & \textbf{ Mandatory} & \textbf{ Expects} & \textbf{ Description} \\ \hline
+		 ntreees &   &  integer &  Number of trees, default is 3000. \\ \hline
+		 interactiondepth &   &  integer &  Interaction Depth, default is 8. \\ \hline
+		 shrinkage &   &  float &  Shrinkage, default is 0.01 \\ \hline
+		 distribution &   &  string: ``gaussian'', ``laplace'', for the full list check \href{http://cran.r-project.org/web/packages/gbm/}{gbm documentation}. &  Distribution function used when building the boosted tree model. Gaussian, the default minimizes RMSE error. Laplace minimizes the mean absolute error. \\ \hline
+	\end{tabular}
+
+\subsection{Module tgp}
+
+Module tgp uses the Tree Gaussian Process model implemented in the \href{http://cran.r-project.org/web/packages/tgp/}{tgp R package}.
+
+ASK's interface to the tgp module is not yet configurable.
+
+\section{Control Modules}
+
+Control modules choose when to end the experiment. 
+
+\subsection{Module points}
+
+Module points, stops the experiment after a fixed number of samples.
+
+	\vspace{0.5cm}\begin{tabular}{| p{0.18\textwidth} | p{0.18\textwidth} | p{0.14\textwidth} | p{0.50\textwidth}  |}
+		\hline
+		\textbf{ Parameters} & \textbf{ Mandatory} & \textbf{ Expects} & \textbf{ Description} \\ \hline
+		 n &  yes &  integer &  Number of samples. The experiment will be stopped when the number of points sampled reaches n. \\ \hline
+	\end{tabular}
+
+\subsection{Module convergence}
+
+The module converge, stops the experiment if the model does not improve significantly in a given time window.
+It computes the improvement on a measure of the model error. The accuracy values are read from a time series file. The timeseries file, which is briefly discussed in \hrefinternal{http:///wiki/Application\_Characterization:\_ASK:\_Chapter\_3:\_Experiment\_Setup\#Analyzing\_the\_experiment}{Chapter 3}, is composed of space separated values. 
+The first line is a header with the name of the columns. The first column contains the number of
+samples, the second column contain a measure of error. The file is automatically generated by
+the \hrefinternal{http:///wiki/\#Module\_Generic}{generic reporter}, for example:
+
+\begin{minted}{bash}
+samples mean-error max-error rmse mean-relative max-relative
+50 0.0377823384121497 0.447323111968324 0.0781095183475204 Inf Inf
+100 0.0294159657374007 0.408494500075275 0.0630672408986823 Inf Inf
+150 0.0275319895231202 0.281661273924844 0.0469645301362225 Inf Inf
+\end{minted}
+
+	\vspace{0.5cm}\begin{tabular}{| p{0.18\textwidth} | p{0.18\textwidth} | p{0.14\textwidth} | p{0.50\textwidth}  |}
+		\hline
+		\textbf{ Parameters} & \textbf{ Mandatory} & \textbf{ Expects} & \textbf{ Description} \\ \hline
+		 timeseries &   &  path &  A file containing the model's error timeseries. If left empty, the module tries to retrieve the timeseries file from the report module configuration. \\ \hline
+		 window &   &  int &  The window in number of iterations. The default value is 5. \\ \hline
+		 threshold &   &  float &  Improvement threshold. A threshold of 0.1, means that if the error rate of change in the last \texttt{window} iterations is under 1\%, the experiment stops. \\ \hline
+	\end{tabular}
+
+\section{Reporter Modules}
+
+Reporter modules produce informative statistics for the user during the experiment. 
+
+\subsection{Module generic}
+
+Module points, stops the experiment after a fixed number of samples.
+
+	\vspace{0.5cm}\begin{tabular}{| p{0.18\textwidth} | p{0.18\textwidth} | p{0.14\textwidth} | p{0.50\textwidth}  |}
+		\hline
+		\textbf{ Parameters} & \textbf{ Mandatory} & \textbf{ Expects} & \textbf{ Description} \\ \hline
+		 test\_set &  yes &  path &  File containing a set of samples. The model error is measured against this test-set of samples. The file must be in \hrefinternal{http:///wiki/\#Data_Exchange_Format}{ASK's data exchange format}. \\ \hline
+		 script &  yes &  path: ``reporter/generic/1D.R'' or ``reporter/generic/2D.R'' or user provided script &  This is the path of the script used for plotting the model's predictions. This module includes generic scripts for 1D and 2D design spaces, that is to say composed of one or two factors. For higher-dimension spaces, the user must \hrefinternal{http:///wiki/Application_Characterization:_ASK:_Chapter_5:_Writing_Modules}{write a custom reporter}. \\ \hline
+		 timeseries &   &  path &  Path of the time series file. Error measures of the model will be written to this file. \\ \hline
+		 max\_error\_scale &   &  float &  If specified, it represents the error's plot maximal error value. If left empty, the error's plot range is dynamically adapted. \\ \hline
+	\end{tabular}
+
+

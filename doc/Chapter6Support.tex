@@ -1,0 +1,46 @@
+\chapter{Support}
+\section{Issues and Features}
+
+Google code provides a bug tracker on project pages. Users and developers can write new issues or features, called tickets, at \href{http://code.google.com/p/adaptive-sampling-kit/issues/list}{ASK bug tracker}. To open tickets please follow the rules below.
+
+\subsection{Program Bugs}
+
+The following steps should be used to open a bug ticket:
+
+\begin{enumerate}
+	\item Template: Choose Defect request from user or developer, accordingly.
+	\item Subject: Choose an explicit title, summarizing the issue.
+	\item Description: Add a brief abstract of the bug. Describe the exact steps that triggered the bug, and if possible attach the files needed to reproduce it.
+\end{enumerate}
+
+\subsection{Feature Requests}
+
+The following steps should be used to open a feature ticket:
+
+\begin{enumerate}
+	\item Tracker: Choose ``Review request.''
+	\item Subject: Choose an explicit title, summarizing the issue.
+	\item Description: Add a description of the feature.
+\end{enumerate}
+
+\section{Contributing}
+
+The project is particularly interested in:
+\begin{itemize}
+	\item Patches fixing bugs or adding new features
+	\item Documentation fixes
+	\item Bug reports
+\end{itemize}
+
+For documentation fixes and bug reports, please use the \href{http://code.google.com/p/adaptive-sampling-kit/issues/list}{issue tracker}.
+For code contributions, contact us at \textbf{\href{mailto:ask-team@exascale-computing.eu}{ask-team@exascale-computing.eu}}.
+
+\subsection{Running the Test Suite}
+
+ASK comes with an extensive suite of tests. Before submitting a patch, please make sure that all the tests pass, with the following command:
+\begin{minted}{bash}
+cd tests/
+nosetests -v
+\end{minted}
+
+If you submit a patch, including unit tests for your code is more than welcome and will make the patch review faster.
