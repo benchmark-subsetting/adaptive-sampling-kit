@@ -18,12 +18,13 @@
 # This script compares time series statistics extracted by different ASK runs
 #
 
-require(lattice)
 
 args <- commandArgs(trailingOnly = T)
 if (length(args) < 2) {
-   stop("Usage: compare-time-series <output.png> <timeseries1> <timeseries2> ...")
+   stop("Usage: compare-time-series output.png timeseries1 [timeseries2...])
 }
+
+require(lattice)
 
 data = data.frame()
 
