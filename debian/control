@@ -7,11 +7,12 @@ Build-Depends: debhelper (>= 8.0.0), texlive-latex-base, texlive-latex-extra,
                r-cran-gbm, r-cran-rpart, r-cran-lattice, r-cran-rjsonio,
                r-cran-lhs, r-cran-tgp, r-cran-inline, r-cran-foptions
 X-Python-Version: >= 2.6
-Maintainer: Pablo Oliveira <pablo@sifflez.org>
+Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.debian.org>
+Uploaders: Pablo Oliveira <pablo@sifflez.org>
 Standards-Version: 3.9.3
 Homepage: https://code.google.com/p/adaptive-sampling-kit/
-#Vcs-Git: git://git.debian.org/collab-maint/ask.git
-#Vcs-Browser: http://git.debian.org/?p=collab-maint/ask.git;a=summary
+Vcs-Git: http://code.google.com/p/adaptive-sampling-kit/
+Vcs-Browser: https://code.google.com/p/adaptive-sampling-kit/source/browse/?name=debian
 
 Package: ask
 Section: science
@@ -28,5 +29,3 @@ Description: Adaptive Sampling Kit
  good approximations of the response by sampling only a small fraction of the
  space. ASK features multiple active learning algorithms to prioritize the
  exploration of the interesting parts of the experimental space.
-
-
