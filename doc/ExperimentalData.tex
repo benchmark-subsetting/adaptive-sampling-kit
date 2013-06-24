@@ -96,7 +96,7 @@ To run the sampling strategies configurations in \texttt{stencil-codes/configura
 	 $ for conf in ../configurations/*.conf; do ask $conf; done
 \end{verbatim}
 
-This simple setup runs ASK and the stencil bench on the same computer and is not recommended. It is better to run the stencil bench on a remote computer in a isolated environment to get accurate measures. The paper's data was measured on a controlled and isolated environment. Details to reproduce our setup are available \href{mailto:ask-team@exascale-computing.eu}{on request}.
+This simple setup runs ASK and the stencil bench on the same computer and is not recommended. It is better to run the stencil bench on a remote computer in a isolated environment to get accurate measures. The paper's data was measured on a controlled and isolated environment. Details to reproduce our setup are available on request: ask-team@exascale-computing.eu.
 
 Alternatively, it is possible to replay the exact experiments used in the paper. Replaying means that ASK will reuse the samples from a previous run but will regenerate the error and plot reports. 
 To replay the paper experiments, copy the test set data inside aiaik/runs/ directory :
