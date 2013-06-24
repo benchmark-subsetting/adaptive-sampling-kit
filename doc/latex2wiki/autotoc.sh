@@ -1,3 +1,4 @@
+#!/bin/sh
 # Copyright (c) 2011-2013, Universite de Versailles St-Quentin-en-Yvelines
 #
 # This file is part of ASK.  ASK is free software: you can redistribute
@@ -13,19 +14,25 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-VERSION := $(shell cat ../VERSION)
-TARGET := ask-manual-$(VERSION).pdf
+# Automatically generate a table of contents for google wiki format
 
-all: $(TARGET)
+DEST="./adaptive-sampling-kit.wiki/"
+IFS="
+"
 
-$(TARGET): ask-manual.tex
-	pdflatex -shell-escape ask-manual.tex 
-	mv ask-manual.pdf $(TARGET)
-
-wiki:
-	./latex2wiki/transform.sh
-
-clean:
-	rm -rf $(TARGET) *.log *.out *.toc *.aux build/ adaptive-sampling-kit.wiki/
-
-.PHONY: wiki
+echo "* [main Documentation]"
+echo
+for i in $DEST/Chapter*.wiki $DEST/fdl.wiki $DEST/ExperimentalData.wiki; do
+    chapter_link=$(basename $i .wiki)
+    chapter_name=$(egrep -Z '^= (.*) =' $i | sed 's/= //g' | sed 's/ =//g')
+    toc=$(egrep -Z '^== (.*) ==' $i)
+    echo "* [$chapter_link $chapter_name]"
+    echo
+    for s in $toc; do
+        section_name=$(echo $s | sed 's/== //g' | sed 's/ ==//g')
+        section_link=$(echo $section_name | sed 's/ /_/g')
+        url="$chapter_name#$section_link"
+        echo "  * [$chapter_link#$section_link $section_name]"
+        echo
+    done
+done
