@@ -21,7 +21,7 @@ Depends: ${python:Depends}, ${misc:Depends}, python (>=2.6),
          python-argparse, python-numpy, python-scipy, r-base (>=2.5),
          r-cran-gbm, r-cran-rpart, r-cran-lattice, r-cran-rjsonio,
          r-cran-lhs, r-cran-tgp, r-cran-inline, r-cran-foptions
-Description: Adaptive Sampling Kit
+Description: Adaptive Sampling Kit for big experimental spaces
  Adaptive Sampling Kit (ASK) is a toolkit for sampling big experimental spaces.
  When the space is small, the response can be measured for every point in the
  space. When the space is large, doing an exhaustive measurement is either not
