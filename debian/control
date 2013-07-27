@@ -4,7 +4,7 @@ Priority: extra
 Build-Depends: debhelper (>= 8.0.0), texlive-latex-base, texlive-latex-extra,
                latex-xcolor, python (>=2.6), python-pygments, python-nose,
                python-argparse, python-numpy, python-scipy, r-base-core (>=2.5),
-               r-cran-gbm, r-cran-rpart, r-cran-lattice, r-cran-rjsonio,
+               r-cran-gbm, r-cran-rpart, r-cran-lattice, r-cran-rjson,
                r-cran-lhs, r-cran-tgp, r-cran-inline, r-cran-foptions
 X-Python-Version: >= 2.6
 Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.debian.org>
@@ -19,7 +19,7 @@ Section: science
 Architecture: all
 Depends: ${python:Depends}, ${misc:Depends}, python (>=2.6),
          python-argparse, python-numpy, python-scipy, r-base-core (>=2.5),
-         r-cran-gbm, r-cran-rpart, r-cran-lattice, r-cran-rjsonio,
+         r-cran-gbm, r-cran-rpart, r-cran-lattice, r-cran-rjson,
          r-cran-lhs, r-cran-tgp, r-cran-inline, r-cran-foptions
 Description: Adaptive Sampling Kit for big experimental spaces
  Adaptive Sampling Kit (ASK) is a toolkit for sampling big experimental spaces.

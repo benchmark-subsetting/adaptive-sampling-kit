@@ -1,0 +1,19 @@
+--- a/common/configuration.R
++++ b/common/configuration.R
+@@ -16,9 +16,14 @@
+ # Defines the conf function to help reading ASK configuration files from R
+ # modules.
+ 
+-require(RJSONIO, quietly=T)
+-configuration = fromJSON(paste(readLines(args[1]), collapse=""),
++if ("RJSONIO" %in% rownames(installed.packages())) {
++    require(RJSONIO, quietly=T)
++    configuration = fromJSON(paste(readLines(args[1]), collapse=""),
+                          simplify=F)
++} else {
++    require(rjson, quietly=T)
++    configuration = fromJSON(paste(readLines(args[1]), collapse=""))
++}
+ 
+ conf <- function(key, default=NULL) {
+   dollarkey = gsub("\\.","$", key)
