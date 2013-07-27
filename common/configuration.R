@@ -1,4 +1,4 @@
-# Copyright (c) 2011-2012, Universite de Versailles St-Quentin-en-Yvelines
+# Copyright (c) 2011-2013, Universite de Versailles St-Quentin-en-Yvelines
 #
 # This file is part of ASK.  ASK is free software: you can redistribute
 # it and/or modify it under the terms of the GNU General Public
@@ -16,9 +16,14 @@
 # Defines the conf function to help reading ASK configuration files from R
 # modules.
 
-require(RJSONIO, quietly=T)
-configuration = fromJSON(paste(readLines(args[1]), collapse=""),
+if ("RJSONIO" %in% rownames(installed.packages())) {
+    require(RJSONIO, quietly=T)
+    configuration = fromJSON(paste(readLines(args[1]), collapse=""),
                          simplify=F)
+} else {
+    require(rjson, quietly=T)
+    configuration = fromJSON(paste(readLines(args[1]), collapse=""))
+}
 
 conf <- function(key, default=NULL) {
   dollarkey = gsub("\\.","$", key)
