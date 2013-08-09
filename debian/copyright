@@ -10,7 +10,7 @@ Files: debian/*
 Copyright: 2013 Pablo Oliveira <pablo@sifflez.org>
 License: GPL-2
 
-Files: tests/scripttest/__init__.py
+Files: tests/scripttest/*
 Copyright: 2005-2007 Ian Bicking and contributors
 License: Expat
 
