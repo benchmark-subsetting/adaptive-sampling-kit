@@ -39,7 +39,7 @@ class ControlTests(CommandLineT):
             "modules": {
             "control": {
             "executable": "control/points",
-            "params": {"n": 2 ** 32}}}})
+            "params": {"n": 2 ** 16}}}})
 
         data = self.tfile("test1.data")
         r = self.run_module("control/points",
