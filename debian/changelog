@@ -1,3 +1,10 @@
+ask (1.0.1-1.1) UNRELEASED; urgency=low
+
+  * Fix failing test on 32 bit architectures. Thanks to Andreas Moog for
+    reporting the bug.
+
+ -- Pablo Oliveira <pablo@sifflez.org>  Fri, 13 Dec 2013 12:51:45 +0100
+
 ask (1.0.1-1) unstable; urgency=low
 
   * Initial release (Closes: #713986)
