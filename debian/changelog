@@ -2,6 +2,7 @@ ask (1.0.1-2) UNRELEASED; urgency=low
 
   * Fix failing test on 32 bit architectures. Thanks to Andreas Moog for
     reporting the bug.
+  * Fix lintian error: python-depends-but-no-python-helper
 
  -- Pablo Oliveira <pablo@sifflez.org>  Mon, 16 Dec 2013 11:29:14 +0100
 

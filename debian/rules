@@ -8,4 +8,4 @@ export DH_OPTIONS
 override_dh_auto_configure:
 
 %:
-	dh $@
+	dh $@ --with python2
