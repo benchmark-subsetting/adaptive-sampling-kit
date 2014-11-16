@@ -4,6 +4,9 @@ ask (1.0.1-2) unstable; urgency=low
     reporting the bug. Closes: #768844.
   * Fix lintian error: python-depends-but-no-python-helper
 
+  [ Sylvestre Ledru ]
+  * Standards-Version updated to 3.9.5
+
  -- Pablo Oliveira <pablo@sifflez.org>  Sun, 16 Nov 2014 18:36:10 +0200
 
 ask (1.0.1-1) unstable; urgency=low
