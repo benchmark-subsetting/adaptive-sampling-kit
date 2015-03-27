@@ -1,36 +1,28 @@
-[![Build Status](https://travis-ci.org/pablooliveira/ask.png?branch=devel)](https://travis-ci.org/pablooliveira/ask)
-
 ASK: Adaptive Sampling Kit
 ==========================
 
 Adaptive Sampling Kit (ASK) is a toolkit for sampling big experimental spaces. It features multiple active learning algorithms 
 to prioritize the exploration of the interesting parts of the experimental space. 
 
-##Documentation and Installation
+Documentation
+=============
 
-The documentation and installation procedures are detailed at
-http://code.google.com/p/adaptive-sampling-kit/wiki/main
+ASK user manual is available at the following URL
+ 
+https://github.com/benchmark-subsetting/adaptive-sampling-kit/wiki/Chapter-1:-Introduction
 
-##Licence
+Licence
+=======
 
-Copyright (c) 2011-2012, Université de Versailles St-Quentin-en-Yvelines
-
+Copyright (c) 2011-2015, Université de Versailles St-Quentin-en-Yvelines and Contributors
 ASK is released under the GNU General Public License, version 2. Please refer to LICENSE, for details.
 
-##Contact
+Contact
+=======
 
-For any question regarding ASK, please write at <ask-team@exascale-computing.eu>.
+For any question regarding ASK, please write to the adaptive sampling kit mailing list at 
+[adaptive-sampling-kit@googlegroups.com](mailto:adaptive-sampling-kit@googlegroups.com).
 
-##Contributors
+For bug reports, features requests or contributions please use the [project
+tracker](https://github.com/benchmark-subsetting/adaptive-sampling-kit).
 
-* Pablo de Oliveira Castro, wrote ASK and its documentation
-* Eric Petit contributed many ideas during ASK development and evaluated ASK on two performance case-studies
-* Asma Farjallah helped test ASK on a Reverse Time Migration kernel
-* E. Beyler, J.C. Beyler, and B. Krammer, reviewed extensively this documentation
-* J.C. Beyler, M. Bordet, Y. Kashnikov, J. Noudohouenou, B. Pradelle, F. Talbart, and N. Triquenaux provided useful code reviews
-
-##Acknowledgments
-
-This software is a result of work performed in Exascale Computing
-Research Center with support provided by CEA, GENCI, Intel, and
-UVSQ.
