@@ -260,16 +260,16 @@ def predict(configuration, input_file, output_file, n, cp):
     # read the labelled points
     labelled = np.genfromtxt(input_file)
 
-    # check that the labelled file is valid
-    if len(configuration["factors"]) != (labelled.shape[1] -1):
-        fatal("labelled.data is invalid: check that it has exactly "
-              "one response column and as many factor columns "
-              "as defined in your experiment configuration.")
-
     # when there is only one observation we have to
     # reshape the data to say it is multidimensionnal
     if len(labelled.shape) == 1:
         labelled = labelled.reshape(1, labelled.shape[0])
+
+    # check that the labelled file is valid
+    if len(configuration["factors"]) != (labelled.shape[1] - 1):
+        fatal("labelled.data is invalid: check that it has exactly "
+              "one response column and as many factor columns "
+              "as defined in your experiment configuration.")
 
     # compute the leaf error
     compute_error_pernode(labelled, T, configuration)
