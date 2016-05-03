@@ -1,6 +1,6 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: Adaptive Sampling Kit
-Source: https://code.google.com/p/adaptive-sampling-kit/
+Source: https://github.com/benchmark-subsetting/adaptive-sampling-kit
 
 Files: *
 Copyright: 2011-2013 Universite de Versailles St-Quentin-en-Yvelines

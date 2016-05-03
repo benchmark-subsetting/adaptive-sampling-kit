@@ -10,9 +10,9 @@ X-Python-Version: >= 2.6
 Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.debian.org>
 Uploaders: Pablo Oliveira <pablo@sifflez.org>
 Standards-Version: 3.9.5
-Homepage: https://code.google.com/p/adaptive-sampling-kit/
-Vcs-Git: git://git.debian.org/git/debian-science/packages/ask.git
-Vcs-Browser: http://git.debian.org/?p=debian-science/packages/ask.git
+Homepage: https://github.com/benchmark-subsetting/adaptive-sampling-kit
+Vcs-Git: https://anonscm.debian.org/git/debian-science/packages/ask.git
+Vcs-Browser: https://anonscm.debian.org/git/debian-science/packages/ask.git
 
 Package: ask
 Section: science
