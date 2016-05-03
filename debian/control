@@ -9,7 +9,7 @@ Build-Depends: debhelper (>= 8.0.0), texlive-latex-base, texlive-latex-extra,
 X-Python-Version: >= 2.6
 Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.debian.org>
 Uploaders: Pablo Oliveira <pablo@sifflez.org>
-Standards-Version: 3.9.5
+Standards-Version: 3.9.8
 Homepage: https://github.com/benchmark-subsetting/adaptive-sampling-kit
 Vcs-Git: https://anonscm.debian.org/git/debian-science/packages/ask.git
 Vcs-Browser: https://anonscm.debian.org/git/debian-science/packages/ask.git
