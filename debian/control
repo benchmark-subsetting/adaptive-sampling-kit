@@ -15,7 +15,6 @@ Vcs-Git: https://anonscm.debian.org/git/debian-science/packages/ask.git
 Vcs-Browser: https://anonscm.debian.org/git/debian-science/packages/ask.git
 
 Package: ask
-Section: science
 Architecture: all
 Depends: ${python:Depends}, ${misc:Depends}, python (>=2.6),
          python-argparse, python-numpy, python-scipy, r-base-core (>=2.5),
