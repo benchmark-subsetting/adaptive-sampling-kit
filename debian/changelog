@@ -1,3 +1,9 @@
+ask (1.1.0-1) unstable; urgency=low
+
+  * Update to upstream version 1.1.0
+
+ -- Pablo Oliveira <pablo@sifflez.org>  Tue, 03 May 2016 15:58:44 +0200
+
 ask (1.0.1-2) unstable; urgency=low
 
   * Fix failing test on 32 bit architectures. Thanks to Andreas Moog for
