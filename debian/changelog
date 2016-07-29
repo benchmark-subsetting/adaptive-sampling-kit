@@ -1,6 +1,7 @@
 ask (1.1.1-1) unstable; urgency=low
 
   * Update to upstream version 1.1.1
+  * Require r-cran-tgp (>= 2.4-14-2) (Closes: #832825)
 
  -- Pablo Oliveira <pablo@sifflez.org>  Fri, 29 Jul 2016 16:22:00 +0200
 
