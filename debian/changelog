@@ -1,8 +1,8 @@
-ask (1.1.0-1) unstable; urgency=low
+ask (1.1.1-1) unstable; urgency=low
 
-  * Update to upstream version 1.1.0
+  * Update to upstream version 1.1.1
 
- -- Pablo Oliveira <pablo@sifflez.org>  Tue, 03 May 2016 15:58:44 +0200
+ -- Pablo Oliveira <pablo@sifflez.org>  Fri, 29 Jul 2016 16:22:00 +0200
 
 ask (1.0.1-2) unstable; urgency=low
 
