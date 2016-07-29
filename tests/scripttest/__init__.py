@@ -456,6 +456,9 @@ class ProcResult(object):
         if self.stdout:
             s.append('-- stdout: --------------------')
             s.append(self.stdout)
+        if 'default.log' in self.files_created:
+            s.append('--default.log: ----------------')
+            s.append(self.files_created['default.log'].bytes)
         for name, files, show_size in [
             ('created', self.files_created, True),
             ('deleted', self.files_deleted, True),
