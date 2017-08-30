@@ -120,7 +120,7 @@ def driver_loop(args):
             # Call source to fulfill the requests
             call_module("source", params=[requested, newly_labelled])
             if not os.path.exists(newly_labelled):
-                fatal("Source did not fullfill requests "
+                fatal("Source did not fulfill requests "
                       "({0} does not exist)".format(newly_labelled))
 
         # Append newly_labelled points to labelled
