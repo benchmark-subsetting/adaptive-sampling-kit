@@ -1,7 +1,7 @@
 This set of scripts are used to automatically update the wiki documentation
 at https://code.google.com/p/adaptive-sampling-kit/wiki/main.
 
-They transform the latex documentation into a set of google wiki formated pages.
+They transform the latex documentation into a set of google wiki formatted pages.
 Dependencies for running these scripts:
  * Python 3 (deals properly with utf8)
  * pandoc (http://johnmacfarlane.net/pandoc/)

@@ -28,7 +28,7 @@ class BootstrapFileSource(CommandLineT):
                  "error message should mention data_file"
 
     def test_request(self):
-        """ Source request should be fullfilled """
+        """ Source request should be fulfilled """
         card = 3
         self.conf(
             {"modules": {"source":
